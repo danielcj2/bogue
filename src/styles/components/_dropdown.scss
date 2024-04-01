@@ -1,0 +1,40 @@
+@use '../abstracts';
+
+.dropdown{
+    position: absolute;
+    padding: abstracts.div(abstracts.$padding-md, 2);
+    margin-top: abstracts.$padding-md + 0.5rem;
+    margin-left: -(abstracts.div(abstracts.$padding-md, 3));
+
+    border: solid 1px abstracts.$dark-bg;
+    
+    @include abstracts.clr(abstracts.$light-bg);
+
+    &.active{
+        display: block;
+    }
+
+    &.inactive{
+        display: none;
+    }
+
+    &__list-item{
+        padding: 5px 2px;
+        min-width: 60px;
+        list-style: none;
+        font-family: abstracts.$Dosis;
+        font-size: abstracts.$padding-md * 0.9;
+        font-weight: 500;
+        cursor: pointer;
+        @include abstracts.flex-row(space-between);
+
+        .country-flag{
+            transform: scale(0.8);
+        }
+
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+
+}

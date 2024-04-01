@@ -1,0 +1,13 @@
+body:has(.section__home){
+    overflow: hidden;
+}
+
+.section{
+
+    &__home{
+
+        img{
+            width: 100%;
+        }
+    }
+}
