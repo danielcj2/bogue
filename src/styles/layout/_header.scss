@@ -3,21 +3,22 @@
 
 .header{
     //
-    width: 80%;
-    position: absolute;
-    margin-top: 30px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    border-radius: 50px;
+    // width: 80%;
+    // position: absolute;
+    // margin-top: 30px;
+    // left: 50%;
+    // transform: translate(-50%, 0);
+    // border-radius: 50px;
     //
 
-    //width: 100%;
-    padding: abstracts.$padding-md;
+    padding: abstracts.$padding-md abstracts.$padding-md*7;
+    padding-top: 0;
     
     @include abstracts.clr(abstracts.$light-bg);
 
-    font-family: abstracts.$Poppins;
-    font-weight: 400;
+    font-family: abstracts.$Montserrat;
+    font-weight: 500;
+    font-size: 0.9rem;
     
     @include abstracts.flex-row(space-between);
 
@@ -38,13 +39,13 @@
             max-height: 46px;
         }
 
-        &__link{
+        &__link, &__dropdown__button{
             @include abstracts.link(black);
 
             svg{
                 stroke-width: 1px;
-                width: 30px;
-                height: 30px;
+                width: 25px;
+                height: 25px;
             }
 
             &:hover{
@@ -53,37 +54,72 @@
         }
 
         &__dropdown{
-            
             &__button{
-                border: none;
-                cursor: pointer;
-
-                @include abstracts.clr(abstracts.$light-bg);
-
-                
-                @include abstracts.flex-row(space-between);
+                @include abstracts.div-button(none, abstracts.$light-bg);
             }
 
-            &__label{
-                padding: 5px;
-                font-family: abstracts.$Poppins;
-                font-size: 1rem;
-            }
+        }
 
-            .country-flag{
-                position: relative;
+        h4, .bold{
+            font-weight: 600;
+        }
+    }
+}
+
+[class$="__container"] {
+    @include abstracts.flex-row(space-between);
+}
+
+[class$="__container__start"] {
+    @include abstracts.flex-row(flex-start);
+}
+
+[class$="-right"] {
+    padding-right: 10px;
+}
+
+
+.country-flag{
+    position: relative;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    border-radius: 50%;
+
+    img{
+        position: absolute;
+        z-index: 100;
+        left: -12%;
+        top: -12%;
+    }
+}
+
+.settings-bar{
+    @include abstracts.flex-row(flex-end);
+    @include abstracts.clr(abstracts.$light-bg);
+
+    padding: 0 abstracts.$padding-md*7;
+
+    .settings__dropdown{
+        &__button{
+            @include abstracts.flex-row(space-between);
+
+            @include abstracts.div-button(none, abstracts.$light-bg);
+
+            padding: abstracts.div(abstracts.$padding-md, 2);
+            
+            .settings-svg{
                 width: 25px;
                 height: 25px;
-                overflow: hidden;
-                border-radius: 50%;
-
-                img{
-                    position: absolute;
-                    z-index: 100;
-                    left: -10%;
-                    top: -10%;
-                }
             }
         }
+        
+        &__label{
+            padding: 3px;
+            font-family: abstracts.$Poppins;
+            font-size: abstracts.div(abstracts.$padding-md, 1.2);
+            font-weight: 500;
+        }
+
     }
 }

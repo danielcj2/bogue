@@ -42,3 +42,11 @@
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
+
+@mixin div-button($border, $color){
+    border: $border;
+    cursor: pointer;
+
+    background-color: $color;
+    color: set-text-color($color);
+}

@@ -1,0 +1,21 @@
+@use '../abstracts';
+
+.dropdown{
+    [class*="__button"] {
+        text-align: center;
+        width: 100%;
+        padding: abstracts.$padding-md;
+        margin-top: abstracts.div(abstracts.$padding-md, 1.4);
+        cursor: pointer
+    }
+
+    [class$="-dark"]{
+        @include abstracts.clr(abstracts.$dark-bg);
+        border: solid transparent 1px;
+    }
+
+    [class$="-light"]{
+        @include abstracts.clr(abstracts.$light-bg);
+        border: solid black 1px;
+    }
+}
