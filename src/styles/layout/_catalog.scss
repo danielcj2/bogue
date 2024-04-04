@@ -1,0 +1,48 @@
+@use '../abstracts';
+
+.section{
+    &__catalog{
+        .background-img{
+            position: fixed;
+            top: 5%;
+            width: 100%;
+            z-index: -10;
+        }
+    }
+}
+
+.catalog{
+    &__list {
+        font-family: abstracts.$Lato;
+
+        margin-top: 500px;
+        width: 100%;
+
+
+        @include abstracts.clr(abstracts.$light-bg);
+
+        &__header__container{
+            padding: abstracts.$padding-md;
+            border: solid 1px rgba(0, 0, 0, 0.5);
+            border-left: 0;
+            border-right: 0;
+            border-bottom: 0;
+        }
+
+        &__toggle__container{
+            [class*="toggle"] { 
+                margin-left: 5px;
+            }
+            
+            svg{
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        &__cards__container{
+            flex-wrap: wrap;
+        }
+        
+    }
+}

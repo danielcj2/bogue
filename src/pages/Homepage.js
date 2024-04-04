@@ -8,7 +8,6 @@ import Settings from '../components/Settings';
 const Homepage = () => {
   return (
     <>
-      <Settings />
       <Header />
       <Notice duplicate={9}/>
       <div className="section">

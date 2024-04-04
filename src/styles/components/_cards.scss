@@ -1,0 +1,23 @@
+.catalog__card{
+    width: 25%;
+    padding: 1rem;
+    border: solid 1px rgba(0,0,0,0.1);
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+
+    &__image{
+        img{
+            width: 100%;
+            padding-top: 2rem;
+        }
+    }
+
+    &__info__container{
+        padding: 1rem 0;
+    }
+
+    &:hover{
+        border: solid 1px black;
+        cursor: pointer;
+    }
+}

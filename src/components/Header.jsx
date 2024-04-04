@@ -41,8 +41,8 @@ const Header = () => {
                 <div className="shop-cart-item__container">
                   <div className="shop-cart-item__image-right"><img src={tshirt} alt="stock t-shirt"></img></div>
                   <div className="shop-cart-item">
-                    <h4 className="shop-cart-item__header__container">Regular Plain T-Shirt</h4>
-                    <div className="shop-cart-item__cost__container bold">$70.00</div>
+                    <h4 className="shop-cart-item__header">Regular Plain T-Shirt</h4>
+                    <div className="shop-cart-item__cost bold">$70.00</div>
                     <div className="shop-cart-item__spacer__container"></div>
                     <div className="shop-cart-item__size__container__start">
                       <div className="size__text">Size:</div>

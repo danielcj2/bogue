@@ -12,11 +12,11 @@
     //
 
     padding: abstracts.$padding-md abstracts.$padding-md*7;
-    padding-top: 0;
+    //padding-top: 0;
     
     @include abstracts.clr(abstracts.$light-bg);
 
-    font-family: abstracts.$Montserrat;
+    font-family: abstracts.$Lato;
     font-weight: 500;
     font-size: 0.9rem;
     
@@ -60,7 +60,7 @@
 
         }
 
-        h4, .bold{
+        h4{
             font-weight: 600;
         }
     }

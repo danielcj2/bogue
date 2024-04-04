@@ -19,3 +19,7 @@
         border: solid black 1px;
     }
 }
+
+[class*="__button"] {
+    cursor: pointer;
+}
