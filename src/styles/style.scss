@@ -2,7 +2,15 @@
 @use './base';
 
 .bold{
-    font-weight: 600;
+    font-weight: 500;
+}
+
+.upp{
+    text-transform: uppercase;
+}
+
+.cap{
+    text-transform: capitalize;
 }
 
 .section{

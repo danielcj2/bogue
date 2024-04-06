@@ -4,8 +4,18 @@
   padding: 0;
 }
 
+html{
+  font-size: 15px;
+}
+
 img{
   -moz-user-select: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+svg{
+  stroke-width: 1px;
+  min-width: 20px;
+  min-height: 20px;
 }

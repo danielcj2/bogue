@@ -29,63 +29,63 @@ const Catalog = () => {
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>
                     <div className="catalog__card">
                         <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
                         <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">PLAIN T-SHIRT</div>
+                            <div className="card__item__title bold">regular plain t-shirt</div>
                             <div className="card__item__cost">$70.00</div>
                         </div>
                     </div>

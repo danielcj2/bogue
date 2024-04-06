@@ -2,9 +2,9 @@
 
 .dropdown{
     position: absolute;
-    padding: abstracts.div(abstracts.$padding-md, 2);
-    margin-top: abstracts.$padding-md - abstracts.div(abstracts.$padding-md, 2);
-    margin-left: -(abstracts.div(abstracts.$padding-md, 3));
+    padding: calc(abstracts.$padding-md/2);
+    margin-top: abstracts.$padding-md - calc(abstracts.$padding-md/2);
+    margin-left: -(calc(abstracts.$padding-md/3));
 
     border: solid 1px abstracts.$dark-bg;
     
@@ -50,10 +50,10 @@
 
     &:has(.shop-cart-item){
         left: 80%;
-        font-size: abstracts.div(abstracts.$padding-md, 1.3);
+        font-size: calc(abstracts.$padding-md/1.3);
 
         [class$="__text"] {
-            font-size: abstracts.div(abstracts.$padding-md, 1.5);
+            font-size: calc(abstracts.$padding-md/1.5);
             padding: 5px;
             padding-left: 0;
         }
@@ -64,5 +64,18 @@
         width: 75px;
         height: 100px;
         object-fit: cover;
+    }
+}
+
+.dropdown-block{
+    padding: 10px;
+    font-size: 0.8rem;
+    
+    &.active{
+        display: block;
+    }
+
+    &.inactive{
+        display: none;
     }
 }

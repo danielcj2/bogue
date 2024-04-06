@@ -28,10 +28,6 @@
 }
 //
 
-@function div($value, $number) {
-    @return math.div($value, $number);
-}
-
 @mixin scroll-animation($duration) {
     @keyframes scroll {
         @content
@@ -49,4 +45,19 @@
 
     background-color: $color;
     color: set-text-color($color);
+}
+
+@mixin triangle-bg($top, $bottom, $top-color, $bottom-color){
+    content: ' ';
+    border-top: $top solid $top-color;
+    border-right: $bottom solid $bottom-color;
+    width: 0;
+    position: absolute;
+    z-index: -10;
+}
+
+@mixin disable-select{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }

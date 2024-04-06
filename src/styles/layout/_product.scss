@@ -1,0 +1,108 @@
+@use '../abstracts';
+
+body:has(.section__product){
+    // overflow: hidden;
+}
+
+.section{
+    &__product{
+        //background-color: abstracts.$light-bg;
+        padding: 0 abstracts.$padding-md*2;
+        position: relative;
+        font-family: abstracts.$Poppins;
+        width: 100%;
+        @include abstracts.flex-row(space-between);
+        align-items: flex-start;
+
+        &__image{
+            // border-top: solid 1px black;
+            
+            img{
+                width: calc(40vw - abstracts.$padding-md*2);
+                height: calc(100vh - abstracts.$padding-md*2);
+            
+                object-fit: cover;
+            }
+        }
+
+        &__details{
+            position: relative;
+            width: calc(60vw - abstracts.$padding-md*2);
+
+            .notice{
+                padding: calc(abstracts.$padding-md/2);
+            }
+
+            &::before{
+                @include abstracts.triangle-bg(calc(100vh - abstracts.$padding-md*2), calc(60vw - abstracts.$padding-md*2), transparent, abstracts.$light-bg);
+            }
+
+            &__background{
+                .product__card{
+                    margin: auto;
+                    width: 500px;
+                    margin-top: abstracts.$padding-md*7;
+                    min-height: 60vh;
+                    background-color: white;
+
+                    &__info{
+                        font-size: abstracts.$padding-md*1.1;
+
+                        .card__item__title{
+                            margin-bottom: 5px;
+                        }
+                    }
+
+                    &__filters{
+                        @include abstracts.flex-row(flex-start);
+                        @include abstracts.disable-select;
+                        
+                        padding: abstracts.$padding-md*2 0;
+                    }
+
+                    &__dynamic__wrapper{
+                        
+                        .product__info__controls{
+                            font-size: 0.85rem;
+                            text-decoration: underline;
+                            margin: 10px 0;
+                            cursor: pointer;
+                            @include abstracts.flex-row(flex-start);
+
+                            svg{
+                                margin-left: 5px;
+                            }
+                        }
+
+                        .product__cart__button-dark{
+                            margin: 0;
+                            @include abstracts.flex-row(center);
+
+                            svg{
+                                width: 25px;
+                                height: 25px;
+                                margin-right: 5px;
+                            }
+                        }
+                    }
+
+                    &__toggle__wrapper{
+                        margin-top: abstracts.$padding-md*4;
+
+                        @include abstracts.disable-select;
+                        
+                        [class*="__toggle"]{
+                            font-size: 0.95rem;
+                            padding: 10px;
+                            border-top: solid 1px rgba(0,0,0,0.2);
+                            margin: 5px 0;
+                        }
+                    }
+
+                }
+
+            }
+        
+        }
+    }
+}
