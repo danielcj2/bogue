@@ -1,13 +1,47 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
+import { supabase } from '../config/supabaseClient'
+import { useParams } from 'react-router-dom';
+
+//components
 import Header from '../components/Header'
 import Settings from '../components/Settings'
 import Notice from '../components/Notice'
-import tshirtImg from '../imgs/tshirt-stock.jpg'
+import CatalogCard from '../components/CatalogCard'
+
+//icons / imgs
 import racksImg from '../imgs/warehouse-racks.jpg'
 import { IoChevronDownSharp } from "react-icons/io5";
 import { PiSquaresFour, PiSquare, PiSquareSplitHorizontal } from "react-icons/pi";
 
 const Catalog = () => {
+    const [error, setError] = useState(null);
+    const [apparel, setApparel] = useState([]);
+
+    const { params } = useParams();
+    // Parse parameters
+    const categories = params.split('/');
+
+    useEffect(() => {
+        const fetchApparel = async () => {
+            const {data, error} = await supabase.from('apparel').select('*');
+
+            if(error){
+                setError('404');
+                setApparel([]);
+                console.log(error);
+            }
+            if(data){
+                setApparel(data);
+                setError(null);
+            }
+        }
+
+        fetchApparel();
+
+    }, []);
+
+
   return (
     <>
         <Notice duplicate={9}/>
@@ -25,70 +59,13 @@ const Catalog = () => {
                         <div className="toggle__small"><PiSquaresFour className="__button"/></div>
                     </div>
                 </div>
-                <div className="catalog__list__cards__container">
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
-                    <div className="catalog__card">
-                        <div className="catalog__card__image"><img src={tshirtImg} alt="tshirt stock"></img></div>
-                        <div className="catalog__card__info__container">
-                            <div className="card__item__title bold">regular plain t-shirt</div>
-                            <div className="card__item__cost">$70.00</div>
-                        </div>
-                    </div>
+                <div className="catalog__list__cards">
+                    {error && (<p>404</p>)}
+                    {apparel && 
+                        apparel.map(item => (
+                            <CatalogCard key={item.apparel_id} item={item}/>
+                        ))
+                    }
                 </div>
             </div>
           </div>

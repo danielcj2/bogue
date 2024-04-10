@@ -40,8 +40,11 @@
             }
         }
 
-        &__cards__container{
-            flex-wrap: wrap;
+        &__cards{
+            margin: abstracts.$padding-md;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
         }
         
     }

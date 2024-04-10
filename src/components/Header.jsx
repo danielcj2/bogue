@@ -1,8 +1,8 @@
 import React from 'react'
 import { useState } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
-import tshirt from '../imgs/tshirt-stock.jpg';
-
+import tshirt from '../imgs/crewneck_shirt_red.png';
+import { Link } from 'react-router-dom';
 //icons
 import { FiSearch } from "react-icons/fi";
 import { LuUserCircle2 } from "react-icons/lu";
@@ -20,10 +20,10 @@ const Header = () => {
       <div className="header__left">
         <ul className="header-list">
           <li className="header-list__item">
-            <a href="/" className="header-list__link">Home</a>
+            <Link to="/" className="header-list__link">Home</Link>
           </li>
           <li className="header-list__item">
-            <a href="/" className="header-list__link">Shop All</a>
+            <Link to="/catalog" className="header-list__link">Shop All</Link>
           </li>
         </ul>
       </div>
