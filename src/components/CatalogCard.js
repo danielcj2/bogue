@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import tshirtImg from '../imgs/crewneck_shirt_red.png'
 import { PiHeartFill } from "react-icons/pi";
-import { PiHeartThin } from "react-icons/pi";
-import { PiHeartDuotone } from "react-icons/pi";
 
 const CatalogCard = ({ item }) => {
   const [hover, setHover] = useState(false);
