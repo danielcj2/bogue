@@ -32,7 +32,6 @@
         @include abstracts.flex-row(space-around);
 
         &__item{
-            list-style: none;
             padding: calc(abstracts.$padding-md/2);
 
             max-width: max-content;

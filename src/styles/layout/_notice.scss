@@ -5,11 +5,13 @@
 
     font-family: abstracts.$Poppins;
 
+    cursor:pointer;
     &__heading{
         font-size: 0.9rem;
         font-weight: 200;
-        padding: 0.5rem;
-        word-spacing: 0.2rem;
+        padding: abstracts.$padding-md*0.5;
+        word-spacing: 0.1rem;
+        letter-spacing: 0.1rem;
     }
 }
 
@@ -21,11 +23,16 @@
         @include abstracts.flex-row(start);
         gap: abstracts.$padding-md*6;
         
-        @include abstracts.scroll-animation(30s) {
+        @include abstracts.scroll-animation(50s) {
             to {
                 transform: translate(calc(-50% - abstracts.$padding-md*3));
             }
         }
     }
+}
+
+body:has(.section__catalog) .notice{
+    padding: abstracts.$padding-md*0.75;
+
 }
 

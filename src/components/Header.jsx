@@ -20,10 +20,13 @@ const Header = () => {
       <div className="header__left">
         <ul className="header-list">
           <li className="header-list__item">
-            <Link to="/" className="header-list__link">Home</Link>
+            <Link to="/catalog" className="header-list__link">Browse All</Link>
           </li>
           <li className="header-list__item">
-            <Link to="/catalog" className="header-list__link">Shop All</Link>
+            <Link to="/catalog?sort=new" className="header-list__link">New Arrivals</Link>
+          </li>
+          <li className="header-list__item">
+            <Link className="header-list__link">Men's Fashion</Link>
           </li>
         </ul>
       </div>
