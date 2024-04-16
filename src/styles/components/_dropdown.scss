@@ -1,5 +1,11 @@
 @use '../abstracts';
 
+[class*="dropdown"]{
+    &.inactive{
+        display: none;
+    }
+}
+
 .dropdown{
     position: absolute;
     padding: calc(abstracts.$padding-md/2);
@@ -77,4 +83,36 @@
     &.inactive{
         display: none;
     }
+}
+
+.dropdown-long{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    z-index: 101;
+    left: 0;
+
+    li{
+        a{
+            @include abstracts.link(black);
+
+            &:hover{
+                opacity: 0.6;
+            }
+        }
+    }
+
+    &.active{
+        display: flex;
+    }
+
+    [class*="__title"]{
+        font-weight: 700;
+        margin: abstracts.$padding-md*0.75 0;
+    }
+
+    [class$="__option"]{
+        margin-bottom: abstracts.$padding-md*0.75;
+    }
+
 }

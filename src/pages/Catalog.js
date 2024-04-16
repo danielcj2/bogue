@@ -1,11 +1,18 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "../config/supabaseClient";
+import { supabase } from "../utils/supabaseClient";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchApparel,
+  fetchCategoryBySlug,
+  fetchSubcategoriesRecursive,
+} from "../features/apparel/apparelAsyncThunks";
 
 //components
 import Header from "../components/Header";
-import Settings from "../components/Settings";
 import Notice from "../components/Notice";
 import CatalogCard from "../components/CatalogCard";
 
@@ -17,35 +24,42 @@ import { ReactComponent as IconDivider } from "../svgs/icon-divider.svg";
 import useClickOutside from "../hooks/useClickOutside";
 
 const Catalog = () => {
-  const [error, setError] = useState(null);
   const [apparel, setApparel] = useState([]);
   const [pathLinks, setPathLinks] = useState([]);
   const [paramsData, setParamsData] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  var categories;
-  
+
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => state.apparel);
+
   const [searchParams] = useSearchParams();
   const { slug } = useParams();
-  console.log(slug);
-  // Parse parameters
-  if (slug) {
-    // categories = slug.split('/');
-    // console.log(categories);
-  }
 
   useEffect(() => {
     if (slug === undefined) {
       setPathLinks([]);
       setParamsData({
-        category_name: "View All Apparel",
-        category_description: "",
+        category_name: "Ready To Wear",
+        category_description:
+          "Discover the ease and elegance of ready-to-wear fashion! Our curated collection offers versatile styles for every occasion, crafted with quality and attention to detail. Elevate your wardrobe effortlessly with our range of chic, trendsetting designs. Shop now and step into style with confidence!",
       });
       defaultPath();
     } else {
-      fetchCategoryData();
+      dispatch(fetchCategoryBySlug(slug))
+        .unwrap()
+        .then((categoryID) => {
+          return dispatch(fetchSubcategoriesRecursive(categoryID));
+        })
+        // .then((categoryID) => {
+        //   return dispatch(fetchApparel(categoryID));
+        // })
+        .catch((error) => {
+          console.error("Error fetching data: ", error);
+        });
+
+      setApparel(data);
     }
     displayLinks();
-  }, [slug, searchParams]);
+  }, []);
 
   const defaultPath = async () => {
     try {
@@ -61,77 +75,52 @@ const Catalog = () => {
     }
   };
 
-  const fetchCategoryData = async () => {
-    try {
-      const categoryID = await getCategoryIDBySlug(slug);
-      if (!categoryID) {
-        throw new Error("Category ID not found");
-      }
+  // const fetchCategoryData = async () => {
+  //   try {
+  //     const categoryID = await getCategoryIDBySlug(slug);
+  //     if (!categoryID) {
+  //       throw new Error("Category ID not found");
+  //     }
 
-      fetchBottomMostCategories(categoryID)
-        .then(fetchDataSequentially)
-        .catch((error) =>
-          console.error("Error fetching bottom-most categories:", error.message)
-        );
+  //     fetchBottomMostCategories(categoryID)
+  //       .then(fetchDataSequentially)
+  //       .catch((error) =>
+  //         console.error("Error fetching bottom-most categories:", error.message)
+  //       );
 
-      setPathLinks(await fetchUpperMostCategories(categoryID));
-    } catch (error) {
-      console.error("Error fetching category ID:", error.message);
-    }
-  };
+  //     setPathLinks(await fetchUpperMostCategories(categoryID));
+  //   } catch (error) {
+  //     console.error("Error fetching category ID:", error.message);
+  //   }
+  // };
 
-  const getCategoryIDBySlug = async (slug) => {
-    try {
-      const { data: categoryData, error: categoryError } = await supabase
-        .from("category")
-        .select("*")
-        .eq("slug", slug)
-        .single();
+  // const fetchBottomMostCategories = async (categoryID) => {
+  //   try {
+  //     const { data: childrenData, error: childrenError } = await supabase
+  //       .from("category")
+  //       .select("category_id")
+  //       .eq("parent_category_id", categoryID);
 
-      if (categoryError) {
-        throw categoryError;
-      }
+  //     if (childrenError) {
+  //       throw childrenError;
+  //     }
 
-      if (!categoryData || !categoryData.category_id) {
-        return null;
-      }
+  //     if (!childrenData || childrenData.length === 0) {
+  //       return categoryID; // Return the category ID if it has no children
+  //     }
 
-      setParamsData(categoryData);
-
-      return categoryData.category_id;
-    } catch (error) {
-      console.error("Error fetching category ID:", error.message);
-      return null;
-    }
-  };
-
-  const fetchBottomMostCategories = async (categoryID) => {
-    try {
-      const { data: childrenData, error: childrenError } = await supabase
-        .from("category")
-        .select("category_id")
-        .eq("parent_category_id", categoryID);
-
-      if (childrenError) {
-        throw childrenError;
-      }
-
-      if (!childrenData || childrenData.length === 0) {
-        return categoryID; // Return the category ID if it has no children
-      }
-
-      let categoryIDs = [];
-      for (const category of childrenData) {
-        categoryIDs = categoryIDs.concat(
-          await fetchBottomMostCategories(category.category_id)
-        );
-      }
-      return categoryIDs;
-    } catch (error) {
-      console.error("Error fetching children ID:", error.message);
-      return [];
-    }
-  };
+  //     let categoryIDs = [];
+  //     for (const category of childrenData) {
+  //       categoryIDs = categoryIDs.concat(
+  //         await fetchBottomMostCategories(category.category_id)
+  //       );
+  //     }
+  //     return categoryIDs;
+  //   } catch (error) {
+  //     console.error("Error fetching children ID:", error.message);
+  //     return [];
+  //   }
+  // };
 
   const fetchUpperMostCategories = async (categoryID) => {
     try {
@@ -161,26 +150,26 @@ const Catalog = () => {
     }
   };
 
-  const fetchDataSequentially = async (categoryIDs) => {
-    if (categoryIDs.length) {
-      let allApparelData = [];
+  // const fetchDataSequentially = async (categoryIDs) => {
+  //   if (categoryIDs.length) {
+  //     let allApparelData = [];
 
-      for (const categoryID of categoryIDs) {
-        allApparelData = allApparelData.concat(
-          await fetchApparelData(categoryID)
-        );
-      }
+  //     for (const categoryID of categoryIDs) {
+  //       allApparelData = allApparelData.concat(
+  //         await fetchApparelData(categoryID)
+  //       );
+  //     }
 
-      sortApparel(allApparelData);
-    } else {
-      sortApparel(await fetchApparelData(categoryIDs));
-    }
-  };
+  //     sortApparel(allApparelData);
+  //   } else {
+  //     sortApparel(await fetchApparelData(categoryIDs));
+  //   }
+  // };
 
   const sortApparel = async (apparelData) => {
-    const currentParams = Object.fromEntries([...searchParams]) || 'default';
+    const currentParams = Object.fromEntries([...searchParams]) || "default";
 
-    switch(currentParams.sort){
+    switch (currentParams.sort) {
       case "asc":
         apparelData = apparelData.sort((a, b) => a.cost - b.cost);
         break;
@@ -193,26 +182,9 @@ const Catalog = () => {
       default:
         //Do nothing
         break;
-      }
-
-      setApparel(apparelData);
-  }
-
-  const fetchApparelData = async (categoryID) => {
-    try {
-      const { data: apparelData, error: apparelError } = await supabase
-        .from("apparel")
-        .select("*")
-        .eq("category_id", categoryID);
-
-      if (apparelError) {
-        throw apparelError;
-      }
-
-      return apparelData;
-    } catch (error) {
-      console.error("Error fetching apparel data:", error.message);
     }
+
+    setApparel(apparelData);
   };
 
   const displayLinks = () => {
@@ -230,6 +202,16 @@ const Catalog = () => {
     return linkEntries;
   };
 
+  const displayCards = (data) => {
+    let cardEntries = [];
+    for (var i = 0; i < data.length; i++) {
+      cardEntries.push(
+        <CatalogCard key={data[i].category_id} item={data[i]} />
+      );
+    }
+
+    return cardEntries;
+  };
 
   //change to hover Outside
   const [optionsDropdown, setOptionsDropdown] = useState(false);
@@ -269,10 +251,15 @@ const Catalog = () => {
               </div>
               <ul className="catalog__list__filters__container">
                 <li className="product__container">
-                  <div className="product__count">{apparel.length}</div>
+                  <div className="product__count">{loading && "0"}</div>
                   <div className="product__text">Product(s)</div>
                 </li>
-                <li className="sort__button" onClick={() => {setOptionsDropdown(!optionsDropdown)}}>
+                <li
+                  className="sort__button"
+                  onClick={() => {
+                    setOptionsDropdown(!optionsDropdown);
+                  }}
+                >
                   <div className="sort__button__text">Sort by</div>
                   <IoChevronDownSharp />
                 </li>
@@ -281,19 +268,28 @@ const Catalog = () => {
                   <IoChevronDownSharp />
                 </li>
               </ul>
-              <ul className={`catalog__list__options__dropdown ${optionsDropdown?'active':'inactive'}`}>
-                <li className="sort__normal"><Link to="?">Recommended</Link></li>
-                <li className="sort__high-low"><Link to="?sort=desc">Price - High to Low</Link></li>
-                <li className="sort__low-high"><Link to="?sort=asc">Price - Low to High</Link></li>
-                <li className="sort__new"><Link to="?sort=new">New In</Link></li>
+              <ul
+                className={`catalog__list__options__dropdown dropdown-long ${
+                  optionsDropdown ? "active" : "inactive"
+                }`}
+              >
+                <li className="sort__normal">
+                  <Link to="?">Recommended</Link>
+                </li>
+                <li className="sort__high-low">
+                  <Link to="?sort=desc">Price - High to Low</Link>
+                </li>
+                <li className="sort__low-high">
+                  <Link to="?sort=asc">Price - Low to High</Link>
+                </li>
+                <li className="sort__new">
+                  <Link to="?sort=new">New In</Link>
+                </li>
               </ul>
             </div>
             <div className="catalog__list__cards">
               {error && <p>404</p>}
-              {apparel &&
-                apparel.map((item) => (
-                  <CatalogCard key={item.apparel_id} item={item} />
-                ))}
+              {loading ? <p>Loading....</p> : data && displayCards(data)}
             </div>
           </div>
         </div>

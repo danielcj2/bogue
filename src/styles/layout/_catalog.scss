@@ -2,7 +2,7 @@
 
 .section{
     &__spacer{
-        height: 100px;
+        height: 150px;
         background-color: abstracts.$light-bg;
     }
 }
@@ -128,35 +128,14 @@
         }
 
         &__options__dropdown{
-            position: absolute;
-            width: 100%;
             background-color: abstracts.$light-bg;
             top: calc(100% + 1px);
-            left: 0;
-            z-index: 101;
-            display: flex;
-            flex-direction: column;
             align-items: flex-end;
-
-            &.active{
-                display: flex;
-            }
-        
-            &.inactive{
-                display: none;
-            }
+            flex-direction: column;
 
             li{
                 padding: abstracts.$padding-md*0.7 abstracts.$padding-md*2;
                 width: fit-content;
-
-                a{
-                    @include abstracts.link(black);
-
-                    &:hover{
-                        opacity: 0.6;
-                    }
-                }
             }
 
             li:first-child{

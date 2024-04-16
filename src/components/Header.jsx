@@ -1,12 +1,17 @@
-import React from 'react'
-import { useState } from 'react';
-import useClickOutside from '../hooks/useClickOutside';
-import tshirt from '../imgs/crewneck_shirt_red.png';
-import { Link } from 'react-router-dom';
-//icons
+import React from "react";
+
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+//hooks
+import useClickOutside from "../hooks/useClickOutside";
+
+//icons & images
 import { FiSearch } from "react-icons/fi";
 import { LuUserCircle2 } from "react-icons/lu";
 import { HiOutlineShoppingCart } from "react-icons/hi";
+import tshirt from "../imgs/crewneck_shirt_red.png";
+import { ReactComponent as Logo } from "../svgs/logo.svg";
 
 const Header = () => {
   const [cartDropdown, setCartDropdown] = useState(false);
@@ -15,36 +20,88 @@ const Header = () => {
     setCartDropdown(false);
   });
 
+  const [optionsDropdown, setOptionsDropdown] = useState(false);
+
+  let optionsRef = useClickOutside(() => {
+    setOptionsDropdown(false);
+  });
+
   return (
     <header className="header">
       <div className="header__left">
-        <ul className="header-list">
+        <ul className="header-list" ref={optionsRef}>
           <li className="header-list__item">
-            <Link to="/catalog" className="header-list__link">Browse All</Link>
+            <Link to="/catalog" className="header-list__link">
+              Browse All
+            </Link>
           </li>
           <li className="header-list__item">
-            <Link to="/catalog?sort=new" className="header-list__link">New Arrivals</Link>
+            <Link to="/catalog?sort=new" className="header-list__link">
+              New Arrivals
+            </Link>
           </li>
-          <li className="header-list__item">
+          <li className="header-list__item" onClick={() => {setOptionsDropdown(!optionsDropdown)}}>
             <Link className="header-list__link">Men's Fashion</Link>
           </li>
+          <div className={`header-list__item__options__dropdown dropdown-long ${optionsDropdown?'active':'inactive'}`}>
+              <ul className="trending">
+                <li className="trending__title upp">Trending</li>
+                <li className="trending__option">Trending</li>
+                <li className="trending__option">Trending</li>
+                <li className="trending__option">Trending</li>
+              </ul>
+              <ul className="ready-to-wear">
+                <li className="ready-to-wear__title upp">Ready To Wear</li>
+                <li className="ready-to-wear__option">T-shirts & Tops</li>
+                <li className="ready-to-wear__option">Sweaters & Cardigans</li>
+                <li className="ready-to-wear__option">Coats, Jackets & Outerwear</li>
+                <li className="ready-to-wear__option">Jeans & Trousers</li>
+                <li className="ready-to-wear__option">Hoodies & Sweatshirts</li>
+              </ul>
+              <ul className="style-guide">
+                <li className="style-guide__title upp">Style Guide</li>
+                <li className="style-guide__option">Casual Looks</li>
+                <li className="style-guide__option">Sports Looks</li>
+                <li className="style-guide__option">Street Looks</li>
+              </ul>
+              <ul className="offers-and-deals">
+                <li className="offers-and-deals__title upp">Offers & Deals</li>
+                <li className="offers-and-deals__option">Offers & Deals</li>
+              </ul>
+            </div>
         </ul>
+      </div>
+      <div className="header__center">
+        <Link to="/"><Logo /></Link>
       </div>
       <div className="header__right">
         <ul className="header-list">
           <li className="header-list__item">
-            <a href="/" className="header-list__link"><FiSearch /></a>
+            <a href="/" className="header-list__link">
+              <FiSearch />
+            </a>
           </li>
           <li className="header-list__item">
             <div className="header-list__dropdown" ref={cartRef}>
-              <button className="header-list__dropdown__button" onClick={() => {setCartDropdown(!cartDropdown)}}>
-                <HiOutlineShoppingCart/>
+              <button
+                className="header-list__dropdown__button"
+                onClick={() => {
+                  setCartDropdown(!cartDropdown);
+                }}
+              >
+                <HiOutlineShoppingCart />
               </button>
-              <ul className={`dropdown ${cartDropdown?'active':'inactive'}`}>
+              <ul
+                className={`dropdown ${cartDropdown ? "active" : "inactive"}`}
+              >
                 <div className="shop-cart-item__container">
-                  <div className="shop-cart-item__image-right"><img src={tshirt} alt="stock t-shirt"></img></div>
+                  <div className="shop-cart-item__image-right">
+                    <img src={tshirt} alt="stock t-shirt"></img>
+                  </div>
                   <div className="shop-cart-item">
-                    <h4 className="shop-cart-item__header">Regular Plain T-Shirt</h4>
+                    <h4 className="shop-cart-item__header">
+                      Regular Plain T-Shirt
+                    </h4>
                     <div className="shop-cart-item__cost bold">$70.00</div>
                     <div className="shop-cart-item__spacer__container"></div>
                     <div className="shop-cart-item__size__container__start">
@@ -57,7 +114,9 @@ const Header = () => {
                     </div>
                   </div>
                 </div>
-                <div className="dropdown__break"><hr /></div>
+                <div className="dropdown__break">
+                  <hr />
+                </div>
                 <div className="dropdown__subtotal__container">
                   <div className="subtotal__text">Order</div>
                   <div className="subtotal__cost">$70.00</div>
@@ -66,7 +125,9 @@ const Header = () => {
                   <div className="shipping__text">Shipping</div>
                   <div className="shipping__cost">$7.00</div>
                 </div>
-                <div className="dropdown__break"><hr /></div>
+                <div className="dropdown__break">
+                  <hr />
+                </div>
                 <div className="dropdown__total__container">
                   <div className="total__text bold">TOTAL</div>
                   <div className="total__cost bold">$77.00</div>
@@ -75,18 +136,22 @@ const Header = () => {
                   <button className="checkout__button-dark">CHECKOUT</button>
                 </div>
                 <div className="dropdown__shopping-cart__container">
-                  <button className="shopping-cart__button-light">VIEW SHOPPING CART</button>
+                  <button className="shopping-cart__button-light">
+                    VIEW SHOPPING CART
+                  </button>
                 </div>
               </ul>
             </div>
           </li>
           <li className="header-list__item">
-            <a href="/" className="header-list__link"><LuUserCircle2 /></a>
+            <a href="/" className="header-list__link">
+              <LuUserCircle2 />
+            </a>
           </li>
         </ul>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
