@@ -3,14 +3,29 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchApparel = createAsyncThunk(
   "apparel/fetchApparelData",
-  async (categoryID) => {
-    console.log(categoryID);
-    const { data } = await supabase
-      .from("apparel")
-      .select("*")
-      .eq("category_id", categoryID);
+  async (categoryIDs) => {
+    const ids = categoryIDs.payload.map((category) => category.category_id);
 
-    return data;
+    if (Array.isArray(ids)) {
+      let allApparelData = [];
+
+      for (const category of ids) {
+        const { data } = await supabase
+          .from("apparel")
+          .select("*")
+          .eq("category_id", category);
+
+        allApparelData.push(...data);
+      }
+      return allApparelData;
+    } else {
+      const { data } = await supabase
+        .from("apparel")
+        .select("*")
+        .eq("category_id", ids);
+
+      return data;
+    }
   }
 );
 
@@ -31,22 +46,35 @@ export const fetchCategoryBySlug = createAsyncThunk(
   }
 );
 
-export const fetchSubcategoriesRecursive = createAsyncThunk(
-  "apparel/fetchSubcategoriesRecursive",
-  async (categoryID, {dispatch}) => {
-    const { data } = await supabase
-      .from("category")
-      .select("category_id")
-      .eq("parent_category_id", categoryID);
+export const fetchSubcategories = createAsyncThunk(
+  "apparel/fetchSubcategories",
+  async (categoryID) => {
+    const allDescendants = await fetchAllDescendants(categoryID);
+    return allDescendants;
+  }
+);
 
-    if (!data || data.length === 0) {
-        console.log(categoryID);
-      return categoryID; //Return the category ID if it has no subcategories
-    }
+const fetchAllDescendants = async (categoryID) => {
+  let allDescendants = [];
+  const { data } = await supabase
+    .from("category")
+    .select("category_id")
+    .eq("parent_category_id", categoryID);
 
-    for (const category of data) {
-        console.log(dispatch(fetchApparel(dispatch(fetchSubcategoriesRecursive(category.category_id)))));
-    }
+  for (const subcategory of data) {
+    allDescendants.push(subcategory);
+    const descendants = await fetchAllDescendants(subcategory.category_id);
+    allDescendants.push(...descendants);
+  }
 
+  return allDescendants;
+};
+
+export const fetchDefaultPath = createAsyncThunk(
+  "apparel/fetchDefaultPath",
+  async () => {
+    const {data} = await supabase.from("apparel").select("*");
+    console.log(data);
+    return data;
   }
 );

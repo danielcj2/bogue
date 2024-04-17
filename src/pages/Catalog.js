@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchApparel,
   fetchCategoryBySlug,
-  fetchSubcategoriesRecursive,
+  fetchSubcategories,
+  fetchDefaultPath
 } from "../features/apparel/apparelAsyncThunks";
 
 //components
@@ -42,16 +43,16 @@ const Catalog = () => {
         category_description:
           "Discover the ease and elegance of ready-to-wear fashion! Our curated collection offers versatile styles for every occasion, crafted with quality and attention to detail. Elevate your wardrobe effortlessly with our range of chic, trendsetting designs. Shop now and step into style with confidence!",
       });
-      defaultPath();
+      dispatch(fetchDefaultPath());
     } else {
       dispatch(fetchCategoryBySlug(slug))
         .unwrap()
         .then((categoryID) => {
-          return dispatch(fetchSubcategoriesRecursive(categoryID));
+          return dispatch(fetchSubcategories(categoryID));
         })
-        // .then((categoryID) => {
-        //   return dispatch(fetchApparel(categoryID));
-        // })
+        .then((categoryIDs) => {
+          return dispatch(fetchApparel(categoryIDs));
+        })
         .catch((error) => {
           console.error("Error fetching data: ", error);
         });
@@ -60,67 +61,6 @@ const Catalog = () => {
     }
     displayLinks();
   }, []);
-
-  const defaultPath = async () => {
-    try {
-      const { data, error } = await supabase.from("apparel").select("*");
-
-      if (error) {
-        throw error;
-      }
-
-      sortApparel(data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
-
-  // const fetchCategoryData = async () => {
-  //   try {
-  //     const categoryID = await getCategoryIDBySlug(slug);
-  //     if (!categoryID) {
-  //       throw new Error("Category ID not found");
-  //     }
-
-  //     fetchBottomMostCategories(categoryID)
-  //       .then(fetchDataSequentially)
-  //       .catch((error) =>
-  //         console.error("Error fetching bottom-most categories:", error.message)
-  //       );
-
-  //     setPathLinks(await fetchUpperMostCategories(categoryID));
-  //   } catch (error) {
-  //     console.error("Error fetching category ID:", error.message);
-  //   }
-  // };
-
-  // const fetchBottomMostCategories = async (categoryID) => {
-  //   try {
-  //     const { data: childrenData, error: childrenError } = await supabase
-  //       .from("category")
-  //       .select("category_id")
-  //       .eq("parent_category_id", categoryID);
-
-  //     if (childrenError) {
-  //       throw childrenError;
-  //     }
-
-  //     if (!childrenData || childrenData.length === 0) {
-  //       return categoryID; // Return the category ID if it has no children
-  //     }
-
-  //     let categoryIDs = [];
-  //     for (const category of childrenData) {
-  //       categoryIDs = categoryIDs.concat(
-  //         await fetchBottomMostCategories(category.category_id)
-  //       );
-  //     }
-  //     return categoryIDs;
-  //   } catch (error) {
-  //     console.error("Error fetching children ID:", error.message);
-  //     return [];
-  //   }
-  // };
 
   const fetchUpperMostCategories = async (categoryID) => {
     try {
@@ -149,22 +89,6 @@ const Catalog = () => {
       return [];
     }
   };
-
-  // const fetchDataSequentially = async (categoryIDs) => {
-  //   if (categoryIDs.length) {
-  //     let allApparelData = [];
-
-  //     for (const categoryID of categoryIDs) {
-  //       allApparelData = allApparelData.concat(
-  //         await fetchApparelData(categoryID)
-  //       );
-  //     }
-
-  //     sortApparel(allApparelData);
-  //   } else {
-  //     sortApparel(await fetchApparelData(categoryIDs));
-  //   }
-  // };
 
   const sortApparel = async (apparelData) => {
     const currentParams = Object.fromEntries([...searchParams]) || "default";
@@ -206,7 +130,7 @@ const Catalog = () => {
     let cardEntries = [];
     for (var i = 0; i < data.length; i++) {
       cardEntries.push(
-        <CatalogCard key={data[i].category_id} item={data[i]} />
+        <CatalogCard key={`${data[i].apparel_name}_${data[i].category_id}`} item={data[i]} />
       );
     }
 
@@ -251,7 +175,7 @@ const Catalog = () => {
               </div>
               <ul className="catalog__list__filters__container">
                 <li className="product__container">
-                  <div className="product__count">{loading && "0"}</div>
+                  <div className="product__count">{loading ? "0" : data.length}</div>
                   <div className="product__text">Product(s)</div>
                 </li>
                 <li

@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchApparel,
   fetchCategoryBySlug,
-  fetchSubcategoriesRecursive,
+  fetchSubcategories,
+  fetchDefaultPath,
 } from "./apparelAsyncThunks";
 
 const apparelSlice = createSlice({
@@ -38,15 +39,27 @@ const apparelSlice = createSlice({
         state.data = action.payload;
         state.loading = false;
       })
-      .addCase(fetchSubcategoriesRecursive.pending, (state) => {
+      .addCase(fetchSubcategories.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchSubcategoriesRecursive.rejected, (state, action) => {
+      .addCase(fetchSubcategories.rejected, (state, action) => {
         state.loading = false;
         state.data = [];
         state.error = "Error fetching subcategory IDs: " + action.error.message;
       })
-      .addCase(fetchSubcategoriesRecursive.fulfilled, (state, action) => {
+      .addCase(fetchSubcategories.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchDefaultPath.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDefaultPath.rejected, (state, action) => {
+        state.loading = false;
+        state.data = [];
+        state.error = "Error fetching apparel data: " + action.error.message;
+      })
+      .addCase(fetchDefaultPath.fulfilled, (state, action) => {
         state.data = action.payload;
         state.loading = false;
       });
