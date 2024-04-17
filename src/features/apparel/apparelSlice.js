@@ -3,7 +3,7 @@ import {
   fetchApparel,
   fetchCategoryBySlug,
   fetchSubcategories,
-  fetchDefaultPath,
+  fetchDefaultApparel,
 } from "./apparelAsyncThunks";
 
 const apparelSlice = createSlice({
@@ -51,15 +51,15 @@ const apparelSlice = createSlice({
         state.data = action.payload;
         state.loading = false;
       })
-      .addCase(fetchDefaultPath.pending, (state) => {
+      .addCase(fetchDefaultApparel.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchDefaultPath.rejected, (state, action) => {
+      .addCase(fetchDefaultApparel.rejected, (state, action) => {
         state.loading = false;
         state.data = [];
         state.error = "Error fetching apparel data: " + action.error.message;
       })
-      .addCase(fetchDefaultPath.fulfilled, (state, action) => {
+      .addCase(fetchDefaultApparel.fulfilled, (state, action) => {
         state.data = action.payload;
         state.loading = false;
       });

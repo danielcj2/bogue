@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "../utils/supabaseClient";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 
 //redux
@@ -9,8 +8,9 @@ import {
   fetchApparel,
   fetchCategoryBySlug,
   fetchSubcategories,
-  fetchDefaultPath
+  fetchDefaultApparel,
 } from "../features/apparel/apparelAsyncThunks";
+import { fetchParentCategories, fetchDefaultPath } from "../features/path/pathAsyncThunks";
 
 //components
 import Header from "../components/Header";
@@ -25,26 +25,29 @@ import { ReactComponent as IconDivider } from "../svgs/icon-divider.svg";
 import useClickOutside from "../hooks/useClickOutside";
 
 const Catalog = () => {
-  const [apparel, setApparel] = useState([]);
-  const [pathLinks, setPathLinks] = useState([]);
   const [paramsData, setParamsData] = useState([]);
 
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.apparel);
+  const { pData, pLoading, pError } = useSelector((state) => state.path);
 
   const [searchParams] = useSearchParams();
   const { slug } = useParams();
 
   useEffect(() => {
     if (slug === undefined) {
-      setPathLinks([]);
-      setParamsData({
-        category_name: "Ready To Wear",
-        category_description:
-          "Discover the ease and elegance of ready-to-wear fashion! Our curated collection offers versatile styles for every occasion, crafted with quality and attention to detail. Elevate your wardrobe effortlessly with our range of chic, trendsetting designs. Shop now and step into style with confidence!",
-      });
       dispatch(fetchDefaultPath());
+      dispatch(fetchDefaultApparel());
     } else {
+      dispatch(fetchCategoryBySlug(slug))
+        .unwrap()
+        .then((categoryID) => {
+          return dispatch(fetchParentCategories(categoryID));
+        })
+        .catch((error) => {
+          console.error("Error fetching path: ", error);
+        });
+
       dispatch(fetchCategoryBySlug(slug))
         .unwrap()
         .then((categoryID) => {
@@ -56,39 +59,9 @@ const Catalog = () => {
         .catch((error) => {
           console.error("Error fetching data: ", error);
         });
-
-      setApparel(data);
     }
-    displayLinks();
-  }, []);
+  }, [slug]);
 
-  const fetchUpperMostCategories = async (categoryID) => {
-    try {
-      const { data: parentData, error: parentError } = await supabase
-        .from("category")
-        .select("*")
-        .eq("category_id", categoryID)
-        .single();
-
-      if (parentError) {
-        throw parentError;
-      }
-
-      if (!parentData || parentData.parent_category_id === null) {
-        return parentData; // Return data if it has no parent
-      }
-
-      let parentContainer = [];
-      parentContainer = parentContainer.concat(
-        await fetchUpperMostCategories(parentData.parent_category_id)
-      );
-
-      return parentContainer;
-    } catch (error) {
-      console.error("Error fetching parent ID:", error.message);
-      return [];
-    }
-  };
 
   const sortApparel = async (apparelData) => {
     const currentParams = Object.fromEntries([...searchParams]) || "default";
@@ -107,30 +80,41 @@ const Catalog = () => {
         //Do nothing
         break;
     }
-
-    setApparel(apparelData);
   };
 
-  const displayLinks = () => {
-    let linkEntries = [];
-    for (var i = 0; i < pathLinks.length; i++) {
-      linkEntries.push(
-        <div key={pathLinks[i].category_id}>
-          <Link to={"/catalog/" + pathLinks[i].slug}>
-            {pathLinks[i].category_name}
-          </Link>
+  const displayLinks = (pData) => {
+    if (Array.isArray(pData)) {
+      let linkEntries = [];
+      let pathLinks = "";
+      for (var i = pData.length - 1; i >= 0; i--) {
+        linkEntries.push(
+          <div key={pData[i].category_id}>
+            <Link to={"/catalog/" + pathLinks + pData[i].slug}>
+              {pData[i].category_name}
+            </Link>
+          </div>
+        );
+        pathLinks = pathLinks + pData[i].slug + "/";
+      }
+
+      return linkEntries;
+    } else {
+      return (
+        <div key={pData.category_id}>
+          <Link to={"/catalog/" + pData.slug}>{pData.category_name}</Link>
         </div>
       );
     }
-
-    return linkEntries;
   };
 
   const displayCards = (data) => {
     let cardEntries = [];
     for (var i = 0; i < data.length; i++) {
       cardEntries.push(
-        <CatalogCard key={`${data[i].apparel_name}_${data[i].category_id}`} item={data[i]} />
+        <CatalogCard
+          key={`${data[i].apparel_name}_${data[i].category_id}`}
+          item={data[i]}
+        />
       );
     }
 
@@ -166,16 +150,13 @@ const Catalog = () => {
                 <div>
                   <Link to="/">Home</Link>
                 </div>
-                {displayLinks()}
-                <div>
-                  <Link className="current-path">
-                    {paramsData.category_name}
-                  </Link>
-                </div>
+                {pLoading ? "" : displayLinks(pData)}
               </div>
               <ul className="catalog__list__filters__container">
                 <li className="product__container">
-                  <div className="product__count">{loading ? "0" : data.length}</div>
+                  <div className="product__count">
+                    {loading ? "0" : data.length}
+                  </div>
                   <div className="product__text">Product(s)</div>
                 </li>
                 <li

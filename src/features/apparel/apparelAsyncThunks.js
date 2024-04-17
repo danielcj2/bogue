@@ -4,9 +4,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const fetchApparel = createAsyncThunk(
   "apparel/fetchApparelData",
   async (categoryIDs) => {
-    const ids = categoryIDs.payload.map((category) => category.category_id);
+    if (categoryIDs.payload.length) {
+      const ids = categoryIDs.payload.map((category) => category.category_id);
 
-    if (Array.isArray(ids)) {
       let allApparelData = [];
 
       for (const category of ids) {
@@ -22,7 +22,7 @@ export const fetchApparel = createAsyncThunk(
       const { data } = await supabase
         .from("apparel")
         .select("*")
-        .eq("category_id", ids);
+        .eq("category_id", categoryIDs.payload);
 
       return data;
     }
@@ -50,7 +50,12 @@ export const fetchSubcategories = createAsyncThunk(
   "apparel/fetchSubcategories",
   async (categoryID) => {
     const allDescendants = await fetchAllDescendants(categoryID);
-    return allDescendants;
+
+    if (allDescendants.length === 0) {
+      return categoryID;
+    } else {
+      return allDescendants;
+    }
   }
 );
 
@@ -70,11 +75,10 @@ const fetchAllDescendants = async (categoryID) => {
   return allDescendants;
 };
 
-export const fetchDefaultPath = createAsyncThunk(
-  "apparel/fetchDefaultPath",
+export const fetchDefaultApparel = createAsyncThunk(
+  "apparel/fetchDefaultApparel",
   async () => {
-    const {data} = await supabase.from("apparel").select("*");
-    console.log(data);
+    const { data } = await supabase.from("apparel").select("*");
     return data;
   }
 );
