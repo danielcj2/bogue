@@ -106,13 +106,4 @@
         display: flex;
     }
 
-    [class*="__title"]{
-        font-weight: 700;
-        margin: abstracts.$padding-md*0.75 0;
-    }
-
-    [class$="__option"]{
-        margin-bottom: abstracts.$padding-md*0.75;
-    }
-
 }

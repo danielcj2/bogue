@@ -1,63 +1,75 @@
-@use 'sass:math';
+@use "sass:math";
 
-@mixin flex-row($spacing){
-    display: flex;
-    justify-content: $spacing;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
+@mixin flex-row($spacing) {
+  display: flex;
+  justify-content: $spacing;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
-@mixin link($color){
-    text-decoration: none;
-    color: $color;
+@mixin link($color) {
+  text-decoration: none;
+  color: $color;
 }
 
 // Dynamic color
-@function set-text-color($color){
-    @if (lightness($color) > 50) {
-        @return black;
-    } @else {
-        @return white;
-    }
+@function set-text-color($color) {
+  @if (lightness($color) > 50) {
+    @return black;
+  } @else {
+    @return white;
+  }
 }
 
-@mixin clr($color){
-    background-color: $color;
-    color: set-text-color($color);
+@mixin clr($color) {
+  background-color: $color;
+  color: set-text-color($color);
 }
 //
 
 @mixin scroll-animation($duration) {
-    @keyframes scroll {
-        @content
-    }
+  @keyframes scroll {
+    @content;
+  }
 
-    animation-name: scroll;
-    animation-duration: $duration;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+  animation-name: scroll;
+  animation-duration: $duration;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
-@mixin div-button($border, $color){
-    border: $border;
-    cursor: pointer;
+@mixin div-button($border, $color) {
+  border: $border;
+  cursor: pointer;
 
-    background-color: $color;
-    color: set-text-color($color);
+  background-color: $color;
+  color: set-text-color($color);
 }
 
-@mixin triangle-bg($top, $bottom, $top-color, $bottom-color){
-    content: ' ';
-    border-top: $top solid $top-color;
-    border-right: $bottom solid $bottom-color;
-    width: 0;
-    position: absolute;
-    z-index: -10;
+@mixin triangle-bg($top, $bottom, $top-color, $bottom-color) {
+  content: " ";
+  border-top: $top solid $top-color;
+  border-right: $bottom solid $bottom-color;
+  width: 0;
+  position: absolute;
+  z-index: -10;
 }
 
-@mixin disable-select{
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
+@mixin disable-select {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+[class$="__container"] {
+  @include flex-row(space-between);
+}
+
+[class$="__container__start"] {
+  @include flex-row(flex-start);
+}
+
+[class$="-right"] {
+  padding-right: 10px;
 }

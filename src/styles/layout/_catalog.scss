@@ -1,9 +1,63 @@
 @use '../abstracts';
 
+$nav-width: 13vw;
+$gap: 2px;
+
 .section{
     &__spacer{
         height: 150px;
-        background-color: abstracts.$light-bg;
+        // background-color: abstracts.$light-bg;
+    }
+}
+
+.catalog-content{
+    position: relative;
+    display: flex;
+    font-family: abstracts.$Lato;
+    gap: $gap;
+}
+
+.catalog-nav{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    overflow:visible;
+
+    padding: abstracts.$padding-md*2;
+    padding-top: abstracts.$padding-md*4;
+    margin-top: abstracts.$padding-md*-2;
+
+    min-width: $nav-width;
+    height: fit-content;
+
+    font-size: abstracts.$padding-md * 0.83;
+
+    background-color: abstracts.$light-bg;
+
+    ul{
+        margin-bottom: 30px;
+    }
+
+    svg{
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: calc(100% - 25px);
+        z-index: 50;
+        // transform: rotate(90deg);
+        left: calc($nav-width/2 - 25px);
+        transform: rotate(180deg);
+    }
+
+    &:before{
+        content:"";
+        position: absolute;
+        left: 0;
+        top: -30px;
+        width: 0;
+        height: 0;
+        border-bottom: 30px solid abstracts.$light-bg;
+        border-right: calc($nav-width ) solid transparent;
     }
 }
 
@@ -12,7 +66,6 @@
         position: relative;
         background-color: abstracts.$light-bg-two;
         padding: abstracts.$padding-md*2;
-        font-family: abstracts.$Lato;
 
         &:before{
             content:"";
@@ -22,7 +75,7 @@
             width: 0;
             height: 0;
             border-bottom: 30px solid abstracts.$light-bg-two;
-            border-right: 50vw solid transparent;
+            border-right: calc(50vw - $nav-width - $gap) solid transparent;
         }
 
         &:after{
@@ -33,7 +86,7 @@
             width: 0;
             height: 0;
             border-bottom: 30px solid abstracts.$light-bg-two;
-            border-left: 50vw solid transparent;
+            border-left: calc(50vw) solid transparent;
         }
 
         svg{
@@ -41,8 +94,9 @@
             width: 50px;
             height: 50px;
             top: -25px;
-            left: 50%;
-            transform: translate(-50%);
+            left: calc(50vw - $nav-width - 25px - $gap);
+            // transform: translate(-50%);
+            z-index: 50;
         }
 
         &>*{
@@ -52,7 +106,7 @@
         &__title{
             font-family: abstracts.$Poppins;
             font-weight: 500;
-            margin-bottom: abstracts.$padding-md;
+            margin: abstracts.$padding-md*0.75 0;
             word-spacing: 3px;
         }
 
@@ -63,20 +117,19 @@
     }
 
     &__list {
-        font-family: abstracts.$Lato;
         min-height: 40vh;
         width: 100%;
         
-
         @include abstracts.clr(abstracts.$light-bg);
 
         &__header__container{
+            background-color: abstracts.$main-bg;
             position: relative;
             padding: abstracts.$padding-md*2;
             font-size: abstracts.$padding-md*0.9;
-            border: solid 1px rgba(0,0,0,0.4);
-            border-left: 0;
-            border-right: 0;
+            // border: solid 1px rgba(0,0,0,0.4);
+            // border-left: 0;
+            // border-right: 0;
         }
 
         &__path{
@@ -128,10 +181,13 @@
         }
 
         &__options__dropdown{
-            background-color: abstracts.$light-bg;
-            top: calc(100% + 1px);
+            background-color: abstracts.$main-bg;
+            top: 100%;
             align-items: flex-end;
             flex-direction: column;
+            border: solid 1px rgba(0,0,0,0.4);
+            border-left: 0;
+            border-right: 0;
 
             li{
                 padding: abstracts.$padding-md*0.7 abstracts.$padding-md*2;
@@ -150,8 +206,28 @@
         &__cards{
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            // gap: 3px;
+            gap: $gap;
+            background-color: abstracts.$main-bg;
         }
         
+    }
+}
+
+.catalog-nav, .dropdown-long{
+    [class*="__title"]{
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-size: abstracts.$padding-md*0.9;
+        margin: abstracts.$padding-md*0.75 0;
+    }
+
+    [class$="__option"]{
+        margin-bottom: abstracts.$padding-md*0.75;
+        cursor: pointer;
+        width: fit-content;
+
+        &:hover{
+            opacity: 0.6;
+        }
     }
 }

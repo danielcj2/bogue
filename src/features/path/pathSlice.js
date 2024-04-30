@@ -20,8 +20,8 @@ const pathSlice = createSlice({
         state.pError = "Error fetching parent IDs: " + action.error.message;
       })
       .addCase(fetchParentCategories.fulfilled, (state, action) => {
-        state.pData = action.payload;
         state.pLoading = false;
+        state.pData = action.payload;
       }).addCase(fetchDefaultPath.pending, (state) => {
         state.pLoading = true;
       })

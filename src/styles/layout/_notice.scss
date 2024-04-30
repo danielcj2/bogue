@@ -28,6 +28,11 @@
                 transform: translate(calc(-50% - abstracts.$padding-md*3));
             }
         }
+
+    }
+
+    &:hover &__inner{
+        animation-play-state: paused;
     }
 }
 

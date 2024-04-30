@@ -12,6 +12,7 @@ import { LuUserCircle2 } from "react-icons/lu";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import tshirt from "../imgs/crewneck_shirt_red.png";
 import { ReactComponent as Logo } from "../svgs/logo.svg";
+import CategoryList from "./CategoryList";
 
 const Header = () => {
   const [cartDropdown, setCartDropdown] = useState(false);
@@ -40,39 +41,27 @@ const Header = () => {
               New Arrivals
             </Link>
           </li>
-          <li className="header-list__item" onClick={() => {setOptionsDropdown(!optionsDropdown)}}>
+          <li
+            className="header-list__item"
+            onClick={() => {
+              setOptionsDropdown(!optionsDropdown);
+            }}
+          >
             <Link className="header-list__link">Men's Fashion</Link>
           </li>
-          <div className={`header-list__item__options__dropdown dropdown-long ${optionsDropdown?'active':'inactive'}`}>
-              <ul className="trending">
-                <li className="trending__title upp">Trending</li>
-                <li className="trending__option">Trending</li>
-                <li className="trending__option">Trending</li>
-                <li className="trending__option">Trending</li>
-              </ul>
-              <ul className="ready-to-wear">
-                <li className="ready-to-wear__title upp">Ready To Wear</li>
-                <li className="ready-to-wear__option">T-shirts & Tops</li>
-                <li className="ready-to-wear__option">Sweaters & Cardigans</li>
-                <li className="ready-to-wear__option">Coats, Jackets & Outerwear</li>
-                <li className="ready-to-wear__option">Jeans & Trousers</li>
-                <li className="ready-to-wear__option">Hoodies & Sweatshirts</li>
-              </ul>
-              <ul className="style-guide">
-                <li className="style-guide__title upp">Style Guide</li>
-                <li className="style-guide__option">Casual Looks</li>
-                <li className="style-guide__option">Sports Looks</li>
-                <li className="style-guide__option">Street Looks</li>
-              </ul>
-              <ul className="offers-and-deals">
-                <li className="offers-and-deals__title upp">Offers & Deals</li>
-                <li className="offers-and-deals__option">Offers & Deals</li>
-              </ul>
-            </div>
+          <div
+            className={`header-list__item__options__dropdown dropdown-long ${
+              optionsDropdown ? "active" : "inactive"
+            }`}
+          >
+            <CategoryList />
+          </div>
         </ul>
       </div>
       <div className="header__center">
-        <Link to="/"><Logo /></Link>
+        <Link to="/">
+          <Logo />
+        </Link>
       </div>
       <div className="header__right">
         <ul className="header-list">

@@ -16,28 +16,17 @@ const apparelSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCategoryBySlug.pending, (state) => {
-        state.loading = true;
-      })
+      // .addCase(fetchCategoryBySlug.pending, (state) => {
+      //   state.loading = true;
+      // })
       .addCase(fetchCategoryBySlug.rejected, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         state.data = null;
         state.error = "Error fetching category ID: " + action.error.message;
       })
       .addCase(fetchCategoryBySlug.fulfilled, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         state.data = action.payload;
-      })
-      .addCase(fetchApparel.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchApparel.rejected, (state, action) => {
-        state.loading = false;
-        state.error = "Error fetching apparel data: " + action.error.message;
-      })
-      .addCase(fetchApparel.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
       })
       .addCase(fetchSubcategories.pending, (state) => {
         state.loading = true;
@@ -48,6 +37,17 @@ const apparelSlice = createSlice({
         state.error = "Error fetching subcategory IDs: " + action.error.message;
       })
       .addCase(fetchSubcategories.fulfilled, (state, action) => {
+        state.data = action.payload;
+        // state.loading = false;
+      })
+      // .addCase(fetchApparel.pending, (state) => {
+      //   state.loading = true;
+      // })
+      .addCase(fetchApparel.rejected, (state, action) => {
+        state.loading = false;
+        state.error = "Error fetching apparel data: " + action.error.message;
+      })
+      .addCase(fetchApparel.fulfilled, (state, action) => {
         state.data = action.payload;
         state.loading = false;
       })
@@ -65,5 +65,8 @@ const apparelSlice = createSlice({
       });
   },
 });
+
+export const { } = apparelSlice.actions;
+export const selectApparelData = (state) => state.apparel.data;
 
 export default apparelSlice.reducer;
