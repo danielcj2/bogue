@@ -13,23 +13,24 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     setColor(state, action) {
-      state.color = action.payload;
+      state.filterParams.color = action.payload;
     },
     setSize(state, action) {
-      state.size = action.payload;
+      state.filterParams.size = action.payload;
     },
     setSortBy(state, action) {
-      state.sortBy = action.payload;
+      state.filterParams.sortBy = action.payload;
     },
     resetFilters(state) {
-      state.color = [];
-      state.size = [];
-      state.sortBy = "default";
+      state.filterParams.color = [];
+      state.filterParams.size = [];
+      state.filterParams.sortBy = "default";
     },
   },
 });
 
 export const { setColor, setSize, setSortBy, resetFilters } = filterSlice.actions;
-export const selectSort = (state) => state.filterParams.sortBy;
+
+export const selectFilters = (state) => state.filters.filterParams;
 
 export default filterSlice.reducer;

@@ -28,28 +28,54 @@ import useClickOutside from "../hooks/useClickOutside";
 import CategoryList from "../components/CategoryList";
 
 //functions
-import { displayCards, displayInfo, displayLinks } from "../functions/displayFunctions";
+import {
+  displayCards,
+  displayInfo,
+  displayLinks,
+} from "../functions/displayFunctions";
 
-import { selectApparelData } from "../features/apparel/apparelSlice";
+// import { selectApparelData } from "../features/apparel/apparelSlice";
+import { setColor, setSize, setSortBy } from "../features/filters/filterSlice";
+import { selectSortedApparel } from "../functions/sortFunction";
+import SortDropdown from "../components/SortDropdown";
+import FilterDropdown from "../components/FilterDropdown";
 
 const Catalog = () => {
-  console.log(useSelector(selectApparelData));
-
   const dispatch = useDispatch();
 
-  const { data, loading, error } = useSelector((state) => state.apparel);
+  const { loading, error } = useSelector((state) => state.apparel);
   const { pData, pLoading } = useSelector((state) => state.path);
+
+  const filteredData = useSelector(selectSortedApparel);
 
   const [searchParams] = useSearchParams();
   const { slug } = useParams();
 
   //change to hover Outside
   const [optionsDropdown, setOptionsDropdown] = useState(false);
+  const [optionsType, setOptionsType] = useState("");
 
   let optionsRef = useClickOutside(() => {
     setOptionsDropdown(false);
   });
 
+  const handleButtonDropdown = (type) => {
+    if(optionsType === type && optionsDropdown === true){
+      setOptionsDropdown(false);
+    } else {
+      setOptionsDropdown(true);
+    }
+
+    setOptionsType(type);
+  };
+
+  useEffect(() => {
+    let sortBy = searchParams.get("sortBy");
+    let color = searchParams.get("color");
+    let size = searchParams.get("size");
+
+    dispatch(setSortBy(sortBy));
+  }, [searchParams, dispatch]);
 
   useEffect(() => {
     if (slug === undefined) {
@@ -77,26 +103,7 @@ const Catalog = () => {
           console.error("Error fetching data: ", error);
         });
     }
-  }, [slug]);
-
-  // const sortApparel = () => {
-  //   const currentParams = Object.fromEntries([...searchParams]) || "default";
-
-  //   switch (currentParams.sort) {
-  //     case "asc":
-  //       data = data.sort((a, b) => a.cost - b.cost);
-  //       break;
-  //     case "desc":
-  //       data = data.sort((a, b) => b.cost - a.cost);
-  //       break;
-  //     case "new":
-  //       data = data.filter((a) => a.is_new_arrival === true);
-  //       break;
-  //     default:
-  //       //Do nothing
-  //       break;
-  //   }
-  // };
+  }, [slug, dispatch]);
 
   return (
     <>
@@ -129,25 +136,26 @@ const Catalog = () => {
                   <ul className="catalog__list__filters__container">
                     <li className="product__container">
                       <div className="product__count">
-                        {loading ? "0" : data.length}
+                        {loading ? "0" : filteredData.length}
                       </div>
                       <div className="product__text">Product(s)</div>
                     </li>
                     <li
                       className="sort__button"
                       onClick={() => {
-                        setOptionsDropdown(!optionsDropdown);
+                        handleButtonDropdown("sort");
                       }}
                     >
                       <div className="sort__button__text">Sort by</div>
                       <IoChevronDownSharp />
                     </li>
-                    <li className="filter__button">
-                      <div
-                        className="filter__button__text"
-                      >
-                        Filters
-                      </div>
+                    <li
+                      className="filter__button"
+                      onClick={() => {
+                        handleButtonDropdown("filter");
+                      }}
+                    >
+                      <div className="filter__button__text">Filters</div>
                       <IoChevronDownSharp />
                     </li>
                   </ul>
@@ -156,23 +164,16 @@ const Catalog = () => {
                       optionsDropdown ? "active" : "inactive"
                     }`}
                   >
-                    <li className="sort__normal">
-                      <Link to="?">Recommended</Link>
-                    </li>
-                    <li className="sort__high-low">
-                      <Link to="?sort=desc">Price - High to Low</Link>
-                    </li>
-                    <li className="sort__low-high">
-                      <Link to="?sort=asc">Price - Low to High</Link>
-                    </li>
-                    <li className="sort__new">
-                      <Link to="?sort=new">New In</Link>
-                    </li>
+                    {optionsType === "sort" ? <SortDropdown /> : <FilterDropdown />}
                   </ul>
                 </div>
                 <div className="catalog__list__cards">
                   {error && <p>404</p>}
-                  {loading ? <p>Loading....</p> : data && displayCards(data)}
+                  {loading ? (
+                    <p>Loading....</p>
+                  ) : (
+                    filteredData && displayCards(filteredData)
+                  )}
                 </div>
               </div>
             </div>

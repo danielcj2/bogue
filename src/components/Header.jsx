@@ -37,7 +37,7 @@ const Header = () => {
             </Link>
           </li>
           <li className="header-list__item">
-            <Link to="/catalog?sort=new" className="header-list__link">
+            <Link to="/catalog?sortBy=newIn" className="header-list__link">
               New Arrivals
             </Link>
           </li>

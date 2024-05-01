@@ -66,7 +66,6 @@ const apparelSlice = createSlice({
   },
 });
 
-export const { } = apparelSlice.actions;
 export const selectApparelData = (state) => state.apparel.data;
 
 export default apparelSlice.reducer;
