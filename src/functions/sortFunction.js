@@ -10,13 +10,13 @@ export const selectSortedApparel = createSelector(
     let filteredData = [...data];
 
     if (size && size.length > 0) {
-      // Filter apparel by size if size is selected
-      filteredData = filteredData.filter(item => size.includes(item.size));
+      // Filter the data array to include only items with sizes present in the size array
+      filteredData = filteredData.filter(item => item.size && item.size.some(itemSize => size.includes(itemSize)));
     }
 
     if (color && color.length > 0) {
-      // Filter apparel by color if color is selected
-      filteredData = filteredData.filter(item => color.includes(item.color));
+      // Filter the data array to include only items with colors present in the color array
+      filteredData = filteredData.filter(item => item.color && item.color.some(itemColor => color.includes(itemColor)));
     }
 
     switch (sortBy) {
@@ -27,7 +27,7 @@ export const selectSortedApparel = createSelector(
         filteredData.sort((a, b) => b.cost - a.cost);
         break;
       case "newIn":
-        filteredData.filter((a) => a.is_new_arrival === true);
+        filteredData = filteredData.filter((a) => a.is_new_arrival === true);
         break;
       default:
         //Do nothing

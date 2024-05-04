@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
@@ -35,7 +35,6 @@ import {
 } from "../functions/displayFunctions";
 
 // import { selectApparelData } from "../features/apparel/apparelSlice";
-import { setColor, setSize, setSortBy } from "../features/filters/filterSlice";
 import { selectSortedApparel } from "../functions/sortFunction";
 import SortDropdown from "../components/SortDropdown";
 import FilterDropdown from "../components/FilterDropdown";
@@ -48,7 +47,6 @@ const Catalog = () => {
 
   const filteredData = useSelector(selectSortedApparel);
 
-  const [searchParams] = useSearchParams();
   const { slug } = useParams();
 
   //change to hover Outside
@@ -68,14 +66,6 @@ const Catalog = () => {
 
     setOptionsType(type);
   };
-
-  useEffect(() => {
-    let sortBy = searchParams.get("sortBy");
-    let color = searchParams.get("color");
-    let size = searchParams.get("size");
-
-    dispatch(setSortBy(sortBy));
-  }, [searchParams, dispatch]);
 
   useEffect(() => {
     if (slug === undefined) {
