@@ -11,6 +11,13 @@ const SortDropdown = () => {
 
   const dispatch = useDispatch();
 
+  const accessibleSorts = [
+    { param: null, cText: "default", text: "Recommended" },
+    { param: "priceHighToLow", cText: "high-low", text: "Price - High to Low" },
+    { param: "priceLowToHigh", cText: "low-high", text: "Price - Low to high" },
+    { param: "newIn", cText: "new", text: "New In" },
+  ];
+
   useEffect(() => {
     let sortBy = searchParams.get("sortBy");
     setActive(sortBy);
@@ -33,50 +40,19 @@ const SortDropdown = () => {
 
   return (
     <>
-      <li className="sort__default">
-        <div onClick={() => toggleSort()}>
-          <OptionLink
-            type="sort"
-            param={null}
-            text="Recommended"
-            active={active}
-            setActive={setActive}
-          />
-        </div>
-      </li>
-      <li className="sort__high-low">
-        <div onClick={() => toggleSort("priceHighToLow")}>
-          <OptionLink
-            type="sort"
-            param="priceHighToLow"
-            text="Price - High to Low"
-            active={active}
-            setActive={setActive}
-          />
-        </div>
-      </li>
-      <li className="sort__low-high">
-        <div onClick={() => toggleSort("priceLowToHigh")}>
-          <OptionLink
-            type="sort"
-            param="priceLowToHigh"
-            text="Price - Low to High"
-            active={active}
-            setActive={setActive}
-          />
-        </div>
-      </li>
-      <li className="sort__new">
-        <div onClick={() => toggleSort("newIn")}>
-          <OptionLink
-            type="sort"
-            param="newIn"
-            text="New In"
-            active={active}
-            setActive={setActive}
-          />
-        </div>
-      </li>
+      {accessibleSorts.map((sItem, sIndex) => (
+        <li className={`sort__${sItem.cText}`} key={sIndex}>
+          <div onClick={() => toggleSort(sItem.param)}>
+            <OptionLink 
+              type="sort"
+              param={sItem.param}
+              text={sItem.text}
+              active={active}
+              parent={`sort__${sItem.cText}`}
+            />
+          </div>
+        </li>
+      ))}
     </>
   );
 };

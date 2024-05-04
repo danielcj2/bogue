@@ -24,7 +24,6 @@ const filterSlice = createSlice({
     resetFilters(state) {
       state.filterParams.color = [];
       state.filterParams.size = [];
-      state.filterParams.sortBy = "default";
     },
   },
 });

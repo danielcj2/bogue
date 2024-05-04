@@ -3,7 +3,7 @@
 
 .header{
     position: relative;
-    padding: abstracts.$padding-md abstracts.$padding-md*7;
+    padding: 0 abstracts.$padding-md*7;
     
     @include abstracts.clr(abstracts.$light-bg);
 
@@ -14,6 +14,7 @@
     @include abstracts.flex-row(space-between);
 
     &__left{
+        padding: abstracts.$padding-md 0;
         .header-list{
             &__item{
                 margin: 0 calc(abstracts.$padding-md/2);

@@ -21,22 +21,25 @@ $gap: 2px;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-    overflow:visible;
+
+    height: 60vh;
 
     padding: abstracts.$padding-md*2;
     padding-top: abstracts.$padding-md*4;
     margin-top: abstracts.$padding-md*-2;
-
-    min-width: $nav-width;
-    height: fit-content;
-
-    font-size: abstracts.$padding-md * 0.83;
 
     background-color: abstracts.$light-bg;
 
     ul{
         margin-bottom: 30px;
     }
+
+}
+
+.catalog-nav.expanded{
+    min-width: $nav-width;
+
+    font-size: abstracts.$padding-md * 0.83;
 
     svg{
         position: absolute;
@@ -58,6 +61,62 @@ $gap: 2px;
         height: 0;
         border-bottom: 30px solid abstracts.$light-bg;
         border-right: calc($nav-width ) solid transparent;
+    }
+}
+
+.catalog-nav.not-expanded{
+    $nav-width: 5vw;
+    min-width: $nav-width;
+
+    font-size: abstracts.$padding-md * 0.83;
+
+    display: flex;
+    justify-content: center;
+    align-items: end;
+
+    svg{
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: calc(100% - 25px);
+        z-index: 50;
+        // transform: rotate(90deg);
+        left: calc($nav-width/2 - 25px);
+        transform: rotate(180deg);
+    }
+
+    &:before{
+        content:"";
+        position: absolute;
+        left: 0;
+        top: -30px;
+        width: 0;
+        height: 0;
+        border-bottom: 30px solid abstracts.$light-bg;
+        border-right: calc($nav-width ) solid transparent;
+    }
+
+    .vertical-text{
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        font-family: abstracts.$Poppins;
+        font-size: abstracts.$padding-md*1.3;
+        font-weight: 300;
+        word-spacing: 2px;
+        letter-spacing: 2px;
+        margin-bottom: abstracts.$padding-md*2;
+    }
+}
+
+body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
+    $nav-width: 5vw;
+
+    &:before{
+        border-right: calc(50vw - $nav-width - $gap) solid transparent;
+    }
+
+    svg{
+        left: calc(50vw - $nav-width - 25px - $gap);
     }
 }
 
@@ -174,10 +233,9 @@ $gap: 2px;
 
             svg{
                 margin-top: 2px;
-                width: 22px;
-                height: 22px;
                 margin-left: 4px;
                 stroke-width: 1.5px;
+                color: rgba(0,0,0,0.7);
             }
         }
 

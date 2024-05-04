@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //hooks
-import useClickOutside from "../hooks/useClickOutside";
+import useHoverOutside from "../hooks/useHoverOutside";
 
 //icons & images
 import { FiSearch } from "react-icons/fi";
@@ -17,20 +17,20 @@ import CategoryList from "./CategoryList";
 const Header = () => {
   const [cartDropdown, setCartDropdown] = useState(false);
 
-  let cartRef = useClickOutside(() => {
+  let cartRef = useHoverOutside(() => {
     setCartDropdown(false);
   });
 
   const [optionsDropdown, setOptionsDropdown] = useState(false);
 
-  let optionsRef = useClickOutside(() => {
+  let optionsRef = useHoverOutside(() => {
     setOptionsDropdown(false);
   });
 
   return (
     <header className="header">
-      <div className="header__left">
-        <ul className="header-list" ref={optionsRef}>
+      <div className="header__left" ref={optionsRef}>
+        <ul className="header-list">
           <li className="header-list__item">
             <Link to="/catalog" className="header-list__link">
               Browse All
@@ -43,11 +43,10 @@ const Header = () => {
           </li>
           <li
             className="header-list__item"
-            onClick={() => {
-              setOptionsDropdown(!optionsDropdown);
-            }}
           >
-            <Link className="header-list__link">Men's Fashion</Link>
+            <Link className="header-list__link" onMouseEnter={() => {
+              setOptionsDropdown(!optionsDropdown);
+            }}>Men's Fashion</Link>
           </li>
           <div
             className={`header-list__item__options__dropdown dropdown-long ${
@@ -74,7 +73,7 @@ const Header = () => {
             <div className="header-list__dropdown" ref={cartRef}>
               <button
                 className="header-list__dropdown__button"
-                onClick={() => {
+                onMouseEnter={() => {
                   setCartDropdown(!cartDropdown);
                 }}
               >

@@ -18,14 +18,16 @@ import {
 //components
 import Header from "../components/Header";
 import Notice from "../components/Notice";
+import CategoryList from "../components/CategoryList";
+import SortDropdown from "../components/SortDropdown";
+import FilterDropdown from "../components/FilterDropdown";
 
 //icons
 import { IoChevronDownSharp } from "react-icons/io5";
 import { ReactComponent as IconDivider } from "../svgs/icon-divider.svg";
 
 //hooks
-import useClickOutside from "../hooks/useClickOutside";
-import CategoryList from "../components/CategoryList";
+import useHoverOutside from "../hooks/useHoverOutside";
 
 //functions
 import {
@@ -36,8 +38,6 @@ import {
 
 // import { selectApparelData } from "../features/apparel/apparelSlice";
 import { selectSortedApparel } from "../functions/sortFunction";
-import SortDropdown from "../components/SortDropdown";
-import FilterDropdown from "../components/FilterDropdown";
 
 const Catalog = () => {
   const dispatch = useDispatch();
@@ -49,21 +49,17 @@ const Catalog = () => {
 
   const { slug } = useParams();
 
-  //change to hover Outside
+  //onHover Dropdown
   const [optionsDropdown, setOptionsDropdown] = useState(false);
   const [optionsType, setOptionsType] = useState("");
 
-  let optionsRef = useClickOutside(() => {
+  let optionsRef = useHoverOutside(() => {
     setOptionsDropdown(false);
   });
 
+  //Filter or Sort Dropdown
   const handleButtonDropdown = (type) => {
-    if(optionsType === type && optionsDropdown === true){
-      setOptionsDropdown(false);
-    } else {
-      setOptionsDropdown(true);
-    }
-
+    setOptionsDropdown(true);
     setOptionsType(type);
   };
 
@@ -95,6 +91,11 @@ const Catalog = () => {
     }
   }, [slug, dispatch]);
 
+  const [isExpanded, setIsExpanded] = useState(true);
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  }
+
   return (
     <>
       <Notice duplicate={9} />
@@ -103,9 +104,9 @@ const Catalog = () => {
         <div className="section__catalog">
           <div className="section__spacer"></div>
           <div className="catalog-content">
-            <aside className="catalog-nav">
-              <IconDivider />
-              <CategoryList />
+            <aside className={`catalog-nav ${isExpanded ? "expanded" : "not-expanded"}`}>
+              <IconDivider onClick={toggleExpand}/>
+              {!isExpanded ? <h1 className="vertical-text upp">Catalog Navigation</h1> : <CategoryList />}
             </aside>
             <div className="catalog">
               <div className="catalog__description">
@@ -132,7 +133,7 @@ const Catalog = () => {
                     </li>
                     <li
                       className="sort__button"
-                      onClick={() => {
+                      onMouseEnter={() => {
                         handleButtonDropdown("sort");
                       }}
                     >
@@ -141,7 +142,7 @@ const Catalog = () => {
                     </li>
                     <li
                       className="filter__button"
-                      onClick={() => {
+                      onMouseEnter={() => {
                         handleButtonDropdown("filter");
                       }}
                     >
@@ -154,7 +155,11 @@ const Catalog = () => {
                       optionsDropdown ? "active" : "inactive"
                     }`}
                   >
-                    {optionsType === "sort" ? <SortDropdown /> : <FilterDropdown />}
+                    {optionsType === "sort" ? (
+                      <SortDropdown />
+                    ) : (
+                      <FilterDropdown />
+                    )}
                   </ul>
                 </div>
                 <div className="catalog__list__cards">

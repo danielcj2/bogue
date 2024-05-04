@@ -1,42 +1,63 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { setColor, setSize } from "../features/filters/filterSlice";
+import {
+  selectFilters,
+  setColor,
+  setSize,
+  resetFilters,
+} from "../features/filters/filterSlice";
 import OptionLink from "./OptionLink";
 
 const FilterDropdown = () => {
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const dispatch = useDispatch();
+  const filters = useSelector(selectFilters);
+
+  const accessibleColors = [
+    "black",
+    "grey",
+    "blue",
+    "beige",
+    "red",
+    "white",
+    "green",
+    "yellow",
+  ];
+  const accessibleSizes = [
+    { abbreviation: "XS", full: "extra-small" },
+    { abbreviation: "S", full: "small" },
+    { abbreviation: "M", full: "medium" },
+    { abbreviation: "L", full: "large" },
+    { abbreviation: "XL", full: "extra-large" },
+    { abbreviation: "XXL", full: "extra-extra-large" },
+    { abbreviation: "3XL", full: "big-and-tall" },
+  ];
 
   useEffect(() => {
+    // Fetch data from URL parameters and set it to the Redux store
     let colors = searchParams.get("color");
     let sizes = searchParams.get("size");
 
     if (colors) {
-      setSelectedColors(colors.split("%"));
-      dispatch(setColor(selectedColors));
+      dispatch(setColor(colors.split("%")));
     } else {
       //reset state
-      setSelectedColors([]);
       dispatch(setColor([]));
     }
     if (sizes) {
-      setSelectedSizes(sizes.split("%"));
-      dispatch(setSize(selectedSizes));
+      dispatch(setSize(sizes.split("%")));
     } else {
       //reset state
-      setSelectedSizes([]);
       dispatch(setSize([]));
     }
   }, [searchParams, dispatch]);
 
   const toggleColorFilter = (color) => {
     //check for filter
-    const updatedColors = checkFilter(selectedColors, color);
-    setSelectedColors(updatedColors);
+    const updatedColors = checkFilter(filters.color, color);
+    dispatch(setColor(updatedColors));
 
     //update params
     const params = new URLSearchParams(searchParams);
@@ -53,8 +74,8 @@ const FilterDropdown = () => {
 
   const toggleSizeFilter = (size) => {
     //check for filter
-    const updatedSizes = checkFilter(selectedSizes, size);
-    setSelectedSizes(updatedSizes);
+    const updatedSizes = checkFilter(filters.size, size);
+    dispatch(setSize(updatedSizes));
 
     //update params
     const params = new URLSearchParams(searchParams);
@@ -80,74 +101,55 @@ const FilterDropdown = () => {
     }
   };
 
+  const reset = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("size");
+    params.delete("color");
+    dispatch(resetFilters());
+    setSearchParams(params);
+  };
+
   return (
     <>
+      <div className="reset__filters">
+        <div className="__wrapper">
+          <span>You can select more than one filter at a time.</span>
+          <div className="reset__filters__button-dark" onClick={reset}>
+            Reset
+          </div>
+        </div>
+      </div>
       <ul className="filter__color">
         <li className="filter__title">Color</li>
-        <li className="color__black">
-          <div onClick={() => toggleColorFilter("black")}>
-            <OptionLink type="filter" param="black" text="Black" />
-          </div>
-        </li>
-        <li className="color__grey">
-          <div onClick={() => toggleColorFilter("grey")}>
-            <OptionLink type="filter" param="grey" text="Grey" />
-          </div>
-        </li>
-        <li className="color__blue">
-          <div onClick={() => toggleColorFilter("blue")}>
-            <OptionLink type="filter" param="Blue" text="Blue" />
-          </div>
-        </li>
-        <li className="color__beige">
-          <div onClick={() => toggleColorFilter("beige")}>
-            <OptionLink type="filter" param="beige" text="Beige" />
-          </div>
-        </li>
-        <li className="color__red">
-          <div onClick={() => toggleColorFilter("red")}>
-            <OptionLink type="filter" param="red" text="Red" />
-          </div>
-        </li>
-        <li className="color__white">
-          <div onClick={() => toggleColorFilter("white")}>
-            <OptionLink type="filter" param="white" text="White" />
-          </div>
-        </li>
-        <li className="color__green">
-          <div onClick={() => toggleColorFilter("green")}>
-            <OptionLink type="filter" param="green" text="Green" />
-          </div>
-        </li>
-        <li className="color__yellow">
-          <div onClick={() => toggleColorFilter("yellow")}>
-            <OptionLink type="filter" param="yellow" text="Yellow" />
-          </div>
-        </li>
+        {accessibleColors.map((cItem, cIndex) => (
+          <li className={`color__${cItem}`} key={cIndex}>
+            <div onClick={() => toggleColorFilter(cItem)}>
+              <OptionLink
+                type="filter"
+                param={cItem}
+                text={cItem.charAt(0).toUpperCase() + cItem.slice(1)}
+                active={filters.color.includes(cItem)}
+                parent={`color__${cItem}`}
+              />
+            </div>
+          </li>
+        ))}
       </ul>
       <ul className="filter__size">
         <li className="filter__title">Product Size</li>
-        <li className="size__xs">
-          <div onClick={() => toggleSizeFilter("extra-small")}>XS</div>
-        </li>
-        <li className="size__s">
-          <div onClick={() => toggleSizeFilter("small")}>S</div>
-        </li>
-        <li className="size__m">
-          <div onClick={() => toggleSizeFilter("medium")}>M</div>
-        </li>
-        <li className="size__l">
-          <div onClick={() => toggleSizeFilter("large")}>L</div>
-        </li>
-        <li className="size__xl">
-          <div onClick={() => toggleSizeFilter("extra-large")}>XL</div>
-        </li>
-        <li className="size__xxl">
-          <div onClick={() => toggleSizeFilter("extra-extra-large")}>XXL</div>
-        </li>
-        <li className="size__3xl">
-          <div onClick={() => toggleSizeFilter("big-and-tall")}>3XL</div>
-        </li>
+        {accessibleSizes.map((sItem, sIndex) => (
+          <li className={`size__${sItem.abbreviation}`} key={sIndex}>
+            <div onClick={() => toggleSizeFilter(sItem.full)}>
+              <OptionLink
+                type="filter"
+                param={sItem.full}
+                text={sItem.abbreviation}
+                active={filters.size.includes(sItem.full)}
+                parent={`size__${sItem.abbreviation}`}
+              />
+            </div>
+          </li>
+        ))}
       </ul>
     </>
   );

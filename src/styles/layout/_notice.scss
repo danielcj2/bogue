@@ -7,7 +7,7 @@
 
     cursor:pointer;
     &__heading{
-        font-size: 0.9rem;
+        font-size: abstracts.$padding-md*0.9;
         font-weight: 200;
         padding: abstracts.$padding-md*0.5;
         word-spacing: 0.1rem;
