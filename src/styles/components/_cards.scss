@@ -37,23 +37,104 @@
         cursor: pointer;
         // outline-color: black;
     }
+}
 
-    .favorite{
-        border: none;
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 50px;
-        height: 50px;
-        z-index: 100;
-        background-color: transparent;
+.favorite{
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    z-index: 100;
+    background-color: transparent;
 
-        svg{
-            stroke-width: 0;
-            width: 27px;
-            height: 27px;
+    svg{
+        stroke-width: 0;
+        width: 27px;
+        height: 27px;
+    }
+
+}
+
+.product__card{
+    width: 90%;
+    min-height: 55vh;
+
+    &__header{
+        font-size: abstracts.$padding-md*1.2;
+        word-spacing: 2px;
+
+        .__container{
+            position: relative;
+        }
+
+        button{
+            position: inherit;
+            width: 40px;
+            height: 40px;
+
+            svg{
+                width: 25px;
+                height: 25px;
+            }
+        }
+
+        .card__item__title{
+            margin-bottom: 5px;
         }
 
     }
+
+    &__filters{
+        @include abstracts.flex-row(flex-start);
+        @include abstracts.disable-select;
+        
+        padding: abstracts.$padding-md*2 0;
+    }
+
+    &__dynamic__wrapper{
+        
+        .product__info__controls{
+            font-size: 0.85rem;
+            text-decoration: underline;
+            margin: 10px 0;
+            cursor: pointer;
+            @include abstracts.flex-row(flex-start);
+
+            svg{
+                margin-left: 5px;
+            }
+        }
+
+        .product__cart__button-dark{
+            margin: 0;
+            @include abstracts.flex-row(center);
+
+            svg{
+                width: 25px;
+                height: 25px;
+                margin-right: 5px;
+            }
+        }
+    }
+
+    &__toggle__wrapper{
+        margin-top: abstracts.$padding-md*4;
+
+        @include abstracts.disable-select;
+        
+        [class*="__toggle"]{
+            font-size: 0.95rem;
+            padding: 10px;
+            border-top: solid 1px rgba(0,0,0,0.1);
+            margin: 5px 0;
+
+            svg{
+                color: rgba(0,0,0,0.7);
+            }
+        }
+    }
+
 }

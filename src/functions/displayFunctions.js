@@ -1,26 +1,28 @@
 import CatalogCard from "../components/CatalogCard";
 import { Link } from "react-router-dom";
 
-export const displayInfo = (pData) => {
-    var info;
+export const displayInfo = (pData, expanded) => {
+  var info;
 
-    if (pData && Array.isArray(pData)) {
-      info = pData[0];
-    } else {
-      info = pData;
-    }
+  if (pData && Array.isArray(pData)) {
+    info = pData[0];
+  } else {
+    info = pData;
+  }
 
-    return (
-      <>
-        <h2 className="catalog__description__title upp">
-          Men's {info && info.category_name}
-        </h2>
+  return (
+    <>
+      <h2 className="catalog__description__title upp">
+        Men's {info && info.category_name}
+      </h2>
+      {expanded && (
         <p className="catalog__description__text">
           {info && info.category_description}
         </p>
-      </>
-    );
-  };
+      )}
+    </>
+  );
+};
 
 export const displayLinks = (pData) => {
   if (Array.isArray(pData)) {

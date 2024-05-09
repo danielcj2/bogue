@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -35,24 +35,24 @@ const FilterDropdown = () => {
     { abbreviation: "3XL", full: "big-and-tall" },
   ];
 
-  useEffect(() => {
-    // Fetch data from URL parameters and set it to the Redux store
-    let colors = searchParams.get("color");
-    let sizes = searchParams.get("size");
+  // useEffect(() => {
+  //   // Fetch data from URL parameters and set it to the Redux store
+  //   let colors = searchParams.get("color");
+  //   let sizes = searchParams.get("size");
 
-    if (colors) {
-      dispatch(setColor(colors.split("%")));
-    } else {
-      //reset state
-      dispatch(setColor([]));
-    }
-    if (sizes) {
-      dispatch(setSize(sizes.split("%")));
-    } else {
-      //reset state
-      dispatch(setSize([]));
-    }
-  }, [searchParams, dispatch]);
+  //   if (colors) {
+  //     dispatch(setColor(colors.split("%")));
+  //   } else {
+  //     //reset state
+  //     dispatch(setColor([]));
+  //   }
+  //   if (sizes) {
+  //     dispatch(setSize(sizes.split("%")));
+  //   } else {
+  //     //reset state
+  //     dispatch(setSize([]));
+  //   }
+  // }, [searchParams, dispatch]);
 
   const toggleColorFilter = (color) => {
     //check for filter

@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { setSortBy } from "../features/filters/filterSlice";
 import { useDispatch } from "react-redux";
 
 import OptionLink from "./OptionLink";
 
-const SortDropdown = () => {
+const SortDropdown = ({active}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [active, setActive] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -18,12 +17,12 @@ const SortDropdown = () => {
     { param: "newIn", cText: "new", text: "New In" },
   ];
 
-  useEffect(() => {
-    let sortBy = searchParams.get("sortBy");
-    setActive(sortBy);
+  // useEffect(() => {
+  //   let sortBy = searchParams.get("sortBy");
+  //   setActive(sortBy);
 
-    dispatch(setSortBy(sortBy));
-  }, [searchParams, dispatch]);
+  //   dispatch(setSortBy(sortBy));
+  // }, [searchParams, dispatch]);
 
   const toggleSort = (sortBy) => {
     const params = new URLSearchParams(searchParams);

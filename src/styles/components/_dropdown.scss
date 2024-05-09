@@ -93,6 +93,8 @@
     left: 0;
 
     li{
+        @include abstracts.disable-select;
+
         a{
             @include abstracts.link(black);
 

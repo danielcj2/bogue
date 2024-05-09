@@ -1,11 +1,11 @@
 @use '../abstracts';
 
-$nav-width: 20vw;
+$nav-width: 17vw;
 $gap: 2px;
 
 .section{
     &__spacer{
-        height: 150px;
+        height: 13vh;
         // background-color: abstracts.$light-bg;
     }
 }
@@ -15,6 +15,11 @@ $gap: 2px;
     display: flex;
     font-family: abstracts.$Lato;
     gap: $gap;
+
+    svg{
+        @include abstracts.disable-select;
+        cursor: pointer;
+    }
 }
 
 .catalog-nav{
@@ -38,6 +43,7 @@ $gap: 2px;
 
 .catalog-nav.expanded{
     min-width: $nav-width;
+    max-width: $nav-width;
 
     font-size: abstracts.$padding-md * 0.83;
 
@@ -65,8 +71,9 @@ $gap: 2px;
 }
 
 .catalog-nav.not-expanded{
-    $nav-width: 5vw;
+    $nav-width: 6vw;
     min-width: $nav-width;
+    max-width: $nav-width;
 
     font-size: abstracts.$padding-md * 0.83;
 
@@ -75,13 +82,13 @@ $gap: 2px;
     align-items: end;
 
     svg{
+        margin: 0 2rem;
         position: absolute;
         width: 50px;
         height: 50px;
         top: calc(100% - 25px);
         z-index: 50;
-        // transform: rotate(90deg);
-        left: calc($nav-width/2 - 25px);
+        // left: calc($nav-width/2 - 25px);
         transform: rotate(180deg);
     }
 
@@ -102,14 +109,14 @@ $gap: 2px;
         font-family: abstracts.$Poppins;
         font-size: abstracts.$padding-md*1.3;
         font-weight: 300;
-        word-spacing: 2px;
+        word-spacing: 10px;
         letter-spacing: 2px;
         margin-bottom: abstracts.$padding-md*2;
     }
 }
 
 body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
-    $nav-width: 5vw;
+    $nav-width: 6vw;
 
     &:before{
         border-right: calc(50vw - $nav-width - $gap) solid transparent;
@@ -121,6 +128,7 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
 }
 
 .catalog{
+    // width: 100%;
     &__description{
         position: relative;
         background-color: abstracts.$light-bg-two;

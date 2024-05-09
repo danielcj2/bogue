@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +38,7 @@ import {
 
 // import { selectApparelData } from "../features/apparel/apparelSlice";
 import { selectSortedApparel } from "../functions/sortFunction";
+import { setColor, setSize, setSortBy } from "../features/filters/filterSlice";
 
 const Catalog = () => {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const Catalog = () => {
 
   const filteredData = useSelector(selectSortedApparel);
 
+  const [searchParams] = useSearchParams();
   const { slug } = useParams();
 
   //onHover Dropdown
@@ -62,6 +64,32 @@ const Catalog = () => {
     setOptionsDropdown(true);
     setOptionsType(type);
   };
+
+  const [activeSort, setActiveSort] = useState(null);
+
+  useEffect(() => {
+    // Fetch data from URL parameters and set it to the Redux store
+    let colors = searchParams.get("color");
+    let sizes = searchParams.get("size");
+    let sortBy = searchParams.get("sortBy");
+
+    //checkmark for current selected sorting logic
+    setActiveSort(sortBy);
+
+    if (colors) {
+      dispatch(setColor(colors.split("%")));
+    } else {
+      //reset state
+      dispatch(setColor([]));
+    }
+    if (sizes) {
+      dispatch(setSize(sizes.split("%")));
+    } else {
+      //reset state
+      dispatch(setSize([]));
+    }
+    dispatch(setSortBy(sortBy));
+  }, [searchParams, dispatch]);
 
   useEffect(() => {
     if (slug === undefined) {
@@ -91,10 +119,15 @@ const Catalog = () => {
     }
   }, [slug, dispatch]);
 
-  const [isExpanded, setIsExpanded] = useState(true);
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  }
+  const [catalogExpanded, setCatalogExpanded] = useState(true);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(true);
+
+  const toggleCatalogExpand = () => {
+    setCatalogExpanded(!catalogExpanded);
+  };
+  const toggleDescriptionExpand = () => {
+    setDescriptionExpanded(!descriptionExpanded);
+  };
 
   return (
     <>
@@ -104,14 +137,24 @@ const Catalog = () => {
         <div className="section__catalog">
           <div className="section__spacer"></div>
           <div className="catalog-content">
-            <aside className={`catalog-nav ${isExpanded ? "expanded" : "not-expanded"}`}>
-              <IconDivider onClick={toggleExpand}/>
-              {!isExpanded ? <h1 className="vertical-text upp">Catalog Navigation</h1> : <CategoryList />}
+            <aside
+              className={`catalog-nav ${
+                catalogExpanded ? "expanded" : "not-expanded"
+              }`}
+            >
+              <IconDivider onClick={toggleCatalogExpand} />
+              {!catalogExpanded ? (
+                <h1 className="vertical-text upp">Catalog Navigation</h1>
+              ) : (
+                <CategoryList />
+              )}
             </aside>
             <div className="catalog">
               <div className="catalog__description">
-                <IconDivider />
-                {pLoading ? "" : pData && displayInfo(pData)}
+                <IconDivider onClick={toggleDescriptionExpand} />
+                {pLoading
+                  ? "Loading..."
+                  : pData && displayInfo(pData, descriptionExpanded)}
               </div>
               <div className="catalog__list">
                 <div
@@ -122,7 +165,7 @@ const Catalog = () => {
                     <div>
                       <Link to="/">Home</Link>
                     </div>
-                    {pLoading ? "" : pData && displayLinks(pData)}
+                    {pLoading ? "Loading..." : pData && displayLinks(pData)}
                   </div>
                   <ul className="catalog__list__filters__container">
                     <li className="product__container">
@@ -156,7 +199,7 @@ const Catalog = () => {
                     }`}
                   >
                     {optionsType === "sort" ? (
-                      <SortDropdown />
+                      <SortDropdown active={activeSort} />
                     ) : (
                       <FilterDropdown />
                     )}

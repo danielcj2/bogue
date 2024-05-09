@@ -20,14 +20,14 @@ const apparelSlice = createSlice({
       //   state.loading = true;
       // })
       .addCase(fetchCategoryBySlug.rejected, (state, action) => {
-        // state.loading = false;
+        state.loading = false;
         state.data = null;
         state.error = "Error fetching category ID: " + action.error.message;
       })
-      .addCase(fetchCategoryBySlug.fulfilled, (state, action) => {
+      // .addCase(fetchCategoryBySlug.fulfilled, (state, action) => {
         // state.loading = false;
-        state.data = action.payload;
-      })
+        // state.data = action.payload;
+      // })
       .addCase(fetchSubcategories.pending, (state) => {
         state.loading = true;
       })
@@ -36,10 +36,10 @@ const apparelSlice = createSlice({
         state.data = [];
         state.error = "Error fetching subcategory IDs: " + action.error.message;
       })
-      .addCase(fetchSubcategories.fulfilled, (state, action) => {
-        state.data = action.payload;
+      // .addCase(fetchSubcategories.fulfilled, (state, action) => {
+        // state.data = action.payload;
         // state.loading = false;
-      })
+      // })
       // .addCase(fetchApparel.pending, (state) => {
       //   state.loading = true;
       // })

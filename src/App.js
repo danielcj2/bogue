@@ -19,7 +19,7 @@ function App() {
           path="/catalog/:category/:subcategory/:slug"
           element={<Catalog />}
         />
-        <Route path="/product" element={<Product />} />
+        <Route path="/products/:product_id" element={<Product />} />
       </Routes>
     </Provider>
   );
