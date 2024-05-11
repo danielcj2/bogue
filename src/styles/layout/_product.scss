@@ -16,7 +16,7 @@ $pGap: 2px;
         &__carousel{
             min-width: 12vw;
             background-color: abstracts.$light-bg-two;
-            height: calc(100% - $pGap);
+            height: calc(100% - $pGap*2);
 
             svg{
                 position: absolute;
@@ -45,8 +45,14 @@ $pGap: 2px;
             position: relative;
             width: 44vw;
             @include abstracts.flex-column(flex-end);
-            height: calc(100% - $pGap);
-            padding-bottom: abstracts.$padding-md*1.5;
+            height: calc(100% - $pGap*2);
+            padding-bottom: abstracts.$padding-md*2;
+        }
+
+        .column-spacer{
+            width: 2vw;
+            height: calc(100% - $pGap*2);
+            background-color: abstracts.$light-bg;
         }
     }
 }

@@ -7,7 +7,7 @@ const initialState = {
     color: "",
     size: "",
   },
-  loading: false,
+  loading: true,
   error: null,
 };
 

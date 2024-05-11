@@ -72,23 +72,16 @@
     }
 }
 
-.dropdown-block{
-    padding: 10px;
-    font-size: 0.8rem;
-    
+.dropdown-block{    
     &.active{
         display: block;
     }
 
-    &.inactive{
-        display: none;
-    }
 }
 
 .dropdown-long{
     position: absolute;
     width: 100%;
-    display: flex;
     z-index: 101;
     left: 0;
 

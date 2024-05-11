@@ -20,14 +20,12 @@
     }
 }
 
-[class*="__button"], [class*="__toggle"] {
+[class*="__button"], [class$="__toggle"] {
     cursor: pointer;
 }
 
 [class*="__filter__"]{
     position: relative;
-    padding: calc(abstracts.$padding-md/2);
-    border: solid 1px black;
     margin-right: 5px;
     font-weight: 500;
     cursor: pointer;

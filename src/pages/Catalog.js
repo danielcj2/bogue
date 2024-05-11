@@ -168,8 +168,8 @@ const Catalog = () => {
                     {pLoading ? "Loading..." : pData && displayLinks(pData)}
                   </div>
                   <ul className="catalog__list__filters__container">
-                    <li className="product__container">
-                      <div className="product__count">
+                    <li className="product__count__container">
+                      <div className="product__count__text">
                         {loading ? "0" : filteredData.length}
                       </div>
                       <div className="product__text">Product(s)</div>

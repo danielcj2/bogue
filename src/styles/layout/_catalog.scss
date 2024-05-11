@@ -219,11 +219,11 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
         }
         
         &__filters__container{
-            .product__container{
+            .product__count__container{
                 color: rgba(0,0,0,0.6);
                 border-right: solid 1px rgba(0,0,0,0.6);
 
-                .product__count{
+                .product__count__text{
                     margin-right: 5px;
                 }
             }

@@ -9,31 +9,32 @@ import {
 } from "../features/filters/filterSlice";
 import OptionLink from "./OptionLink";
 
+export const accessibleColors = [
+  {color:"black", colorCode:"#1E1E24"},
+  {color:"grey", colorCode:"#7A8B99"},
+  {color:"blue", colorCode:"#114afd"},
+  {color:"beige", colorCode:"#ebe3d8"},
+  {color:"red", colorCode:"#BD1E1E"},
+  {color:"white", colorCode:"white"},
+  {color:"green", colorCode:"#069E2D"},
+  {color:"yellow", colorCode:"#FFD23F"},
+];
+
+export const accessibleSizes = [
+  { abbreviation: "XS", full: "extra-small" },
+  { abbreviation: "S", full: "small" },
+  { abbreviation: "M", full: "medium" },
+  { abbreviation: "L", full: "large" },
+  { abbreviation: "XL", full: "extra-large" },
+  { abbreviation: "XXL", full: "extra-extra-large" },
+  { abbreviation: "3XL", full: "big-and-tall" },
+];
+
 const FilterDropdown = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const dispatch = useDispatch();
   const filters = useSelector(selectFilters);
-
-  const accessibleColors = [
-    "black",
-    "grey",
-    "blue",
-    "beige",
-    "red",
-    "white",
-    "green",
-    "yellow",
-  ];
-  const accessibleSizes = [
-    { abbreviation: "XS", full: "extra-small" },
-    { abbreviation: "S", full: "small" },
-    { abbreviation: "M", full: "medium" },
-    { abbreviation: "L", full: "large" },
-    { abbreviation: "XL", full: "extra-large" },
-    { abbreviation: "XXL", full: "extra-extra-large" },
-    { abbreviation: "3XL", full: "big-and-tall" },
-  ];
 
   // useEffect(() => {
   //   // Fetch data from URL parameters and set it to the Redux store
@@ -122,14 +123,14 @@ const FilterDropdown = () => {
       <ul className="filter__color">
         <li className="filter__title">Color</li>
         {accessibleColors.map((cItem, cIndex) => (
-          <li className={`color__${cItem}`} key={cIndex}>
-            <div onClick={() => toggleColorFilter(cItem)}>
+          <li className={`color__${cItem.color}`} key={cIndex}>
+            <div onClick={() => toggleColorFilter(cItem.color)}>
               <OptionLink
                 type="filter"
-                param={cItem}
-                text={cItem.charAt(0).toUpperCase() + cItem.slice(1)}
-                active={filters.color.includes(cItem)}
-                parent={`color__${cItem}`}
+                param={cItem.color}
+                text={cItem.color.charAt(0).toUpperCase() + cItem.color.slice(1)}
+                active={filters.color.includes(cItem.color)}
+                parent={`color__${cItem.color}`}
               />
             </div>
           </li>
