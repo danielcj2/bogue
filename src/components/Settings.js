@@ -1,9 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
-import ReactCountryFlag from "react-country-flag";
 import useClickOutside from '../hooks/useClickOutside';
 import { IoChevronDownSharp } from "react-icons/io5";
-import { RiListSettingsLine } from "react-icons/ri";
 
 const Settings = () => {
     const countryList = [
@@ -51,12 +49,11 @@ const Settings = () => {
             <div className="settings__currency">
                 <div className="settings__dropdown" ref={currRef}>
                     <button className="settings__dropdown__button" onClick={() => {setCurrDropdown(!currDropdown)}}>
-                        <div className="country-flag"><ReactCountryFlag countryCode="US" style={{width:20, height:20}} svg /></div>
                         <span className="settings__dropdown__label">USD</span>
                         <IoChevronDownSharp className="arrow"/>
                     </button>
                     <ul className={`dropdown ${currDropdown?'active':'inactive'}`}>
-                        {countryList.map((curr) => <li key={curr.id}className="dropdown__list-item"><div className="country-flag"><ReactCountryFlag countryCode={curr.countryCode} style={{width:20, height:20}} svg /></div><div className="country-currency">{curr.currency}</div></li>)}
+                        {countryList.map((curr) => <li key={curr.id}className="dropdown__list-item"><div className="country-flag"></div><div className="country-currency">{curr.currency}</div></li>)}
                     </ul>
                 </div>
             </div>

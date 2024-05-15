@@ -5,11 +5,14 @@
 
     font-family: abstracts.$Poppins;
 
+    height: 50px;
+    align-content: center;
+
     cursor:pointer;
     &__heading{
         font-size: abstracts.$padding-md*0.9;
+        align-self: center;
         font-weight: 200;
-        padding: abstracts.$padding-md*0.5;
         word-spacing: 0.1rem;
         letter-spacing: 0.1rem;
     }

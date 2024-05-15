@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { setSortBy } from "../features/filters/filterSlice";
 import { useDispatch } from "react-redux";

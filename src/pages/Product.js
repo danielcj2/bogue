@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,6 +10,8 @@ import handleOptionDropdown from "../functions/handleOptionDropdown";
 import Header from "../components/Header";
 import Notice from "../components/Notice";
 import Tooltip from "../components/Tooltip";
+import ProductGallery from "../components/ProductGallery";
+import Modal from "../components/Modal";
 
 //acessible filters
 import {
@@ -22,14 +24,10 @@ import { HiOutlineShoppingCart } from "react-icons/hi";
 import { PiRuler } from "react-icons/pi";
 import { ReactComponent as Heart } from "../svgs/heart.svg";
 import { ReactComponent as HeartRed } from "../svgs/heart-red.svg";
-import { ReactComponent as IconDivider } from "../svgs/icon-divider.svg";
 import { ReactComponent as Mastercard } from "../svgs/mastercard.svg";
 import { ReactComponent as Visa } from "../svgs/visa.svg";
 import { ReactComponent as PayPal } from "../svgs/paypal.svg";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-
-//imgs
-import tshirtModelImg from "../imgs/crewneck_shirt_red.png";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -39,7 +37,6 @@ const Product = () => {
 
   //heart svg fill
   const [favoriteHeart, setFavoriteHeart] = useState(false);
-
   //Color / Size Button Dropdowns
   const [variantDropdown, setVariantDropdown] = useState(false);
   const [variantType, setVariantType] = useState("");
@@ -63,31 +60,108 @@ const Product = () => {
   const { product_id } = useParams();
 
   useEffect(() => {
-    dispatch(fetchProduct(product_id));
+    dispatch(fetchProduct(product_id.toLowerCase()));
   }, [product_id, dispatch]);
+
+  const carouselContainerRef = useRef(null);
+  const carouselContentRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!carouselContentRef.current || !carouselContainerRef) return;
+
+      const container = carouselContainerRef.current.getBoundingClientRect();
+      const content = carouselContentRef.current.getBoundingClientRect();
+
+      // Calculate the new scroll position for the child element
+      const maxScroll = container.height - content.height;
+
+      const scrollFactor = 0.5;
+      const newTop = Math.min(
+        (window.scrollY - container.top + 0.1 * window.innerHeight) *
+          scrollFactor,
+        maxScroll
+      );
+
+      carouselContentRef.current.style.top = newTop + "px";
+    };
+
+    // Update child position on scroll
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Update child position on initial load
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const scrollProgressRef = useRef(null);
+
+  useEffect(() => {
+    const handleProgress = () => {
+      const progress = scrollProgressRef.current;
+      if (!progress) return;
+
+      const { top, height } = progress.getBoundingClientRect();
+      
+      // Calculate the scrolled distance from the top of the component, + offset
+      const scrolledPastComponent = Math.max(0, -top + 0.5 * window.innerHeight);
+
+      // Calculate the total scrollable distance of the component
+      const totalScrollableDistance = height - 0.5 * window.innerHeight;
+
+      const progressPercentage = Math.min(
+        100,
+        (scrolledPastComponent / totalScrollableDistance) * 100
+      );
+
+      setScrollProgress(progressPercentage);
+    };
+
+    window.addEventListener("scroll", handleProgress);
+    handleProgress();
+    return () => {
+      window.removeEventListener("scroll", handleProgress);
+    };
+  });
+
+  const [modal, setModal] = useState("");
 
   return (
     <>
       <Notice duplicate="9" />
       <Header />
       <div className="section">
-        <div className="section__spacer"></div>
         {error && <p>404</p>}
         {loading ? (
           "Loading"
         ) : (
           <div className="section__product">
-            <div className="section__product__image">
-              <img src={tshirtModelImg} alt="tshirt model pose"></img>
+            <div
+              className="section__product__carousel"
+              ref={scrollProgressRef}
+            >
+              <ProductGallery />
             </div>
-            <div className="section__product__carousel">
-              <IconDivider />
+            <div
+              className="section__product__carousel-paging"
+              ref={carouselContainerRef}
+            >
+              <div className="carousel-paging__content" ref={carouselContentRef}>
+                <div className="progress-bar">
+                  <div
+                    className="progress-bar__fill"
+                    style={{ height: `${scrollProgress}%` }}
+                  ></div>
+                </div>
+              </div>
             </div>
             <div className="section__product__details">
               <div className="product__card">
                 <div className="product__card__header">
+                  <div className="product__card__header__material cap">
+                    {product.metadata.material}
+                  </div>
                   <div className="__container">
-                    <div className="product__card__title bold cap">
+                    <div className="product__card__header__title bold cap">
                       {product.apparel_name}
                     </div>
                     <button
@@ -98,49 +172,69 @@ const Product = () => {
                       {favoriteHeart ? <HeartRed /> : <Heart />}
                     </button>
                   </div>
-                  <div className="product__card__cost bold">
+                  <div className="product__card__header__cost bold">
                     ${product.cost}
                   </div>
                 </div>
-                <div className="product__card__filters">
-                  <div
-                    className={`card__filter__color upp ${
-                      variantType === "color" &&
-                      variantDropdown === true &&
-                      "selected"
-                    }`}
-                    onClick={() => {
-                      handleOptionDropdown(
-                        "color",
-                        variantType,
-                        setVariantType,
-                        variantDropdown,
-                        setVariantDropdown
-                      );
-                    }}
-                  >
-                    Colour
+                <div className="product__card__filters __container">
+                  <div className="product__card__filters__controls">
+                    <div
+                      className={`card__filter__color upp ${
+                        variantType === "color" &&
+                        variantDropdown === true &&
+                        "selected"
+                      }`}
+                      onClick={() => {
+                        handleOptionDropdown(
+                          "color",
+                          variantType,
+                          setVariantType,
+                          variantDropdown,
+                          setVariantDropdown
+                        );
+                      }}
+                    >
+                      Colour
+                    </div>
+                    <div
+                      className={`card__filter__size upp ${
+                        variantType === "size" &&
+                        variantDropdown === true &&
+                        "selected"
+                      }`}
+                      onClick={() => {
+                        handleOptionDropdown(
+                          "size",
+                          variantType,
+                          setVariantType,
+                          variantDropdown,
+                          setVariantDropdown
+                        );
+                      }}
+                    >
+                      Size
+                    </div>
                   </div>
-                  <div
-                    className={`card__filter__size upp ${
-                      variantType === "size" &&
-                      variantDropdown === true &&
-                      "selected"
-                    }`}
-                    onClick={() => {
-                      handleOptionDropdown(
-                        "size",
-                        variantType,
-                        setVariantType,
-                        variantDropdown,
-                        setVariantDropdown
-                      );
-                    }}
-                  >
-                    Size
+                  <div className="product__card__filters__selected">
+                    <div className="filters__selected-color cap">
+                      colour:{" "}
+                      {selectedColor === "" ? (
+                        <span>select</span>
+                      ) : (
+                        <span>{selectedColor}</span>
+                      )}
+                    </div>
+                    <div className="filters__selected-size cap">
+                      size:{" "}
+                      {selectedSize === "" ? (
+                        <span>select</span>
+                      ) : (
+                        <span>{selectedSize}</span>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="product__card__filters__dropdown">
+                <div className="product__card__filters__controls__dropdown">
                   <div
                     className={`dropdown-long ${
                       variantDropdown ? "active" : "inactive"
@@ -148,11 +242,11 @@ const Product = () => {
                   >
                     {variantType === "color" &&
                       accessibleColors.map((cItem, cIndex) => {
-                        const isInStock = product.color.find(
-                          (item) => item === cItem.color
-                        )
-                          ? "in-stock"
-                          : "out-of-stock";
+                        const isInStock =
+                          product.color &&
+                          product.color.find((item) => item === cItem.color)
+                            ? "in-stock"
+                            : "out-of-stock";
                         return (
                           <label
                             className={`product-color ${isInStock} ${
@@ -180,7 +274,7 @@ const Product = () => {
                                 cItem.color === tooltipHover
                               }
                             >
-                              <input type="checkbox" />
+                              <input name="color-input" type="checkbox" />
                               <div className="color-box"></div>
                             </Tooltip>
                           </label>
@@ -188,11 +282,11 @@ const Product = () => {
                       })}
                     {variantType === "size" &&
                       accessibleSizes.map((sItem, sIndex) => {
-                        const isInStock = product.size.find(
-                          (item) => item === sItem.full
-                        )
-                          ? "in-stock"
-                          : "out-of-stock";
+                        const isInStock =
+                          product.size &&
+                          product.size.find((item) => item === sItem.full)
+                            ? "in-stock"
+                            : "out-of-stock";
                         return (
                           <label
                             className={`product-size ${isInStock} ${
@@ -221,7 +315,7 @@ const Product = () => {
                                 sItem.abbreviation === tooltipHover
                               }
                             >
-                              <input type="checkbox" />
+                              <input name="size-input" type="checkbox" />
                               <div className="size-box">
                                 {sItem.abbreviation}
                               </div>
@@ -232,14 +326,14 @@ const Product = () => {
                   </div>
                 </div>
                 <div className="product__card__dynamic__wrapper">
-                  <div className="product__info__controls">
+                  <div className="product__general__controls" onClick={() => setModal("size-guide")}>
                     Find your size <PiRuler />
                   </div>
                   <button className="product__cart__button-dark">
                     <HiOutlineShoppingCart />
                     <div>add to cart</div>
                   </button>
-                  <div className="product__info__controls">
+                  <div className="product__general__controls" onClick={() => setModal("shipping-exchanges-returns")}>
                     Shipping, Exchanges and Returns
                   </div>
                 </div>
@@ -332,10 +426,11 @@ const Product = () => {
                 </div>
               </div>
             </div>
-            <div className="column-spacer"></div>
           </div>
         )}
       </div>
+      <Modal title="Size Guide" isActive={(modal==="size-guide" && true)} type="side" id="size-guide" setModal={setModal}>Yoo</Modal>
+      <Modal title="Shipping, Exchanges and Returns" isActive={(modal==="shipping-exchanges-returns" && true)} type="side" id="shipping-exchanges-returns" setModal={setModal}>aa</Modal>
     </>
   );
 };

@@ -11,6 +11,8 @@
     font-weight: 500;
     font-size: 0.9rem;
     
+    height: 60px;
+
     @include abstracts.flex-row(space-between);
 
     &__left{
