@@ -1,0 +1,14 @@
+[
+  { "param": null, "cText": "default", "text": "Recommended" },
+  {
+    "param": "priceHighToLow",
+    "cText": "high-low",
+    "text": "Price - High to Low"
+  },
+  {
+    "param": "priceLowToHigh",
+    "cText": "low-high",
+    "text": "Price - Low to high"
+  },
+  { "param": "newIn", "cText": "new", "text": "New In" }
+]

@@ -3,18 +3,12 @@ import { setSortBy } from "../features/filters/filterSlice";
 import { useDispatch } from "react-redux";
 
 import OptionLink from "./OptionLink";
+import accessibleSorts from "../json/accessibleSorts.json";
 
 const SortDropdown = ({active}) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const dispatch = useDispatch();
-
-  const accessibleSorts = [
-    { param: null, cText: "default", text: "Recommended" },
-    { param: "priceHighToLow", cText: "high-low", text: "Price - High to Low" },
-    { param: "priceLowToHigh", cText: "low-high", text: "Price - Low to high" },
-    { param: "newIn", cText: "new", text: "New In" },
-  ];
 
   // useEffect(() => {
   //   let sortBy = searchParams.get("sortBy");

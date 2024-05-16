@@ -3,23 +3,39 @@
 body:has(.modal-active){
     // opacity: 0.6;
     overflow: hidden;
+
+    //fix for mobile devices/smaller screen sizes
+    padding-right: 17px;
+
+    .overlay{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 80;
+        background-color: rgba(0,0,0,0.6);
+    }
 }
 
 .modal{
-    position: absolute;
+    position: fixed;
     display: none;
     background-color: abstracts.$light-bg;
-    opacity: 1;
+    visibility: hidden;
+    z-index: -100;
 
     &-active{
         display: block;
+        visibility: visible;
+        z-index: 150;
     }
 
     &-side{
         top: 0;
         right: 0;
         min-width: 550px;
-        width: 44vw;
+        width: 40vw;
         height: 100%;
         padding: abstracts.$padding-md*1.5 0;
         font-family: abstracts.$Poppins;
@@ -29,9 +45,9 @@ body:has(.modal-active){
     &__header{
         @include abstracts.flex-row(space-between);
 
-        border-bottom: solid 1px rgba(0,0,0,0.3);
+        border-bottom: solid 1px rgba(0,0,0,0.2);
 
-        padding: abstracts.$padding-md*1.5;
+        padding: abstracts.$padding-md*1.5 abstracts.$padding-md*3;
         padding-top: 0;
 
         letter-spacing: 1px;
@@ -39,10 +55,6 @@ body:has(.modal-active){
         font-weight: 500;
 
         &__close{
-            svg{
-                min-width: 15px;   
-                min-height: 15px;
-            }
             &:hover{
                 cursor: pointer;
                 opacity: 0.6;
@@ -51,6 +63,155 @@ body:has(.modal-active){
     }
 
     &__content{
-        padding: abstracts.$padding-md*1.5;
+        .size-guide{
+            &__how-to-measure{
+                border-bottom: solid 1px rgba(0,0,0,0.2);
+
+                &__header{
+                    padding: abstracts.$padding-md*1.5 abstracts.$padding-md*3;
+
+                    @include abstracts.flex-row(space-between);
+                    @include abstracts.disable-select;
+
+                    &:hover{
+                        cursor: pointer;
+                        opacity: 0.6;
+                    }
+                }
+
+                ul>p{
+                    margin-bottom: 30px;
+                    color: black !important;
+                }
+
+                ul{
+                    padding: abstracts.$padding-md*1.5 abstracts.$padding-md*3;
+                    padding-top: 0;
+
+                    li{
+                        list-style: disc;
+                        margin-bottom: 10px;
+                    }
+
+                    p{
+                        color: rgba(0,0,0,0.6);
+                        font-size: calc(abstracts.$padding-md - 2.5px);
+                    }
+                }
+            }
+
+            &__size-conversions{
+                @include abstracts.flex-column(space-between);
+
+                &__header{
+                    padding: abstracts.$padding-md*1.5 abstracts.$padding-md*3;
+                }
+
+                table{
+                    border-collapse: collapse;
+
+                    tr{
+                        height: 25px;
+                    }
+
+                    td, th{
+                        min-width: 35px;
+                        text-align: right;
+                        padding: 0 8px;
+                    }
+
+                    td{
+                        border: 1px solid rgba(0,0,0,0.2);
+                    }
+
+                    tr>td:first-of-type{
+                        border: none;
+                    }
+
+                    td:nth-of-type(1), td:nth-of-type(3), td:nth-of-type(5){
+                        background-color: abstracts.$light-bg-two;
+                    }
+
+                    th{
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+
+        .__shipping, .__exchanges-and-returns, .__additional-info{
+            border-bottom: solid 1px rgba(0,0,0,0.2);
+
+            [class*="-toggle"]{
+                padding: abstracts.$padding-md*1.5 abstracts.$padding-md*3;
+
+                @include abstracts.flex-row(space-between);
+                @include abstracts.disable-select;
+
+                &:hover{
+                    cursor: pointer;
+                    opacity: 0.6;
+                }
+            }
+
+            ul{
+                padding: 0 abstracts.$padding-md*3;
+                padding-top: 0;
+            }
+
+            p, .__additional-info__list>li{
+                font-size: calc(abstracts.$padding-md - 2.5px);
+                opacity: 0.6;
+            }
+
+            table{
+                border-collapse: collapse;
+                margin-top: 10px;
+
+                th{
+                    font-weight: 500;
+                }
+
+                th, td{
+                    font-size: calc(abstracts.$padding-md - 2.5px);
+                    border: solid 1px rgba(0,0,0,0.2);
+                    text-wrap: wrap;
+                    padding: 8px;
+                }
+
+                td:nth-of-type(1), th:nth-of-type(1){
+                    background-color: abstracts.$light-bg-two;
+                }
+            }
+
+            li{
+                margin-bottom: 30px;
+            }
+        }
+
+        .__exchanges-and-returns{
+            span+p{
+                margin-top: 10px;
+            }
+        }
+
+        .__additional-info{
+            border: none;
+            padding-top: abstracts.$padding-md*1.5;
+
+            li{
+                list-style: disc;
+                margin-bottom: 5px;
+            }
+
+            span+li{
+                margin-top: 10px;
+            }
+        }
+    }
+
+    svg{
+        min-width: 15px;   
+        min-height: 15px;
     }
 }

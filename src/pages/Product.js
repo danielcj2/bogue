@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 //functions
 import { fetchProduct } from "../features/product/productAsyncThunks";
 import handleOptionDropdown from "../functions/handleOptionDropdown";
+import useClickOutside from "../hooks/useClickOutside";
 
 //components
 import Header from "../components/Header";
@@ -13,11 +14,10 @@ import Tooltip from "../components/Tooltip";
 import ProductGallery from "../components/ProductGallery";
 import Modal from "../components/Modal";
 
-//acessible filters
-import {
-  accessibleColors,
-  accessibleSizes,
-} from "../components/FilterDropdown";
+//json files
+import accessibleColors from "../json/accessibleColors.json";
+import accessibleSizes from "../json/accessibleSizes.json";
+import internationalSizes from "../json/internationalSizes.json";
 
 //svg icons
 import { HiOutlineShoppingCart } from "react-icons/hi";
@@ -28,6 +28,7 @@ import { ReactComponent as Mastercard } from "../svgs/mastercard.svg";
 import { ReactComponent as Visa } from "../svgs/visa.svg";
 import { ReactComponent as PayPal } from "../svgs/paypal.svg";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { GrDown, GrUp } from "react-icons/gr";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -101,9 +102,12 @@ const Product = () => {
       if (!progress) return;
 
       const { top, height } = progress.getBoundingClientRect();
-      
+
       // Calculate the scrolled distance from the top of the component, + offset
-      const scrolledPastComponent = Math.max(0, -top + 0.5 * window.innerHeight);
+      const scrolledPastComponent = Math.max(
+        0,
+        -top + 0.5 * window.innerHeight
+      );
 
       // Calculate the total scrollable distance of the component
       const totalScrollableDistance = height - 0.5 * window.innerHeight;
@@ -124,6 +128,13 @@ const Product = () => {
   });
 
   const [modal, setModal] = useState("");
+  let modalRef = useClickOutside(() => {
+    setModal("");
+  });
+
+  const [howToMeasure, setHowToMeasure] = useState(false);
+  const [shippingToggle, setShippingToggle] = useState(false);
+  const [refundToggle, setRefundToggle] = useState(false);
 
   return (
     <>
@@ -135,17 +146,17 @@ const Product = () => {
           "Loading"
         ) : (
           <div className="section__product">
-            <div
-              className="section__product__carousel"
-              ref={scrollProgressRef}
-            >
+            <div className="section__product__carousel" ref={scrollProgressRef}>
               <ProductGallery />
             </div>
             <div
               className="section__product__carousel-paging"
               ref={carouselContainerRef}
             >
-              <div className="carousel-paging__content" ref={carouselContentRef}>
+              <div
+                className="carousel-paging__content"
+                ref={carouselContentRef}
+              >
                 <div className="progress-bar">
                   <div
                     className="progress-bar__fill"
@@ -326,14 +337,20 @@ const Product = () => {
                   </div>
                 </div>
                 <div className="product__card__dynamic__wrapper">
-                  <div className="product__general__controls" onClick={() => setModal("size-guide")}>
+                  <div
+                    className="product__general__controls"
+                    onClick={() => setModal("size-guide")}
+                  >
                     Find your size <PiRuler />
                   </div>
                   <button className="product__cart__button-dark">
                     <HiOutlineShoppingCart />
                     <div>add to cart</div>
                   </button>
-                  <div className="product__general__controls" onClick={() => setModal("shipping-exchanges-returns")}>
+                  <div
+                    className="product__general__controls"
+                    onClick={() => setModal("shipping-exchanges-returns")}
+                  >
                     Shipping, Exchanges and Returns
                   </div>
                 </div>
@@ -429,8 +446,200 @@ const Product = () => {
           </div>
         )}
       </div>
-      <Modal title="Size Guide" isActive={(modal==="size-guide" && true)} type="side" id="size-guide" setModal={setModal}>Yoo</Modal>
-      <Modal title="Shipping, Exchanges and Returns" isActive={(modal==="shipping-exchanges-returns" && true)} type="side" id="shipping-exchanges-returns" setModal={setModal}>aa</Modal>
+      <div className="modals" ref={modalRef}>
+        <Modal
+          title="Size Guide"
+          isActive={modal === "size-guide" && true}
+          type="side"
+          id="size-guide"
+          setModal={setModal}
+        >
+          <div className="size-guide__how-to-measure">
+            <div
+              className="size-guide__how-to-measure__header upp"
+              onClick={() => setHowToMeasure(!howToMeasure)}
+            >
+              <span>how to measure</span>
+              {howToMeasure ? <GrUp /> : <GrDown />}
+            </div>
+            <ul
+              className={`size-guide__dropdown dropdown-block ${
+                howToMeasure ? "active" : "inactive"
+              }`}
+            >
+              <p>
+                For accurate measurements, it's best to measure yourself while
+                wearing lightweight clothing and standing in a relaxed posture.
+                Use a flexible tape measure for the most precise results.
+              </p>
+              <li>
+                <span>Chest</span>
+                <p>
+                  Wrap the tape measure around the fullest part of your chest,
+                  ensuring it's parallel to the ground. Make sure it's snug but
+                  not too tight against your skin.
+                </p>
+              </li>
+              <li>
+                <span>Waist</span>
+                <p>
+                  Locate your natural waistline, typically the narrowest part of
+                  your torso. Wrap the tape measure around your waist, making
+                  sure it's snug but not constricting. Keep the tape measure
+                  parallel to the ground.
+                </p>
+              </li>
+              <li>
+                <span>Hips</span>
+                <p>
+                  Stand with your feet together and wrap the tape measure around
+                  the fullest part of your hips and buttocks. Ensure the tape
+                  measure is parallel to the ground and not too tight.
+                </p>
+              </li>
+              <li>
+                <span>Inseam Length</span>
+                <p>
+                  Stand straight with your feet shoulder-width apart. Measure
+                  from the crotch seam to the bottom of the pant leg, along the
+                  inner leg. Ensure the tape measure lies flat against your leg
+                  without pulling or bunching the fabric.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div className="size-guide__size-conversions">
+            <div className="size-guide__size-conversions__header upp bold">
+              international size conversion
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  {internationalSizes.map(({ country }) => (
+                    <th key={country}>{country}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(internationalSizes[0].sizes).map((size) => (
+                  <tr key={size}>
+                    <td>{size}</td>
+                    {internationalSizes.map(({ country, sizes }) => (
+                      <td key={`${country}-${sizes[size]}`}>{sizes[size]}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Modal>
+        <Modal
+          title="Shipping & Returns Policy"
+          isActive={modal === "shipping-exchanges-returns" && true}
+          type="side"
+          id="shipping-exchanges-returns"
+          setModal={setModal}
+        >
+          <div className="__shipping">
+            <div
+              className="__shipping-toggle upp"
+              onClick={() => setShippingToggle(!shippingToggle)}
+            >
+              <span>shipping and delivery</span>
+              {shippingToggle ? <GrUp /> : <GrDown />}
+            </div>
+            <ul
+              className={`__shipping__dropdown dropdown-block ${
+                shippingToggle ? "active" : "inactive"
+              }`}
+            >
+              <li>
+                <p>
+                  We offer free standard shipping on all orders,
+                  delivered within 3-6 business days. Please note that delivery
+                  times may vary depending on your location and any unforeseen
+                  circumstances such as weather conditions or carrier delays.
+                </p>
+              </li>
+              <li>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Shipping Service & Fee</th>
+                      <th>Delivery Estimate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span>Standard Shipping</span>
+                        <p>No fee - Free</p>
+                      </td>
+                      <td>Estimated delivery within 3-6 business days.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </li>
+            </ul>
+          </div>
+          <div className="__exchanges-and-returns">
+            <div
+              className="__exchanges-and-returns-toggle upp"
+              onClick={() => setRefundToggle(!refundToggle)}
+            >
+              <span>Exchanges and Returns</span>
+              {refundToggle ? <GrUp /> : <GrDown />}
+            </div>
+            <ul
+              className={`__exchanges-and-returns__dropdown dropdown-block ${
+                refundToggle ? "active" : "inactive"
+              }`}
+            >
+              <li>
+                <p>
+                  We want you to be completely satisfied with your purchase. If
+                  for any reason you are not, we offer hassle-free exchanges and
+                  returns within 30 days of delivery. Items must be returned in
+                  their original condition and packaging for a full refund or
+                  exchange.
+                </p>
+              </li>
+              <li>
+                <span className="upp">Online Process</span>
+                <p>
+                  Experience hassle-free exchanges and returns through our
+                  user-friendly online portal. Simply log in to your account,
+                  browse your purchase history, and click on the "Return Item"
+                  button next to the desired item. Our intuitive interface
+                  guides you through the process step-by-step, allowing you to
+                  generate a prepaid shipping label and track the status of your
+                  return or exchange with ease.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div className="__additional-info">
+            <ul className="__additional-info__list">
+              <span className="upp">Additional Information</span>
+              <li>
+                Please allow 5-10 business days for your return to be processed
+                once it is received at our warehouse.
+              </li>
+              <li>
+                Original shipping charges are non-refundable unless the return
+                is due to an error on our part.
+              </li>
+              <li>
+                If you have any questions or need assistance with your exchange
+                or return, our customer service team is available to help you
+                every step of the way.
+              </li>
+            </ul>
+          </div>
+        </Modal>
+      </div>
+      <div className="overlay"></div>
     </>
   );
 };

@@ -1,0 +1,9 @@
+[
+  { "abbreviation": "XS", "full": "extra-small" },
+  { "abbreviation": "S", "full": "small" },
+  { "abbreviation": "M", "full": "medium" },
+  { "abbreviation": "L", "full": "large" },
+  { "abbreviation": "XL", "full": "extra-large" },
+  { "abbreviation": "XXL", "full": "extra-extra-large" },
+  { "abbreviation": "3XL", "full": "big-and-tall" }
+]

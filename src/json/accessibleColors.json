@@ -1,0 +1,10 @@
+[
+  { "color": "black", "colorCode": "#1E1E24" },
+  { "color": "grey", "colorCode": "#7A8B99" },
+  { "color": "blue", "colorCode": "#114afd" },
+  { "color": "beige", "colorCode": "#ebe3d8" },
+  { "color": "red", "colorCode": "#BD1E1E" },
+  { "color": "white", "colorCode": "white" },
+  { "color": "green", "colorCode": "#069E2D" },
+  { "color": "yellow", "colorCode": "#FFD23F" }
+]
