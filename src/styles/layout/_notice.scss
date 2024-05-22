@@ -34,13 +34,12 @@
 
     }
 
-    &:hover &__inner{
+    &:hover &__inner, body:has(.modal-active) &__inner{
         animation-play-state: paused;
     }
 }
 
  .notice{
     padding: abstracts.$padding-md*0.75;
-
 }
 

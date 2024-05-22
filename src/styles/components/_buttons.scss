@@ -1,6 +1,6 @@
 @use '../abstracts';
 
-.dropdown, .product__card, .dropdown-long{
+.dropdown, .product__card, .dropdown-long, .modal{
     [class*="__button"] {
         text-align: center;
         width: 100%;

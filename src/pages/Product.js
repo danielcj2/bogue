@@ -29,6 +29,7 @@ import { ReactComponent as Visa } from "../svgs/visa.svg";
 import { ReactComponent as PayPal } from "../svgs/paypal.svg";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { GrDown, GrUp } from "react-icons/gr";
+import Login from "../components/AccessPortal";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -139,7 +140,7 @@ const Product = () => {
   return (
     <>
       <Notice duplicate="9" />
-      <Header />
+      <Header setModal={setModal} />
       <div className="section">
         {error && <p>404</p>}
         {loading ? (
@@ -556,9 +557,9 @@ const Product = () => {
             >
               <li>
                 <p>
-                  We offer free standard shipping on all orders,
-                  delivered within 3-6 business days. Please note that delivery
-                  times may vary depending on your location and any unforeseen
+                  We offer free standard shipping on all orders, delivered
+                  within 3-6 business days. Please note that delivery times may
+                  vary depending on your location and any unforeseen
                   circumstances such as weather conditions or carrier delays.
                 </p>
               </li>
@@ -637,6 +638,15 @@ const Product = () => {
               </li>
             </ul>
           </div>
+        </Modal>
+        <Modal
+          title="access portal"
+          isActive={modal === "access-portal" && true}
+          type="side"
+          id="access-portal"
+          setModal={setModal}
+        >
+          <Login/>
         </Modal>
       </div>
       <div className="overlay"></div>

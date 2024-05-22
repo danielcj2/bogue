@@ -14,8 +14,9 @@ import tshirt from "../imgs/crewneck_shirt_red.png";
 import { ReactComponent as Logo } from "../svgs/logo.svg";
 import CategoryList from "./CategoryList";
 
-const Header = () => {
+const Header = ({setModal}) => {
   const [cartDropdown, setCartDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   let cartRef = useHoverOutside(() => {
     setCartDropdown(false);
@@ -41,12 +42,15 @@ const Header = () => {
               New Arrivals
             </Link>
           </li>
-          <li
-            className="header-list__item"
-          >
-            <Link className="header-list__link" onMouseEnter={() => {
-              setOptionsDropdown(!optionsDropdown);
-            }}>Men's Fashion</Link>
+          <li className="header-list__item">
+            <Link
+              className="header-list__link"
+              onMouseEnter={() => {
+                setOptionsDropdown(!optionsDropdown);
+              }}
+            >
+              Men's Fashion
+            </Link>
           </li>
           <div
             className={`header-list__item__options__dropdown dropdown-long ${
@@ -132,9 +136,15 @@ const Header = () => {
             </div>
           </li>
           <li className="header-list__item">
-            <a href="/" className="header-list__link">
-              <LuUserCircle2 />
-            </a>
+            {isLoggedIn ? (
+              <a href="/" className="header-list__link">
+                <LuUserCircle2 />
+              </a>
+            ) : (
+              <div className="header-list__link" style={{cursor:"pointer"}} onClick={() => setModal("access-portal")}>
+                <LuUserCircle2 />
+              </div>
+            )}
           </li>
         </ul>
       </div>
