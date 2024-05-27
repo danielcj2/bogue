@@ -1,17 +1,81 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { GrFormCheckmark } from "react-icons/gr";
+import { PiEye, PiEyeClosed } from "react-icons/pi";
+import { supabase } from "../utils/supabaseClient";
 
 function AccessPortal({ defaultPortal = "login" }) {
   const [inputStates, setInputStates] = useState({
-    password: { isFocused: false, text: "" },
-    email: { isFocused: false, text: "" },
-    retrieveEmail: { isFocused: false, text: "" },
-    createPassword: { isFocused: false, text: "" },
-    createEmail: { isFocused: false, text: "" },
-    firstName: { isFocused: false, text: "" },
-    lastName: { isFocused: false, text: "" },
-    phoneNumber: { isFocused: true, text: "" },
-    dateOfBirth: { isFocused: true, text: "" },
+    password: {
+      id: "password",
+      isFocused: false,
+      value: "",
+      isVisible: false,
+      hasError: "",
+      type: "password",
+    },
+    email: {
+      id: "email",
+      isFocused: false,
+      value: "",
+      hasError: "",
+      type: "email",
+    },
+    retrieveEmail: {
+      id: "retrieveEmail",
+      isFocused: false,
+      value: "",
+      hasError: "",
+      type: "email",
+    },
+    createPassword: {
+      id: "createPassword",
+      isFocused: false,
+      value: "",
+      isVisible: false,
+      hasError: [],
+      type: "create-password",
+      form: "create",
+    },
+    createEmail: {
+      id: "createEmail",
+      isFocused: false,
+      value: "",
+      hasError: "",
+      type: "email",
+      form: "create",
+    },
+    firstName: {
+      id: "firstName",
+      isFocused: false,
+      value: "",
+      hasError: "",
+      type: "name",
+      form: "create",
+    },
+    lastName: {
+      id: "lastName",
+      isFocused: false,
+      value: "",
+      hasError: "",
+      type: "name",
+      form: "create",
+    },
+    phoneNumber: {
+      id: "phoneNumber",
+      isFocused: true,
+      value: "",
+      hasError: "",
+      type: "phone",
+      form: "create",
+    },
+    dateOfBirth: {
+      id: "dateOfBirth",
+      isFocused: true,
+      value: "",
+      hasError: "",
+      type: "date",
+      form: "create",
+    },
     tosCheckbox: { isChecked: false },
   });
 
@@ -28,23 +92,228 @@ function AccessPortal({ defaultPortal = "login" }) {
   };
 
   const handleBlur = (inputID) => {
-    setInputStates({
-      ...inputStates,
+    setInputStates((prevInputStates) => ({
+      ...prevInputStates,
       [inputID]: {
-        ...inputStates[inputID],
-        isFocused: false,
+        ...prevInputStates[inputID],
+        isFocused:
+          prevInputStates[inputID].type === "phone" ||
+          prevInputStates[inputID].type === "date"
+            ? true
+            : false,
+        hasError:
+          prevInputStates[inputID].type === "create-password" &&
+          prevInputStates[inputID].value.length === 0
+            ? ["length", "lowercase", "uppercase", "digit"]
+            : prevInputStates[inputID].value.length === 0
+            ? "! Input field required."
+            : prevInputStates[inputID].hasError,
       },
-    });
+    }));
   };
 
-  const handleChange = (event, inputID) => {
-    setInputStates({
-      ...inputStates,
+  const pRef = useRef(null);
+  const handleCreateAccount = (event) => {
+    event.preventDefault();
+
+    if (!inputStates.tosCheckbox.isChecked) {
+      pRef.current.style.color = "#F95738";
+      pRef.current.style.opacity = "1";
+      return;
+    }
+
+    let empty = "";
+    let errors = [];
+    for (const objState of Object.values(inputStates)) {
+      if (objState.form === "create") {
+        if (objState.hasError) errors = errors.concat(objState.hasError);
+        if (!objState.value.length) {
+          empty = objState.id;
+          const id = objState.id;
+          setInputStates((prevInputStates) => ({
+            ...prevInputStates,
+            [id]: {
+              ...objState,
+              isFocused:
+                objState.type === "phone" || objState.type === "date"
+                  ? true
+                  : false,
+              hasError:
+                objState.type === "create-password"
+                  ? ["length", "lowercase", "uppercase", "digit"]
+                  : "! Input field required.",
+            },
+          }));
+          // } else {
+          //   if (!objState.hasError) {
+          //     alert("input is valid");
+          //   }
+        }
+      }
+    }
+    if (empty) {
+      return;
+    }
+    if (!errors.length) {
+      insertUser({
+        email_address: inputStates.createEmail.value,
+        password: inputStates.createPassword.value,
+        first_name: inputStates.firstName.value,
+        last_name: inputStates.lastName.value,
+        phone_number: inputStates.phoneNumber.value,
+        dob: inputStates.dateOfBirth.value,
+      });
+      alert("inserted");
+    }
+  };
+
+  const insertUser = async (userData) => {
+    try {
+      const { data, error } = await supabase.from("users").insert([userData]);
+
+      if (error) {
+        throw error;
+      }
+
+      // return data;
+    } catch (error) {
+      console.error("Error inserting user:", error.message);
+      throw error;
+    }
+  };
+
+  const updateInputState = (inputID, value, validationFunction) => {
+    setInputStates((prevInputStates) => ({
+      ...prevInputStates,
       [inputID]: {
-        ...inputStates[inputID],
-        text: event.target.value,
+        ...prevInputStates[inputID],
+        value: value,
+        hasError: validationFunction(value),
       },
-    });
+    }));
+  };
+
+  const validateName = (name) => {
+    if (!/^[a-z]+$/i.test(name)) {
+      return "! Please enter a valid name.";
+    }
+  };
+
+  const validatePassword = (pw) => {
+    let errors = [];
+
+    if (pw.length < 7) {
+      errors.push("length");
+    }
+
+    if (!/[a-z]/.test(pw)) {
+      errors.push("lowercase");
+    }
+
+    if (!/[A-Z]/.test(pw)) {
+      errors.push("uppercase");
+    }
+
+    if (!/\d/.test(pw)) {
+      errors.push("digit");
+    }
+
+    return errors;
+  };
+
+  const validateEmail = (email) => {
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+      return "! Please enter a valid email address.";
+    }
+  };
+
+  const validatePhone = (phone) => {
+    if (phone.length < 10) {
+      return "! Please enter a valid phone number.";
+    }
+  };
+
+  const validateDate = (date) => {
+    let cleanDate = date.replace(/-/g, "");
+
+    if (cleanDate.length !== 8) {
+      return "! Date must be 8 digits (MMDDYYYY)";
+    }
+
+    //extract year, month, day
+    let year = parseInt(cleanDate.substring(0, 4));
+    const month = parseInt(cleanDate.substring(4, 6)) - 1;
+    const day = parseInt(cleanDate.substring(6, 8));
+
+    const dateInput = new Date(year, month, day);
+
+    const minDate = new Date();
+    minDate.setFullYear(minDate.getFullYear() - 14);
+
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() - 85);
+
+    if (dateInput < maxDate) {
+      return "! You're not that old pal. Please provide a valid DOB.";
+    }
+
+    if (dateInput > minDate) {
+      return "! Please provide a valid DOB.";
+    }
+  };
+
+  const handleChange = (event, inputID, phone = false) => {
+    const { value } = event.target;
+
+    let formattedValue = value;
+
+    //format Phone Number (###) ### - ####
+    if (phone) {
+      // Remove non-numeric characters
+      const numericValue = value.replace(/\D/g, "");
+
+      if (!numericValue.length) {
+        formattedValue = "";
+      } else if (numericValue.length <= 3) {
+        formattedValue = `(${numericValue}`;
+      } else if (numericValue.length <= 6) {
+        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
+          3
+        )}`;
+      } else {
+        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
+          3,
+          6
+        )} - ${numericValue.slice(6, 10)}`;
+      }
+
+      // Set the input field's value to the formatted value
+      if (event.target.value !== formattedValue) {
+        event.target.value = formattedValue;
+      }
+    }
+
+    switch (inputStates[inputID].type) {
+      case "email":
+        updateInputState(inputID, formattedValue, validateEmail);
+        break;
+      case "create-password":
+        updateInputState(inputID, formattedValue, validatePassword);
+        break;
+      case "password":
+        break;
+      case "name":
+        updateInputState(inputID, formattedValue, validateName);
+        break;
+      case "phone":
+        updateInputState(inputID, formattedValue, validatePhone);
+        break;
+      case "date":
+        updateInputState(inputID, formattedValue, validateDate);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -71,7 +340,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                       htmlFor="email"
                       className={`cap${
                         inputStates["email"].isFocused ||
-                        inputStates["email"].text !== ""
+                        inputStates["email"].value !== ""
                           ? " isFocused"
                           : ""
                       }`}
@@ -82,6 +351,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                       <input
                         type="email"
                         id="email"
+                        value={inputStates.email.value}
                         placeholder="bogue@email.com"
                         autoComplete="off"
                         onFocus={() => handleFocus("email")}
@@ -98,23 +368,43 @@ function AccessPortal({ defaultPortal = "login" }) {
                       htmlFor="password"
                       className={`cap${
                         inputStates["password"].isFocused ||
-                        inputStates["password"].text !== ""
+                        inputStates["password"].value !== ""
                           ? " isFocused"
                           : ""
                       }`}
                     >
                       \password
                     </label>
-                    <div>
+                    <div className="__container">
                       <input
-                        type="password"
+                        type={`${
+                          inputStates.password.isVisible ? "text" : "password"
+                        }`}
                         id="password"
+                        value={inputStates.password.value}
                         placeholder="SillyPancake42@"
                         autoComplete="off"
                         onFocus={() => handleFocus("password")}
                         onBlur={() => handleBlur("password")}
                         onChange={(event) => handleChange(event, "password")}
                       />
+                      <span
+                        onClick={() => {
+                          setInputStates({
+                            ...inputStates,
+                            password: {
+                              ...inputStates.password,
+                              isVisible: !inputStates.password.isVisible,
+                            },
+                          });
+                        }}
+                      >
+                        {inputStates["password"].isVisible ? (
+                          <PiEye />
+                        ) : (
+                          <PiEyeClosed />
+                        )}
+                      </span>
                     </div>
                     <p></p>
                   </div>
@@ -150,7 +440,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                       htmlFor="retrieve-email"
                       className={`cap${
                         inputStates["retrieveEmail"].isFocused ||
-                        inputStates["retrieveEmail"].text !== ""
+                        inputStates["retrieveEmail"].value !== ""
                           ? " isFocused"
                           : ""
                       }`}
@@ -161,6 +451,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                       <input
                         type="retrieve-email"
                         id="retrieve-email"
+                        value={inputStates.retrieveEmail.value}
                         placeholder="SillyPancake42@"
                         autoComplete="off"
                         onFocus={() => handleFocus("retrieveEmail")}
@@ -210,7 +501,8 @@ function AccessPortal({ defaultPortal = "login" }) {
             </div>
           </>
         ) : (
-          <form className="create-account-form">
+          <form onSubmit={handleCreateAccount} className="create-account-form">
+            <div className="zig-zag-line"></div>
             <div className="login-info">
               <div className="login-info__header">
                 <h5 className="upp">login information</h5>
@@ -221,7 +513,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                     htmlFor="createEmail"
                     className={`cap${
                       inputStates["createEmail"].isFocused ||
-                      inputStates["createEmail"].text !== ""
+                      inputStates["createEmail"].value !== ""
                         ? " isFocused"
                         : ""
                     }`}
@@ -232,6 +524,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                     <input
                       type="email"
                       id="createEmail"
+                      value={inputStates.createEmail.value}
                       placeholder="bogue@email.com"
                       autoComplete="off"
                       onFocus={() => handleFocus("createEmail")}
@@ -239,7 +532,13 @@ function AccessPortal({ defaultPortal = "login" }) {
                       onChange={(event) => handleChange(event, "createEmail")}
                     />
                   </div>
-                  <p></p>
+                  <p
+                    className={
+                      inputStates.createEmail.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.createEmail.hasError}
+                  </p>
                 </div>
               </div>
               <div className="create-account-form__password">
@@ -248,17 +547,22 @@ function AccessPortal({ defaultPortal = "login" }) {
                     htmlFor="createPassword"
                     className={`cap${
                       inputStates["createPassword"].isFocused ||
-                      inputStates["createPassword"].text !== ""
+                      inputStates["createPassword"].value !== ""
                         ? " isFocused"
                         : ""
                     }`}
                   >
                     \create a password
                   </label>
-                  <div>
+                  <div className="__container">
                     <input
-                      type="password"
+                      type={`${
+                        inputStates.createPassword.isVisible
+                          ? "text"
+                          : "password"
+                      }`}
                       id="createPassword"
+                      value={inputStates.createPassword.value}
                       placeholder="SillyPancake42@"
                       autoComplete="off"
                       onFocus={() => handleFocus("createPassword")}
@@ -266,9 +570,68 @@ function AccessPortal({ defaultPortal = "login" }) {
                       onChange={(event) =>
                         handleChange(event, "createPassword")
                       }
+                      maxLength="20"
                     />
+                    <span
+                      onClick={() => {
+                        setInputStates({
+                          ...inputStates,
+                          createPassword: {
+                            ...inputStates.createPassword,
+                            isVisible: !inputStates.createPassword.isVisible,
+                          },
+                        });
+                      }}
+                    >
+                      {inputStates["createPassword"].isVisible ? (
+                        <PiEye />
+                      ) : (
+                        <PiEyeClosed />
+                      )}
+                    </span>
                   </div>
-                  <p></p>
+                  <p className="create-pw-field">
+                    <span
+                      className={
+                        inputStates.createPassword.hasError.includes("length")
+                          ? "hasError"
+                          : "valid"
+                      }
+                    >
+                      At least 6 characters
+                    </span>
+                    <span
+                      className={
+                        inputStates.createPassword.hasError.includes(
+                          "lowercase"
+                        )
+                          ? "hasError"
+                          : "valid"
+                      }
+                    >
+                      1 lowercase letter
+                    </span>
+                    <span
+                      className={
+                        inputStates.createPassword.hasError.includes(
+                          "uppercase"
+                        )
+                          ? "hasError"
+                          : "valid"
+                      }
+                    >
+                      1 uppercase letter
+                    </span>
+                    <span
+                      className={
+                        inputStates.createPassword.hasError.includes("digit")
+                          ? "hasError"
+                          : "valid"
+                      }
+                    >
+                      1 digit
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -282,7 +645,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                     htmlFor="firstName"
                     className={`cap${
                       inputStates["firstName"].isFocused ||
-                      inputStates["firstName"].text !== ""
+                      inputStates["firstName"].value !== ""
                         ? " isFocused"
                         : ""
                     }`}
@@ -293,13 +656,20 @@ function AccessPortal({ defaultPortal = "login" }) {
                     <input
                       type="text"
                       id="firstName"
+                      value={inputStates.firstName.value}
                       autoComplete="off"
                       onFocus={() => handleFocus("firstName")}
                       onBlur={() => handleBlur("firstName")}
                       onChange={(event) => handleChange(event, "firstName")}
                     />
                   </div>
-                  <p></p>
+                  <p
+                    className={
+                      inputStates.firstName.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.firstName.hasError}
+                  </p>
                 </div>
               </div>
               <div className="create-account-form__last-name">
@@ -308,7 +678,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                     htmlFor="lastName"
                     className={`cap${
                       inputStates["lastName"].isFocused ||
-                      inputStates["lastName"].text !== ""
+                      inputStates["lastName"].value !== ""
                         ? " isFocused"
                         : ""
                     }`}
@@ -319,13 +689,20 @@ function AccessPortal({ defaultPortal = "login" }) {
                     <input
                       type="text"
                       id="lastName"
+                      value={inputStates.lastName.value}
                       autoComplete="off"
                       onFocus={() => handleFocus("lastName")}
                       onBlur={() => handleBlur("lastName")}
                       onChange={(event) => handleChange(event, "lastName")}
                     />
                   </div>
-                  <p></p>
+                  <p
+                    className={
+                      inputStates.lastName.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.lastName.hasError}
+                  </p>
                 </div>
               </div>
               <div className="create-account-form__phone">
@@ -334,23 +711,33 @@ function AccessPortal({ defaultPortal = "login" }) {
                     htmlFor="phoneNumber"
                     className={`cap${
                       inputStates["phoneNumber"].isFocused ||
-                      inputStates["phoneNumber"].text !== ""
+                      inputStates["phoneNumber"].value !== ""
                         ? " isFocused"
                         : ""
                     }`}
                   >
                     \phone number
                   </label>
-                  <div>
+                  <div className="__container">
+                    <span>+1</span>
                     <input
                       type="tel"
                       id="phoneNumber"
+                      value={inputStates.phoneNumber.value}
                       autoComplete="off"
-                      value="+1"
-                      onChange={(event) => handleChange(event, "phoneNumber")}
+                      onBlur={() => handleBlur("phoneNumber")}
+                      onChange={(event) =>
+                        handleChange(event, "phoneNumber", true)
+                      }
                     />
                   </div>
-                  <p></p>
+                  <p
+                    className={
+                      inputStates.phoneNumber.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.phoneNumber.hasError}
+                  </p>
                 </div>
               </div>
               <div className="create-account-form__date-of-birth">
@@ -359,7 +746,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                     htmlFor="dateOfBirth"
                     className={`cap${
                       inputStates["dateOfBirth"].isFocused ||
-                      inputStates["dateOfBirth"].text !== ""
+                      inputStates["dateOfBirth"].value !== ""
                         ? " isFocused"
                         : ""
                     }`}
@@ -367,40 +754,57 @@ function AccessPortal({ defaultPortal = "login" }) {
                     \date of birth
                   </label>
                   <div>
-                    <input type="date" id="dateOfBirth" autoComplete="off" />
+                    <input
+                      type="date"
+                      id="dateOfBirth"
+                      value={inputStates.dateOfBirth.value}
+                      autoComplete="off"
+                      onBlur={() => handleBlur("dateOfBirth")}
+                      onChange={(event) => handleChange(event, "dateOfBirth")}
+                      max="9999-12-31"
+                    />
                   </div>
-                  <p></p>
+                  <p
+                    className={
+                      inputStates.dateOfBirth.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.dateOfBirth.hasError}
+                  </p>
                 </div>
               </div>
             </div>
             <div className="create-account-form__tos">
-              <div
-                className="checkbox"
-                onClick={() => {
-                  setInputStates({
-                    ...inputStates,
-                    ["tosCheckbox"]: {
-                      isChecked: !(inputStates["tosCheckbox"].isChecked),
-                    },
-                  });
-                }}
-              >
+              <div className="checkbox">
                 <label
                   className={`checkbox-label${
-                    inputStates["tosCheckbox"].isChecked ? " isChecked" : ""
+                    inputStates.tosCheckbox.isChecked ? " isChecked" : ""
                   }`}
                 >
                   <span className="box">
-                    <input type="checkbox" id="tosCheckbox" />
+                    <input
+                      type="checkbox"
+                      id="tosCheckbox"
+                      value={inputStates.tosCheckbox.isChecked}
+                      checked={inputStates.tosCheckbox.isChecked}
+                      onChange={() => {
+                        setInputStates((prevState) => ({
+                          ...prevState,
+                          tosCheckbox: {
+                            isChecked: !prevState.tosCheckbox.isChecked,
+                          },
+                        }));
+                      }}
+                    />
                     <span className="icon">
-                      {inputStates["tosCheckbox"].isChecked ? (
+                      {inputStates.tosCheckbox.isChecked ? (
                         <GrFormCheckmark />
                       ) : (
                         ""
                       )}
                     </span>
                   </span>
-                  <p>
+                  <p ref={pRef}>
                     I've read the privacy policy and agree to the use of my
                     personal data to create my account.
                   </p>
