@@ -1,0 +1,77 @@
+{
+  "password": {
+    "id": "password",
+    "isFocused": false,
+    "value": "",
+    "isVisible": false,
+    "hasError": "",
+    "type": "password",
+    "form": "login"
+  },
+  "email": {
+    "id": "email",
+    "isFocused": false,
+    "value": "",
+    "hasError": "",
+    "type": "email",
+    "form": "login"
+  },
+  "retrieveEmail": {
+    "id": "retrieveEmail",
+    "isFocused": false,
+    "value": "",
+    "hasError": "",
+    "type": "email",
+    "form": "forgot-password"
+  },
+  "createPassword": {
+    "id": "createPassword",
+    "isFocused": false,
+    "value": "",
+    "isVisible": false,
+    "hasError": [],
+    "type": "create-password",
+    "form": "create"
+  },
+  "createEmail": {
+    "id": "createEmail",
+    "isFocused": false,
+    "value": "",
+    "hasError": "",
+    "type": "email",
+    "form": "create"
+  },
+  "firstName": {
+    "id": "firstName",
+    "isFocused": false,
+    "value": "",
+    "hasError": "",
+    "type": "name",
+    "form": "create"
+  },
+  "lastName": {
+    "id": "lastName",
+    "isFocused": false,
+    "value": "",
+    "hasError": "",
+    "type": "name",
+    "form": "create"
+  },
+  "phoneNumber": {
+    "id": "phoneNumber",
+    "isFocused": true,
+    "value": "",
+    "hasError": "",
+    "type": "phone",
+    "form": "create"
+  },
+  "dateOfBirth": {
+    "id": "dateOfBirth",
+    "isFocused": true,
+    "value": "",
+    "hasError": "",
+    "type": "date",
+    "form": "create"
+  },
+  "tosCheckbox": { "isChecked": false }
+}

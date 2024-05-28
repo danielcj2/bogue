@@ -1,85 +1,29 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import {
+  validateDate,
+  validateEmail,
+  validateName,
+  validateNewPassword,
+  validatePassword,
+  validatePhone,
+  checkEmail,
+  checkPassword,
+  insertUser,
+} from "../functions/validateFunctions";
+
+import accountInputStates from "../json/accountInputStates.json";
+
 import { GrFormCheckmark } from "react-icons/gr";
 import { PiEye, PiEyeClosed } from "react-icons/pi";
-import { supabase } from "../utils/supabaseClient";
 
 function AccessPortal({ defaultPortal = "login" }) {
-  const [inputStates, setInputStates] = useState({
-    password: {
-      id: "password",
-      isFocused: false,
-      value: "",
-      isVisible: false,
-      hasError: "",
-      type: "password",
-    },
-    email: {
-      id: "email",
-      isFocused: false,
-      value: "",
-      hasError: "",
-      type: "email",
-    },
-    retrieveEmail: {
-      id: "retrieveEmail",
-      isFocused: false,
-      value: "",
-      hasError: "",
-      type: "email",
-    },
-    createPassword: {
-      id: "createPassword",
-      isFocused: false,
-      value: "",
-      isVisible: false,
-      hasError: [],
-      type: "create-password",
-      form: "create",
-    },
-    createEmail: {
-      id: "createEmail",
-      isFocused: false,
-      value: "",
-      hasError: "",
-      type: "email",
-      form: "create",
-    },
-    firstName: {
-      id: "firstName",
-      isFocused: false,
-      value: "",
-      hasError: "",
-      type: "name",
-      form: "create",
-    },
-    lastName: {
-      id: "lastName",
-      isFocused: false,
-      value: "",
-      hasError: "",
-      type: "name",
-      form: "create",
-    },
-    phoneNumber: {
-      id: "phoneNumber",
-      isFocused: true,
-      value: "",
-      hasError: "",
-      type: "phone",
-      form: "create",
-    },
-    dateOfBirth: {
-      id: "dateOfBirth",
-      isFocused: true,
-      value: "",
-      hasError: "",
-      type: "date",
-      form: "create",
-    },
-    tosCheckbox: { isChecked: false },
-  });
-
+  const [inputStates, setInputStates] = useState(accountInputStates);
   const [portal, setPortal] = useState(defaultPortal);
+
+  useEffect(() => {
+    setInputStates(accountInputStates);
+  }, [portal]);
 
   const handleFocus = (inputID) => {
     setInputStates({
@@ -112,8 +56,163 @@ function AccessPortal({ defaultPortal = "login" }) {
     }));
   };
 
+  const handleChange = (event, inputID, phone = false) => {
+    const { value } = event.target;
+
+    let formattedValue = value;
+
+    //format Phone Number (###) ### - ####
+    if (phone) {
+      // Remove non-numeric characters
+      const numericValue = value.replace(/\D/g, "");
+
+      if (!numericValue.length) {
+        formattedValue = "";
+      } else if (numericValue.length <= 3) {
+        formattedValue = `(${numericValue}`;
+      } else if (numericValue.length <= 6) {
+        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
+          3
+        )}`;
+      } else {
+        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
+          3,
+          6
+        )} - ${numericValue.slice(6, 10)}`;
+      }
+
+      // Set the input field's value to the formatted value
+      if (event.target.value !== formattedValue) {
+        event.target.value = formattedValue;
+      }
+    }
+
+    switch (inputStates[inputID].type) {
+      case "email":
+        updateInputState(inputID, formattedValue, validateEmail);
+        break;
+      case "create-password":
+        updateInputState(inputID, formattedValue, validateNewPassword);
+        break;
+      case "password":
+        updateInputState(inputID, formattedValue, validatePassword);
+        break;
+      case "name":
+        updateInputState(inputID, formattedValue, validateName);
+        break;
+      case "phone":
+        updateInputState(inputID, formattedValue, validatePhone);
+        break;
+      case "date":
+        updateInputState(inputID, formattedValue, validateDate);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const updateInputState = (inputID, value, validationFunction) => {
+    setInputStates((prevInputStates) => ({
+      ...prevInputStates,
+      [inputID]: {
+        ...prevInputStates[inputID],
+        value: value,
+        hasError: validationFunction(value),
+      },
+    }));
+  };
+
+  const handleSignIn = async (event) => {
+    event.preventDefault();
+
+    let empty = "";
+    let errors = [];
+    for (const objState of Object.values(inputStates)) {
+      if (objState.form === "login") {
+        if (objState.hasError) errors = errors.concat(objState.hasError);
+        if (!objState.value.length) {
+          empty = objState.id;
+          const id = objState.id;
+          setInputStates((prevInputStates) => ({
+            ...prevInputStates,
+            [id]: {
+              ...objState,
+              hasError: "! Input field required.",
+            },
+          }));
+        }
+      }
+    }
+    if (empty) {
+      return;
+    }
+    if (!errors.length) {
+      checkEmail(inputStates.email.value)
+        .then((emailExists) => {
+          if (emailExists) {
+            checkPassword(inputStates.email.value, inputStates.password.value)
+              .then((passwordIsCorrect) => {
+                if (passwordIsCorrect) {
+                  alert("good");
+                } else {
+                  setInputStates((prevInputStates) => ({
+                    ...prevInputStates,
+                    password: {
+                      ...prevInputStates.password,
+                      hasError: "! Incorrect password.",
+                    },
+                  }));
+                }
+              })
+              .catch((error) => {
+                console.log("Error checking password:", error.message);
+              });
+          } else {
+            setInputStates((prevInputStates) => ({
+              ...prevInputStates,
+              email: {
+                ...prevInputStates.email,
+                hasError: "! Email does not exist.",
+              },
+            }));
+          }
+        })
+        .catch((error) => {
+          console.log("Error checking email:", error.message);
+        });
+    }
+  };
+
+  const handleForgotPassword = async (event) => {
+    event.preventDefault();
+
+    if (inputStates.retrieveEmail.value === "") {
+      setInputStates((prevInputStates) => ({
+        ...prevInputStates,
+        retrieveEmail: {
+          ...prevInputStates.retrieveEmail,
+          hasError: "! Input field required.",
+        },
+      }));
+    } else {
+      if (!inputStates.retrieveEmail.hasError) {
+        const emailExists = await checkEmail(inputStates.retrieveEmail.value);
+  
+        emailExists
+          ? alert("good")
+          : setInputStates((prevInputStates) => ({
+              ...prevInputStates,
+              retrieveEmail: {
+                ...prevInputStates.retrieveEmail,
+                hasError: "! Email does not exist.",
+              },
+            }));
+      }
+    }
+  };
+
   const pRef = useRef(null);
-  const handleCreateAccount = (event) => {
+  const handleCreateAccount = async (event) => {
     event.preventDefault();
 
     if (!inputStates.tosCheckbox.isChecked) {
@@ -155,164 +254,24 @@ function AccessPortal({ defaultPortal = "login" }) {
       return;
     }
     if (!errors.length) {
-      insertUser({
-        email_address: inputStates.createEmail.value,
-        password: inputStates.createPassword.value,
-        first_name: inputStates.firstName.value,
-        last_name: inputStates.lastName.value,
-        phone_number: inputStates.phoneNumber.value,
-        dob: inputStates.dateOfBirth.value,
-      });
-      alert("inserted");
-    }
-  };
+      const emailExists = await checkEmail(inputStates.email.value);
 
-  const insertUser = async (userData) => {
-    try {
-      const { data, error } = await supabase.from("users").insert([userData]);
-
-      if (error) {
-        throw error;
-      }
-
-      // return data;
-    } catch (error) {
-      console.error("Error inserting user:", error.message);
-      throw error;
-    }
-  };
-
-  const updateInputState = (inputID, value, validationFunction) => {
-    setInputStates((prevInputStates) => ({
-      ...prevInputStates,
-      [inputID]: {
-        ...prevInputStates[inputID],
-        value: value,
-        hasError: validationFunction(value),
-      },
-    }));
-  };
-
-  const validateName = (name) => {
-    if (!/^[a-z]+$/i.test(name)) {
-      return "! Please enter a valid name.";
-    }
-  };
-
-  const validatePassword = (pw) => {
-    let errors = [];
-
-    if (pw.length < 7) {
-      errors.push("length");
-    }
-
-    if (!/[a-z]/.test(pw)) {
-      errors.push("lowercase");
-    }
-
-    if (!/[A-Z]/.test(pw)) {
-      errors.push("uppercase");
-    }
-
-    if (!/\d/.test(pw)) {
-      errors.push("digit");
-    }
-
-    return errors;
-  };
-
-  const validateEmail = (email) => {
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-      return "! Please enter a valid email address.";
-    }
-  };
-
-  const validatePhone = (phone) => {
-    if (phone.length < 10) {
-      return "! Please enter a valid phone number.";
-    }
-  };
-
-  const validateDate = (date) => {
-    let cleanDate = date.replace(/-/g, "");
-
-    if (cleanDate.length !== 8) {
-      return "! Date must be 8 digits (MMDDYYYY)";
-    }
-
-    //extract year, month, day
-    let year = parseInt(cleanDate.substring(0, 4));
-    const month = parseInt(cleanDate.substring(4, 6)) - 1;
-    const day = parseInt(cleanDate.substring(6, 8));
-
-    const dateInput = new Date(year, month, day);
-
-    const minDate = new Date();
-    minDate.setFullYear(minDate.getFullYear() - 14);
-
-    const maxDate = new Date();
-    maxDate.setFullYear(maxDate.getFullYear() - 85);
-
-    if (dateInput < maxDate) {
-      return "! You're not that old pal. Please provide a valid DOB.";
-    }
-
-    if (dateInput > minDate) {
-      return "! Please provide a valid DOB.";
-    }
-  };
-
-  const handleChange = (event, inputID, phone = false) => {
-    const { value } = event.target;
-
-    let formattedValue = value;
-
-    //format Phone Number (###) ### - ####
-    if (phone) {
-      // Remove non-numeric characters
-      const numericValue = value.replace(/\D/g, "");
-
-      if (!numericValue.length) {
-        formattedValue = "";
-      } else if (numericValue.length <= 3) {
-        formattedValue = `(${numericValue}`;
-      } else if (numericValue.length <= 6) {
-        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
-          3
-        )}`;
-      } else {
-        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
-          3,
-          6
-        )} - ${numericValue.slice(6, 10)}`;
-      }
-
-      // Set the input field's value to the formatted value
-      if (event.target.value !== formattedValue) {
-        event.target.value = formattedValue;
-      }
-    }
-
-    switch (inputStates[inputID].type) {
-      case "email":
-        updateInputState(inputID, formattedValue, validateEmail);
-        break;
-      case "create-password":
-        updateInputState(inputID, formattedValue, validatePassword);
-        break;
-      case "password":
-        break;
-      case "name":
-        updateInputState(inputID, formattedValue, validateName);
-        break;
-      case "phone":
-        updateInputState(inputID, formattedValue, validatePhone);
-        break;
-      case "date":
-        updateInputState(inputID, formattedValue, validateDate);
-        break;
-      default:
-        break;
+      !emailExists
+        ? insertUser({
+            email_address: inputStates.createEmail.value,
+            password: inputStates.createPassword.value,
+            first_name: inputStates.firstName.value,
+            last_name: inputStates.lastName.value,
+            phone_number: inputStates.phoneNumber.value,
+            dob: inputStates.dateOfBirth.value,
+          })
+        : setInputStates((prevInputStates) => ({
+            ...prevInputStates,
+            createEmail: {
+              ...prevInputStates.createEmail,
+              hasError: "! Email already exists.",
+            },
+          }));
     }
   };
 
@@ -331,154 +290,173 @@ function AccessPortal({ defaultPortal = "login" }) {
       </div>
       {portal !== "create-account" && (
         <div className="access-portal__login">
-          <form className="login-form">
-            {portal !== "forgot-password" ? (
-              <>
-                <div className="login-form__email">
-                  <div className="input-wrapper">
-                    <label
-                      htmlFor="email"
-                      className={`cap${
-                        inputStates["email"].isFocused ||
-                        inputStates["email"].value !== ""
-                          ? " isFocused"
-                          : ""
-                      }`}
-                    >
-                      \email
-                    </label>
-                    <div>
-                      <input
-                        type="email"
-                        id="email"
-                        value={inputStates.email.value}
-                        placeholder="bogue@email.com"
-                        autoComplete="off"
-                        onFocus={() => handleFocus("email")}
-                        onBlur={() => handleBlur("email")}
-                        onChange={(event) => handleChange(event, "email")}
-                      />
-                    </div>
-                    <p></p>
+          {portal !== "forgot-password" ? (
+            <form onSubmit={handleSignIn} className="login-form" noValidate>
+              <div className="login-form__email">
+                <div className="input-wrapper">
+                  <label
+                    htmlFor="email"
+                    className={`cap${
+                      inputStates["email"].isFocused ||
+                      inputStates["email"].value !== ""
+                        ? " isFocused"
+                        : ""
+                    }`}
+                  >
+                    \email
+                  </label>
+                  <div>
+                    <input
+                      type="email"
+                      id="email"
+                      value={inputStates.email.value}
+                      placeholder="bogue@email.com"
+                      autoComplete="off"
+                      maxLength="30"
+                      onFocus={() => handleFocus("email")}
+                      onBlur={() => handleBlur("email")}
+                      onChange={(event) => handleChange(event, "email")}
+                    />
                   </div>
-                </div>
-                <div className="login-form__password">
-                  <div className="input-wrapper">
-                    <label
-                      htmlFor="password"
-                      className={`cap${
-                        inputStates["password"].isFocused ||
-                        inputStates["password"].value !== ""
-                          ? " isFocused"
-                          : ""
-                      }`}
-                    >
-                      \password
-                    </label>
-                    <div className="__container">
-                      <input
-                        type={`${
-                          inputStates.password.isVisible ? "text" : "password"
-                        }`}
-                        id="password"
-                        value={inputStates.password.value}
-                        placeholder="SillyPancake42@"
-                        autoComplete="off"
-                        onFocus={() => handleFocus("password")}
-                        onBlur={() => handleBlur("password")}
-                        onChange={(event) => handleChange(event, "password")}
-                      />
-                      <span
-                        onClick={() => {
-                          setInputStates({
-                            ...inputStates,
-                            password: {
-                              ...inputStates.password,
-                              isVisible: !inputStates.password.isVisible,
-                            },
-                          });
-                        }}
-                      >
-                        {inputStates["password"].isVisible ? (
-                          <PiEye />
-                        ) : (
-                          <PiEyeClosed />
-                        )}
-                      </span>
-                    </div>
-                    <p></p>
-                  </div>
-                </div>
-                <div
-                  className="login-form__forgot-password"
-                  onClick={() => setPortal("forgot-password")}
-                >
-                  <p>Forgot your password?</p>
-                </div>
-                <div className="button__wrapper">
-                  <button className="login-form__button-dark" tabIndex="-1">
-                    continue
-                  </button>
-                  <div></div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="login-form__forgot-password__header">
-                  <h5 className="upp">forgot your password ?</h5>
-                  <p>
-                    Please provide the email address associated with your
-                    account. We'll send you a link to reset your password
-                    securely. Your security is our priority, and we want to make
-                    sure you can regain access to your account safely and
-                    easily.
+                  <p
+                    className={
+                      inputStates.email.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.email.hasError}
                   </p>
                 </div>
-                <div className="login-form__retrieve-email">
-                  <div className="input-wrapper">
-                    <label
-                      htmlFor="retrieve-email"
-                      className={`cap${
-                        inputStates["retrieveEmail"].isFocused ||
-                        inputStates["retrieveEmail"].value !== ""
-                          ? " isFocused"
-                          : ""
+              </div>
+              <div className="login-form__password">
+                <div className="input-wrapper">
+                  <label
+                    htmlFor="password"
+                    className={`cap${
+                      inputStates["password"].isFocused ||
+                      inputStates["password"].value !== ""
+                        ? " isFocused"
+                        : ""
+                    }`}
+                  >
+                    \password
+                  </label>
+                  <div className="__container">
+                    <input
+                      type={`${
+                        inputStates.password.isVisible ? "text" : "password"
                       }`}
+                      id="password"
+                      value={inputStates.password.value}
+                      placeholder="SillyPancake42@"
+                      autoComplete="off"
+                      onFocus={() => handleFocus("password")}
+                      onBlur={() => handleBlur("password")}
+                      onChange={(event) => handleChange(event, "password")}
+                    />
+                    <span
+                      onClick={() => {
+                        setInputStates({
+                          ...inputStates,
+                          password: {
+                            ...inputStates.password,
+                            isVisible: !inputStates.password.isVisible,
+                          },
+                        });
+                      }}
                     >
-                      \email address
-                    </label>
-                    <div>
-                      <input
-                        type="retrieve-email"
-                        id="retrieve-email"
-                        value={inputStates.retrieveEmail.value}
-                        placeholder="SillyPancake42@"
-                        autoComplete="off"
-                        onFocus={() => handleFocus("retrieveEmail")}
-                        onBlur={() => handleBlur("retrieveEmail")}
-                        onChange={(event) =>
-                          handleChange(event, "retrieve-email")
-                        }
-                      />
-                    </div>
-                    <p></p>
+                      {inputStates["password"].isVisible ? (
+                        <PiEye />
+                      ) : (
+                        <PiEyeClosed />
+                      )}
+                    </span>
                   </div>
+                  <p
+                    className={
+                      inputStates.password.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.password.hasError}
+                  </p>
                 </div>
-                <div className="button__wrapper">
-                  <button className="retrieve-email__button-dark" tabIndex="-1">
-                    send
-                  </button>
-                  <div></div>
+              </div>
+              <div
+                className="login-form__forgot-password"
+                onClick={() => setPortal("forgot-password")}
+              >
+                <p>Forgot your password?</p>
+              </div>
+              <div className="button__wrapper">
+                <button className="login-form__button-dark" tabIndex="-1">
+                  continue
+                </button>
+                <div></div>
+              </div>
+            </form>
+          ) : (
+            <form
+              onSubmit={handleForgotPassword}
+              className="forgot-password"
+              noValidate
+            >
+              <div className="login-form__forgot-password__header">
+                <h5 className="upp">forgot your password ?</h5>
+                <p>
+                  Please provide the email address associated with your account.
+                  We'll send you a link to reset your password securely. Your
+                  security is our priority, and we want to make sure you can
+                  regain access to your account safely and easily.
+                </p>
+              </div>
+              <div className="login-form__retrieve-email">
+                <div className="input-wrapper">
+                  <label
+                    htmlFor="retrieve-email"
+                    className={`cap${
+                      inputStates["retrieveEmail"].isFocused ||
+                      inputStates["retrieveEmail"].value !== ""
+                        ? " isFocused"
+                        : ""
+                    }`}
+                  >
+                    \email address
+                  </label>
+                  <div>
+                    <input
+                      type="email"
+                      id="retrieve-email"
+                      value={inputStates.retrieveEmail.value}
+                      placeholder="SillyPancake42@"
+                      autoComplete="off"
+                      maxLength="30"
+                      onFocus={() => handleFocus("retrieveEmail")}
+                      onBlur={() => handleBlur("retrieveEmail")}
+                      onChange={(event) => handleChange(event, "retrieveEmail")}
+                    />
+                  </div>
+                  <p
+                    className={
+                      inputStates.retrieveEmail.hasError ? "hasError" : "valid"
+                    }
+                  >
+                    {inputStates.retrieveEmail.hasError}
+                  </p>
                 </div>
-                <div
-                  className="login-form__return"
-                  onClick={() => setPortal("login")}
-                >
-                  <p>Back to Login Form</p>
-                </div>
-              </>
-            )}
-          </form>
+              </div>
+              <div className="button__wrapper">
+                <button className="retrieve-email__button-dark" tabIndex="-1">
+                  send
+                </button>
+                <div></div>
+              </div>
+              <div
+                className="login-form__return"
+                onClick={() => setPortal("login")}
+              >
+                <p>Back to Login Form</p>
+              </div>
+            </form>
+          )}
         </div>
       )}
       <div className="access-portal__create-account">
@@ -501,7 +479,11 @@ function AccessPortal({ defaultPortal = "login" }) {
             </div>
           </>
         ) : (
-          <form onSubmit={handleCreateAccount} className="create-account-form">
+          <form
+            onSubmit={handleCreateAccount}
+            className="create-account-form"
+            noValidate
+          >
             <div className="zig-zag-line"></div>
             <div className="login-info">
               <div className="login-info__header">
@@ -570,7 +552,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                       onChange={(event) =>
                         handleChange(event, "createPassword")
                       }
-                      maxLength="20"
+                      maxLength="25"
                     />
                     <span
                       onClick={() => {
