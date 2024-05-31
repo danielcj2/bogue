@@ -21,6 +21,8 @@ import Notice from "../components/Notice";
 import CategoryList from "../components/CategoryList";
 import SortDropdown from "../components/SortDropdown";
 import FilterDropdown from "../components/FilterDropdown";
+import Modal from "../components/Modal";
+import AccessPortal from "../components/AccessPortal";
 
 //icons
 import { IoChevronDownSharp } from "react-icons/io5";
@@ -28,6 +30,7 @@ import { ReactComponent as IconDivider } from "../svgs/icon-divider.svg";
 
 //hooks
 import useHoverOutside from "../hooks/useHoverOutside";
+import useClickOutside from "../hooks/useClickOutside";
 
 //functions
 import {
@@ -129,10 +132,15 @@ const Catalog = () => {
     setDescriptionExpanded(!descriptionExpanded);
   };
 
+  const [modal, setModal] = useState("");
+  let modalRef = useClickOutside(() => {
+    setModal("");
+  });
+
   return (
     <>
       <Notice duplicate={9} />
-      <Header />
+      <Header setModal={setModal} />
       <div className="section">
         <div className="section__catalog">
           <div className="section__spacer"></div>
@@ -218,6 +226,18 @@ const Catalog = () => {
           </div>
         </div>
       </div>
+      <div className="modals" ref={modalRef}>
+        <Modal
+          title="access portal"
+          isActive={modal === "access-portal" && true}
+          type="side"
+          id="access-portal"
+          setModal={setModal}
+        >
+          <AccessPortal />
+        </Modal>
+      </div>
+      <div className="overlay"></div>
     </>
   );
 };

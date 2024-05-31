@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -8,24 +8,36 @@ import useHoverOutside from "../hooks/useHoverOutside";
 
 //icons & images
 import { FiSearch } from "react-icons/fi";
-import { LuUserCircle2 } from "react-icons/lu";
+import { LuUser2, LuUserCircle2 } from "react-icons/lu";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import tshirt from "../imgs/crewneck_shirt_red.png";
 import { ReactComponent as Logo } from "../svgs/logo.svg";
 import CategoryList from "./CategoryList";
+import { useSelector } from "react-redux";
+import { handleSignOut } from "../functions/authenticationFunctions";
 
-const Header = ({setModal}) => {
+const Header = ({ setModal }) => {
   const [cartDropdown, setCartDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    user?.aud === "authenticated" ? setIsLoggedIn(true) : setIsLoggedIn(false);
+  }, [user]);
 
   let cartRef = useHoverOutside(() => {
     setCartDropdown(false);
   });
 
   const [optionsDropdown, setOptionsDropdown] = useState(false);
+  const [logoutDropdown, setLogoutDropdown] = useState(false);
 
   let optionsRef = useHoverOutside(() => {
     setOptionsDropdown(false);
+  });
+
+  let logoutRef = useHoverOutside(() => {
+    setLogoutDropdown(false);
   });
 
   return (
@@ -135,13 +147,32 @@ const Header = ({setModal}) => {
               </ul>
             </div>
           </li>
-          <li className="header-list__item">
+          <li
+            className="header-list__item"
+            ref={logoutRef}
+            onMouseEnter={() => {
+              setLogoutDropdown(!logoutDropdown);
+            }}
+          >
             {isLoggedIn ? (
-              <a href="/" className="header-list__link">
-                <LuUserCircle2 />
-              </a>
+              <>
+                <a href="/" className="header-list__link">
+                  <LuUser2 />
+                </a>
+                <ul
+                  className={`dropdown ${
+                    logoutDropdown ? "active" : "inactive"
+                  }`}
+                >
+                  <div onClick={handleSignOut}>Logout</div>
+                </ul>
+              </>
             ) : (
-              <div className="header-list__link" style={{cursor:"pointer"}} onClick={() => setModal("access-portal")}>
+              <div
+                className="header-list__link"
+                style={{ cursor: "pointer" }}
+                onClick={() => setModal("access-portal")}
+              >
                 <LuUserCircle2 />
               </div>
             )}

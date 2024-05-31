@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import accountInputStates from "../json/accountInputStates.json";
+
+import { GrFormCheckmark } from "react-icons/gr";
+import { PiEye, PiEyeClosed } from "react-icons/pi";
+
 import {
   validateDate,
   validateEmail,
@@ -7,15 +12,11 @@ import {
   validateNewPassword,
   validatePassword,
   validatePhone,
-  checkEmail,
-  checkPassword,
-  insertUser,
 } from "../functions/validateFunctions";
-
-import accountInputStates from "../json/accountInputStates.json";
-
-import { GrFormCheckmark } from "react-icons/gr";
-import { PiEye, PiEyeClosed } from "react-icons/pi";
+import {
+  handleAuthenticate,
+  handleSignInAuthentication,
+} from "../functions/authenticationFunctions";
 
 function AccessPortal({ defaultPortal = "login" }) {
   const [inputStates, setInputStates] = useState(accountInputStates);
@@ -147,39 +148,13 @@ function AccessPortal({ defaultPortal = "login" }) {
       return;
     }
     if (!errors.length) {
-      checkEmail(inputStates.email.value)
-        .then((emailExists) => {
-          if (emailExists) {
-            checkPassword(inputStates.email.value, inputStates.password.value)
-              .then((passwordIsCorrect) => {
-                if (passwordIsCorrect) {
-                  alert("good");
-                } else {
-                  setInputStates((prevInputStates) => ({
-                    ...prevInputStates,
-                    password: {
-                      ...prevInputStates.password,
-                      hasError: "! Incorrect password.",
-                    },
-                  }));
-                }
-              })
-              .catch((error) => {
-                console.log("Error checking password:", error.message);
-              });
-          } else {
-            setInputStates((prevInputStates) => ({
-              ...prevInputStates,
-              email: {
-                ...prevInputStates.email,
-                hasError: "! Email does not exist.",
-              },
-            }));
-          }
-        })
-        .catch((error) => {
-          console.log("Error checking email:", error.message);
-        });
+      handleSignInAuthentication(
+        {
+          email: inputStates.email.value,
+          password: inputStates.password.value,
+        },
+        setInputStates
+      );
     }
   };
 
@@ -196,23 +171,23 @@ function AccessPortal({ defaultPortal = "login" }) {
       }));
     } else {
       if (!inputStates.retrieveEmail.hasError) {
-        const emailExists = await checkEmail(inputStates.retrieveEmail.value);
-  
-        emailExists
-          ? alert("good")
-          : setInputStates((prevInputStates) => ({
-              ...prevInputStates,
-              retrieveEmail: {
-                ...prevInputStates.retrieveEmail,
-                hasError: "! Email does not exist.",
-              },
-            }));
+        // const emailExists = await checkEmail(inputStates.retrieveEmail.value);
+        // emailExists
+        //   ? alert("good")
+        //   : setInputStates((prevInputStates) => ({
+        //       ...prevInputStates,
+        //       retrieveEmail: {
+        //         ...prevInputStates.retrieveEmail,
+        //         hasError: "! Email does not exist.",
+        //       },
+        //     }));
       }
     }
   };
 
   const pRef = useRef(null);
-  const handleCreateAccount = async (event) => {
+  const emailRef = useRef(null);
+  const handleSignUp = async (event) => {
     event.preventDefault();
 
     if (!inputStates.tosCheckbox.isChecked) {
@@ -254,24 +229,18 @@ function AccessPortal({ defaultPortal = "login" }) {
       return;
     }
     if (!errors.length) {
-      const emailExists = await checkEmail(inputStates.email.value);
-
-      !emailExists
-        ? insertUser({
-            email_address: inputStates.createEmail.value,
-            password: inputStates.createPassword.value,
-            first_name: inputStates.firstName.value,
-            last_name: inputStates.lastName.value,
-            phone_number: inputStates.phoneNumber.value,
-            dob: inputStates.dateOfBirth.value,
-          })
-        : setInputStates((prevInputStates) => ({
-            ...prevInputStates,
-            createEmail: {
-              ...prevInputStates.createEmail,
-              hasError: "! Email already exists.",
-            },
-          }));
+      handleAuthenticate(
+        {
+          email: inputStates.createEmail.value,
+          password: inputStates.createPassword.value,
+          first_name: inputStates.firstName.value,
+          last_name: inputStates.lastName.value,
+          phone: inputStates.phoneNumber.value.replace(/[^\d]/g, ""),
+          dob: inputStates.dateOfBirth.value,
+        },
+        setPortal,
+        setInputStates
+      );
     }
   };
 
@@ -307,6 +276,7 @@ function AccessPortal({ defaultPortal = "login" }) {
                   </label>
                   <div>
                     <input
+                      ref={emailRef}
                       type="email"
                       id="email"
                       value={inputStates.email.value}
@@ -480,7 +450,7 @@ function AccessPortal({ defaultPortal = "login" }) {
           </>
         ) : (
           <form
-            onSubmit={handleCreateAccount}
+            onSubmit={handleSignUp}
             className="create-account-form"
             noValidate
           >

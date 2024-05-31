@@ -1,5 +1,3 @@
-import { supabase } from "../utils/supabaseClient";
-
 export const validateName = (name) => {
   if (!/^[a-z]+$/i.test(name)) {
     return "! Please enter a valid name.";
@@ -7,10 +5,10 @@ export const validateName = (name) => {
 };
 
 export const validatePassword = (pw) => {
-    if (pw.length > 0){
-        return "";
-    }
-}
+  if (pw.length > 0) {
+    return "";
+  }
+};
 
 export const validateNewPassword = (pw) => {
   let errors = [];
@@ -74,63 +72,3 @@ export const validateDate = (date) => {
     return "! Please provide a valid DOB.";
   }
 };
-
-export const insertUser = async (userData) => {
-    try {
-      const { data, error } = await supabase.from("users").insert([userData]);
-
-      if (error) {
-        throw error;
-      }
-
-      // return data;
-    } catch (error) {
-      console.error("Error inserting user:", error.message);
-      throw error;
-    }
-  };
-
-  export const checkEmail = async (email) => {
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("user_id")
-        .eq("email_address", email);
-
-      if (error) {
-        throw error;
-      }
-
-      if (data && data.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error("Error retrieving user data:", error.message);
-      throw error;
-    }
-  };
-
-  export const checkPassword = async (email, password) => {
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("email_address", email)
-        .eq("password", password);
-
-      if (error) {
-        throw error;
-      }
-
-      if (data && data.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error("Error retrieving user data:", error.message);
-      throw error;
-    }
-  };

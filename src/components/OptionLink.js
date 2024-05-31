@@ -17,7 +17,7 @@ const OptionLink = ({ type, param, text, active, parent }) => {
       <label htmlFor={parent}>
         <span className="icon">{(active === param || isChecked === true) && <IoCheckmark />}</span>
       </label>
-      <span style={{fontWeight: (active === param || isChecked === true) && 700}}>{text}</span>
+      <span id={parent} style={{fontWeight: (active === param || isChecked === true) && 700}}>{text}</span>
     </div>
   );
 };
