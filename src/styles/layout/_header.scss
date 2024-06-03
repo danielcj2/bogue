@@ -57,7 +57,7 @@
             max-height: 46px;
         }
 
-        &__link, &__dropdown__button{
+        &__link, &__dropdown__button, &__item:has(.user-portal__logout){
             @include abstracts.link(black);
 
             svg{

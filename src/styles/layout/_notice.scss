@@ -41,5 +41,11 @@
 
  .notice{
     padding: abstracts.$padding-md*0.75;
+
+    &:has(.notice__no-content){
+        height: 10px;
+        margin-bottom: 15px;
+        background-color: abstracts.$gray-bg;
+    }
 }
 

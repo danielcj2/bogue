@@ -1,5 +1,123 @@
 @use '../abstracts';
 
+body:has(.section__change-password), body:has(.section__access-portal){
+    background-color: abstracts.$light-bg;
+
+    header{
+        .header__left, .header__right{
+            visibility: hidden;
+            display: none;
+        }
+
+        .user-portal__controls{
+            justify-self: end;
+            visibility: visible;
+            display: block;
+        }
+    }
+}
+
+.user-portal__hidden{
+    visibility: hidden;
+    display: none;
+}
+
+.section__change-password, .section__access-portal{
+    font-family: "Poppins", sans-serif;
+    font-size: 0.9rem;
+
+    margin-top: 80px;
+
+    .access-portal{
+        width: 100%;
+        @include abstracts.flex-column(center);
+
+        &__login, &__create-account, &__reset-password{
+            @include abstracts.flex-column(center);
+            padding: 0;
+        }
+
+        .input-wrapper, &__login, &__create-account{
+            width: 100%;
+        }
+
+        .reset-password-form .hasError{
+            width: inherit;
+        }
+
+        &__header, .login-form, .forgot-password, .reset-password-form, .create-account-form, &__create-account__wrapper{
+            min-width: 500px;
+            width: 50vw;
+            padding: abstracts.$padding-md*2 abstracts.$padding-md*3;
+        }
+
+        .login-form, .create-account-form, .reset-password-form, .forgot-password, &__create-account__wrapper{
+            padding-top: 0;
+        }
+
+        &__login, &__create-account, .login-info, .personal-info{
+            padding-bottom: abstracts.$padding-md*4;
+        }
+
+        &__create-account, .login-info, .personal-info, .create-account-form__tos{
+            padding-top: abstracts.$padding-md*4;
+        }
+
+        .create-account-form:has(.login-info) {
+            width: 100%;
+            padding: 0;
+        }
+        
+        .create-account-form, &.user-portal{
+            @include abstracts.flex-column(center);
+
+            .login-info, .personal-info, &__tos, &__btn__wrapper, &__return, .user-portal__header {
+                width: 100%;
+                @include abstracts.flex-column(center);
+                margin-left: 0;
+            }
+
+            .login-info__header, .personal-info__header, &__email, &__password, &__first-name, &__last-name, &__phone, &__date-of-birth, .checkbox, .return-link, &__button-dark, .user-portal__header>h5, .user-portal__header>p{
+                min-width: 500px;
+                width: 50vw;
+            }
+
+            .zig-zag-line{
+                min-width: calc(500px - abstracts.$padding-md*3);
+                width: 50vw;
+                align-self: center;
+            }
+
+            .login-info__header, .personal-info__header, &__email, &__password, &__first-name, &__last-name, &__phone, &__date-of-birth, .checkbox, .return-link{
+                padding: 0 abstracts.$padding-md*3;
+            }
+
+            &__btn__wrapper{
+                width: auto;
+                button{
+                    min-width: 350px;
+                    width: 35vw;
+                }
+            }
+
+            .access-portal__quick-select{
+                @include abstracts.flex-row(space-between);
+                align-items: baseline;
+                min-width: 500px;
+                width: 50vw;
+                padding-left: 0;
+                padding-right: 0;
+
+                .quick-select{
+                    &__profile, &__order-preferences ,&__account{
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .access-portal{
     h5{
         font-size: abstracts.$padding-md*0.9;
@@ -47,7 +165,7 @@
     }
 
     form{
-        [class*="login-form"]:not(:last-of-type), [class*="create-account-form"]:not([class*="create-account-form__btn__wrapper"]):not([class*="create-account-form__tos"]){
+        [class*="login-form"]:not(:last-of-type), [class*="create-account-form"]:not([class*="create-account-form__btn__wrapper"]):not([class*="create-account-form__tos"]), [class*="reset-password-form"]{
             margin-top: 30px;
         }
 
@@ -134,10 +252,21 @@
 
         .login-form__forgot-password, .login-form__return, .create-account-form__return{
             p{
+                width: fit-content;
                 cursor: pointer;
                 text-decoration: underline;
                 text-underline-offset: 2px;
                 font-size: abstracts.$padding-md*0.8;
+            }
+        }
+
+        .reset-password-form__return{
+            cursor: pointer;
+            text-underline-offset: 2px;
+            font-size: abstracts.$padding-md*0.8;
+
+            P{
+                margin-top: 10px;
             }
         }
 
@@ -266,4 +395,72 @@
 .isChecked p{
     opacity: 1 !important;
     color: black !important;
+}
+
+.user-portal{
+    .quick-select__header, .access-portal__header{
+        border-bottom: solid 1px rgba(0,0,0,0.2);
+        padding-bottom: abstracts.$padding-md*2;
+    }
+
+    .quick-select{
+        &__profile, &__order-preferences, &__account{
+            margin-top: abstracts.$padding-md*2;
+
+            h5, a{
+                font-size: calc(abstracts.$padding-md - 2px);
+                text-decoration: none;
+            }
+
+            a{
+                opacity: 0.6;
+
+                &:hover{
+                    opacity: 1;
+                }
+            }
+
+            &__title{
+                margin-bottom: 5px;
+
+                h5{
+                    font-weight: 600;
+                    letter-spacing: normal;
+                }
+            }
+            
+        }
+
+        &__profile{
+            margin-top: 0;
+        }
+
+        &__account{
+            &__item:has(.user-portal__logout){
+                margin-top: 10px;
+                text-decoration: underline;
+            }
+        }
+    }
+    
+    &__logout{
+        margin-top: 10px;
+
+        span{
+            width: fit-content;
+            cursor: pointer;
+
+            @include abstracts.flex-row(space-between);
+                
+            svg{
+                width: 20px !important;
+                height: 20px !important;
+                margin-left: 5px
+            }
+        }
+
+        &:has(span:hover){
+            opacity: 1;
+        }
+    }
 }

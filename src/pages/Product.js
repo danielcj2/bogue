@@ -649,7 +649,6 @@ const Product = () => {
           <Login/>
         </Modal>
       </div>
-      <div className="overlay"></div>
     </>
   );
 };

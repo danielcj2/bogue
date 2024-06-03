@@ -250,7 +250,7 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
         &__cards{
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: $gap;
+            // gap: $gap;
             background-color: abstracts.$main-bg;
         }
         

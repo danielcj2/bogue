@@ -1,0 +1,65 @@
+@use '../abstracts';
+
+.popup{
+    opacity: 0;
+    visibility: hidden;
+
+    @include abstracts.flex-row(space-between);
+
+    width: fit-content;
+    padding: 10px;
+
+    font-family: abstracts.$Poppins;
+    font-size: abstracts.$padding-md*0.8;
+
+    background-color: abstracts.$gray-bg;
+    color: black;
+
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 150;
+
+    border: solid 1px rgba(0,0,0,0.5);
+
+    span{
+        max-height: 20px;
+    }
+
+    span:not(.popup-close){
+        margin-right: 10px;
+    }
+
+    p{
+        align-self: end;
+    }
+
+    &-close{
+        @include abstracts.flex-row(center);
+
+        svg{
+            min-width: 13px;
+            min-height: 13px;
+            margin-left: 30px;
+        }
+    }
+}
+
+.popup.active{
+    opacity: 1;
+    visibility: visible;
+}
+
+.popup-success{
+    background-color: rgba(155,197,61, 0.6);
+}
+
+.popup-error{
+    background-color: rgba(255, 32, 32, 0.6);
+}
+
+.popup-info{
+    color: white;
+}

@@ -33,6 +33,24 @@
     "type": "create-password",
     "form": "create"
   },
+  "newPassword": {
+    "id": "newPassword",
+    "isFocused": false,
+    "value": "",
+    "isVisible": false,
+    "hasError": [],
+    "type": "create-password",
+    "form": "reset"
+  },
+  "confirmPassword": {
+    "id": "confirmPassword",
+    "isFocused": false,
+    "value": "",
+    "isVisible": false,
+    "hasError": "",
+    "type": "confirm-password",
+    "form": "reset"
+  },
   "createEmail": {
     "id": "createEmail",
     "isFocused": false,

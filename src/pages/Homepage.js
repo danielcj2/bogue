@@ -37,7 +37,6 @@ const Homepage = () => {
           <AccessPortal />
         </Modal>
       </div>
-      <div className="overlay"></div>
     </>
   )
 }

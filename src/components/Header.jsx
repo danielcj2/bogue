@@ -12,11 +12,17 @@ import { LuUser2, LuUserCircle2 } from "react-icons/lu";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import tshirt from "../imgs/crewneck_shirt_red.png";
 import { ReactComponent as Logo } from "../svgs/logo.svg";
+import { IoIosLogOut } from "react-icons/io";
+
+//components
 import CategoryList from "./CategoryList";
-import { useSelector } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 import { handleSignOut } from "../functions/authenticationFunctions";
 
 const Header = ({ setModal }) => {
+  const dispatch = useDispatch();
+
   const [cartDropdown, setCartDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const user = useSelector((state) => state.auth.user);
@@ -30,14 +36,9 @@ const Header = ({ setModal }) => {
   });
 
   const [optionsDropdown, setOptionsDropdown] = useState(false);
-  const [logoutDropdown, setLogoutDropdown] = useState(false);
 
   let optionsRef = useHoverOutside(() => {
     setOptionsDropdown(false);
-  });
-
-  let logoutRef = useHoverOutside(() => {
-    setLogoutDropdown(false);
   });
 
   return (
@@ -147,35 +148,32 @@ const Header = ({ setModal }) => {
               </ul>
             </div>
           </li>
-          <li
-            className="header-list__item"
-            ref={logoutRef}
-            onMouseEnter={() => {
-              setLogoutDropdown(!logoutDropdown);
-            }}
-          >
-            {isLoggedIn ? (
-              <>
-                <a href="/" className="header-list__link">
-                  <LuUser2 />
-                </a>
-                <ul
-                  className={`dropdown ${
-                    logoutDropdown ? "active" : "inactive"
-                  }`}
-                >
-                  <div onClick={handleSignOut}>Logout</div>
-                </ul>
-              </>
-            ) : (
-              <div
-                className="header-list__link"
-                style={{ cursor: "pointer" }}
-                onClick={() => setModal("access-portal")}
-              >
-                <LuUserCircle2 />
-              </div>
-            )}
+          <li className="header-list__item">
+            <div
+              className="header-list__link"
+              style={{ cursor: "pointer" }}
+              onClick={() => setModal("access-portal")}
+            >
+              {isLoggedIn ? <LuUser2 /> : <LuUserCircle2 />}
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div
+        className={`header__left${
+          user?.identities ? " user-portal__controls" : ""
+        } user-portal__hidden`}
+      ></div>
+      <div
+        className={`header__right${
+          user?.identities ? " user-portal__controls" : ""
+        } user-portal__hidden`}
+      >
+        <ul className="header-list">
+          <li className="header-list__item">
+            <a className="user-portal__logout cap">
+              <span onClick={() => handleSignOut(dispatch)}>Log out<IoIosLogOut/></span>
+            </a>
           </li>
         </ul>
       </div>

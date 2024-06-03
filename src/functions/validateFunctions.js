@@ -32,6 +32,12 @@ export const validateNewPassword = (pw) => {
   return errors;
 };
 
+export const validateConfirmPassword = (newPW, confirmPW) => {
+  if (newPW !== confirmPW) {
+    return "! Passwords do not match. Please try again.";
+  }
+};
+
 export const validateEmail = (email) => {
   if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
     return "! Please enter a valid email address.";
