@@ -5,6 +5,10 @@ const useHoverOutside = (handler) => {
 
     useEffect(() => {
       let hoverOutsideHandler = (event) => {
+        if(!ref?.current){
+          return;
+        }
+        
         if(!ref.current.contains(event.target)){
           handler();
         }

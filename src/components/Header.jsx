@@ -171,9 +171,9 @@ const Header = ({ setModal }) => {
       >
         <ul className="header-list">
           <li className="header-list__item">
-            <a className="user-portal__logout cap">
+            <div className="user-portal__logout cap">
               <span onClick={() => handleSignOut(dispatch)}>Log out<IoIosLogOut/></span>
-            </a>
+            </div>
           </li>
         </ul>
       </div>

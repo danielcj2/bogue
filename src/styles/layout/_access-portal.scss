@@ -1,6 +1,6 @@
 @use '../abstracts';
 
-body:has(.section__change-password), body:has(.section__access-portal){
+body:has(.section__change-password), body:has(.section__access-portal), body:has(.section__account){
     background-color: abstracts.$light-bg;
 
     header{
@@ -23,7 +23,7 @@ body:has(.section__change-password), body:has(.section__access-portal){
 }
 
 .section__change-password, .section__access-portal{
-    font-family: "Poppins", sans-serif;
+    font-family: abstracts.$Poppins;
     font-size: 0.9rem;
 
     margin-top: 80px;
@@ -77,7 +77,7 @@ body:has(.section__change-password), body:has(.section__access-portal){
                 margin-left: 0;
             }
 
-            .login-info__header, .personal-info__header, &__email, &__password, &__first-name, &__last-name, &__phone, &__date-of-birth, .checkbox, .return-link, &__button-dark, .user-portal__header>h5, .user-portal__header>p{
+            .login-info__header, .personal-info__header, &__email, &__password, &__first-name, &__last-name, &__phone, &__date-of-birth, .checkbox, .return-link, &__button-dark, .user-portal__header>h5, .user-portal__header>p, .disclaimer, &__btn__wrapper{
                 min-width: 500px;
                 width: 50vw;
             }
@@ -88,15 +88,21 @@ body:has(.section__change-password), body:has(.section__access-portal){
                 align-self: center;
             }
 
-            .login-info__header, .personal-info__header, &__email, &__password, &__first-name, &__last-name, &__phone, &__date-of-birth, .checkbox, .return-link{
+            .login-info__header, .personal-info__header, &__email, &__password, &__first-name, &__last-name, &__phone, &__date-of-birth, .checkbox, .return-link, &__btn__wrapper{
                 padding: 0 abstracts.$padding-md*3;
             }
 
+            .disclaimer{
+                padding: 0 abstracts.$padding-md*3;
+                display: block;
+                visibility: visible;
+            }
+
             &__btn__wrapper{
-                width: auto;
                 button{
                     min-width: 350px;
-                    width: 35vw;
+                    width: 30vw;
+                    align-self: flex-start
                 }
             }
 
@@ -146,24 +152,6 @@ body:has(.section__change-password), body:has(.section__access-portal){
         margin-top: 15px;
     }
 
-    .__container span:has(svg){
-        margin: 0;
-
-        @include abstracts.disable-select;
-
-        svg{
-            @include abstracts.flex-column(flex-end);
-            
-            min-width: 15px;
-            min-height: 15px;
-            color: rgba(0,0,0,0.6);
-        }
-
-        &:hover{
-            cursor: pointer;
-        }
-    }
-
     form{
         [class*="login-form"]:not(:last-of-type), [class*="create-account-form"]:not([class*="create-account-form__btn__wrapper"]):not([class*="create-account-form__tos"]), [class*="reset-password-form"]{
             margin-top: 30px;
@@ -183,27 +171,6 @@ body:has(.section__change-password), body:has(.section__access-portal){
 
         .input-wrapper:has(.hasError)>div{
             border-bottom-color: #F95738;
-        }
-
-        .create-pw-field{
-            line-height: 20px;
-            font-size: abstracts.$padding-md*0.8;
-            width: max-content;
-
-            span{
-                opacity: 0.5;
-                padding-right: 10px;
-                margin-right: 6px;
-                position: relative;
-
-                &:not(:last-of-type)::after{
-                    content: "|";
-                    font-size: abstracts.$padding-md*0.9;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                }
-            }
         }
 
         .hasError{
@@ -281,7 +248,7 @@ body:has(.section__change-password), body:has(.section__access-portal){
 }
 
 .access-portal:has(.create-account-form) .access-portal__header{
-    padding-bottom: 2rem;
+    padding-bottom: 0;
 }
 
 .create-account-form{
@@ -303,7 +270,9 @@ body:has(.section__change-password), body:has(.section__access-portal){
     }
 
     &__return{
-        padding: 0 abstracts.$padding-md*3;
+        padding: 10px abstracts.$padding-md*3;
+        padding-bottom: abstracts.$padding-md*2;
+        margin-top: 0 !important;
     }
 
     .login-info, .personal-info{
@@ -316,6 +285,12 @@ body:has(.section__change-password), body:has(.section__access-portal){
 
     .button__wrapper{
         margin-left: abstracts.$padding-md*3;
+    }
+
+    .disclaimer{
+        margin: 30px abstracts.$padding-md*3;
+        display: none;
+        visibility: none;
     }
 
     .__container span{
@@ -383,6 +358,51 @@ body:has(.section__change-password), body:has(.section__access-portal){
     }
 }
 
+.access-portal, .section__account__content {
+    .__container span:has(svg){
+        margin: 0;
+
+        @include abstracts.disable-select;
+
+        svg{
+            @include abstracts.flex-column(flex-end);
+            
+            min-width: 15px;
+            min-height: 15px;
+            color: rgba(0,0,0,0.6);
+        }
+
+        &:hover{
+            cursor: pointer;
+        }
+    }
+
+    .create-pw-field{
+        line-height: 20px;
+        font-size: abstracts.$padding-md*0.8;
+        width: max-content;
+
+        span{
+            opacity: 0.5;
+            padding-right: 10px;
+            margin-right: 6px;
+            position: relative;
+
+            &:not(:last-of-type)::after{
+                content: "|";
+                font-size: abstracts.$padding-md*0.9;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+
+            &:nth-child(3){
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
 .access-portal>div{
     padding: 2rem abstracts.$padding-md*3;
 }
@@ -407,12 +427,12 @@ body:has(.section__change-password), body:has(.section__access-portal){
         &__profile, &__order-preferences, &__account{
             margin-top: abstracts.$padding-md*2;
 
-            h5, a{
+            h5, a, div{
                 font-size: calc(abstracts.$padding-md - 2px);
                 text-decoration: none;
             }
 
-            a{
+            a, div{
                 opacity: 0.6;
 
                 &:hover{
@@ -424,7 +444,6 @@ body:has(.section__change-password), body:has(.section__access-portal){
                 margin-bottom: 5px;
 
                 h5{
-                    font-weight: 600;
                     letter-spacing: normal;
                 }
             }
@@ -444,8 +463,6 @@ body:has(.section__change-password), body:has(.section__access-portal){
     }
     
     &__logout{
-        margin-top: 10px;
-
         span{
             width: fit-content;
             cursor: pointer;

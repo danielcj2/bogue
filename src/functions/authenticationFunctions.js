@@ -220,10 +220,7 @@ export const handleResetPasswordAuthentication = async (
       error.message ===
       "New password should be different from the old password."
     ) {
-      console.error(
-        "Pick a new password: ",
-        error.message
-      );
+      console.error("Pick a new password: ", error.message);
       dispatch(
         showPopup({
           message: "New password should be different from the old password.",
@@ -235,6 +232,87 @@ export const handleResetPasswordAuthentication = async (
         "Unexpected error occurred during forgot-password: ",
         error.message
       );
+      dispatch(
+        showPopup({
+          message: "An unexpected error occurred. Please try again.",
+          type: "error",
+        })
+      );
+    }
+  }
+};
+
+export const handleUpdateEmail = async (email, setEditStates, dispatch) => {
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      email: email,
+    });
+
+    if (error) throw error;
+
+    if (data) {
+      dispatch(
+        showPopup({
+          message: "Great news! Your email has been updated successfully.",
+          type: "success",
+        })
+      );
+    }
+  } catch (error) {
+    console.error("Unexpected error occurred: ", error.message);
+    dispatch(
+      showPopup({
+        message: "An unexpected error occurred. Please try again.",
+        type: "error",
+      })
+    );
+  }
+};
+
+export const handleResetLoginInfo = async (
+  email,
+  password,
+  setEditStates,
+  dispatch
+) => {
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      email: email,
+      password: password,
+    });
+
+    if (error) throw error;
+
+    if (data) {
+      dispatch(
+        showPopup({
+          message:
+            "Great news! Your password has been updated successfully. Your account is now more secure.",
+          type: "success",
+        })
+      );
+    }
+  } catch (error) {
+    if (
+      error.message ===
+      "New password should be different from the old password."
+    ) {
+      setEditStates((setEditStates) => ({
+        ...setEditStates,
+        editConfirmPassword: {
+          ...setEditStates.editConfirmPassword,
+          hasError: "! New password should be different from the old password.",
+        },
+      }));
+      console.error("Pick a new password: ", error.message);
+      dispatch(
+        showPopup({
+          message: "New password should be different from the old password.",
+          type: "error",
+        })
+      );
+    } else {
+      console.error("Unexpected error occurred: ", error.message);
       dispatch(
         showPopup({
           message: "An unexpected error occurred. Please try again.",

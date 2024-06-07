@@ -8,15 +8,16 @@ import { GrFormCheckmark } from "react-icons/gr";
 import { PiEye, PiEyeClosed } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
 
-import {
-  validateConfirmPassword,
-  validateDate,
-  validateEmail,
-  validateName,
-  validateNewPassword,
-  validatePassword,
-  validatePhone,
-} from "../functions/validateFunctions";
+// import {
+//   validateConfirmPassword,
+//   validateDate,
+//   validateEmail,
+//   validateName,
+//   validateNewPassword,
+//   validatePassword,
+//   validatePhone,
+// } from "../functions/validateFunctions";
+import { handleChange } from "../functions/handleChange";
 import {
   handleAuthenticate,
   handleForgotPasswordAuthentication,
@@ -69,82 +70,6 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
             : prevInputStates[inputID].value.length === 0
             ? "! Input field required."
             : prevInputStates[inputID].hasError,
-      },
-    }));
-  };
-
-  const handleChange = (event, inputID, phone = false) => {
-    const { value } = event.target;
-
-    let formattedValue = value;
-
-    //format Phone Number (###) ### - ####
-    if (phone) {
-      // Remove non-numeric characters
-      const numericValue = value.replace(/\D/g, "");
-
-      if (!numericValue.length) {
-        formattedValue = "";
-      } else if (numericValue.length <= 3) {
-        formattedValue = `(${numericValue}`;
-      } else if (numericValue.length <= 6) {
-        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
-          3
-        )}`;
-      } else {
-        formattedValue = `(${numericValue.slice(0, 3)}) ${numericValue.slice(
-          3,
-          6
-        )} - ${numericValue.slice(6, 10)}`;
-      }
-
-      // Set the input field's value to the formatted value
-      if (event.target.value !== formattedValue) {
-        event.target.value = formattedValue;
-      }
-    }
-
-    switch (inputStates[inputID].type) {
-      case "email":
-        updateInputState(inputID, formattedValue, validateEmail);
-        break;
-      case "create-password":
-        updateInputState(inputID, formattedValue, validateNewPassword);
-        break;
-      case "password":
-        updateInputState(inputID, formattedValue, validatePassword);
-        break;
-      case "confirm-password":
-        updateInputState(
-          inputID,
-          formattedValue,
-          validateConfirmPassword,
-          inputStates.newPassword.value
-        );
-        break;
-      case "name":
-        updateInputState(inputID, formattedValue, validateName);
-        break;
-      case "phone":
-        updateInputState(inputID, formattedValue, validatePhone);
-        break;
-      case "date":
-        updateInputState(inputID, formattedValue, validateDate);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const updateInputState = (inputID, value, validationFunction, newPW) => {
-    setInputStates((prevInputStates) => ({
-      ...prevInputStates,
-      [inputID]: {
-        ...prevInputStates[inputID],
-        value: value,
-        hasError: newPW
-          ? validationFunction(newPW, value)
-          : validationFunction(value),
       },
     }));
   };
@@ -339,13 +264,13 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                 <h5>profile</h5>
               </li>
               <li className="quick-select__profile__item">
-                <Link>my profile</Link>
+                <Link to="/account/profile">my profile</Link>
               </li>
               <li className="quick-select__profile__item">
-                <Link>address book</Link>
+                <Link to="/account/addresses">address book</Link>
               </li>
               <li className="quick-select__profile__item">
-                <Link>payment methods</Link>
+                <Link to="/account/payment-methods">payment methods</Link>
               </li>
             </ul>
             <ul className="quick-select__order-preferences cap">
@@ -353,10 +278,10 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                 <h5>orders & preferences</h5>
               </li>
               <li className="quick-select__order-preferences__item">
-                <Link>orders & returns</Link>
+                <Link to="/account/orders">orders & returns</Link>
               </li>
               <li className="quick-select__order-preferences__item">
-                <Link>wishlist</Link>
+                <Link to="/account/wishlist">wishlist</Link>
               </li>
             </ul>
             <ul className="quick-select__account cap">
@@ -364,12 +289,15 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                 <h5>account hub</h5>
               </li>
               <li className="quick-select__account__item">
-                <Link>settings</Link>
+                <Link to="/account/settings">settings</Link>
               </li>
               <li className="quick-select__account__item">
-                <a className="user-portal__logout">
-                  <span onClick={() => handleSignOut(dispatch)}>Log out<IoIosLogOut/></span>
-                </a>
+                <div className="user-portal__logout">
+                  <span onClick={() => handleSignOut(dispatch)}>
+                    Log out
+                    <IoIosLogOut />
+                  </span>
+                </div>
               </li>
             </ul>
           </div>
@@ -416,7 +344,15 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                       maxLength="30"
                       onFocus={() => handleFocus("newPassword")}
                       onBlur={() => handleBlur("newPassword")}
-                      onChange={(event) => handleChange(event, "newPassword")}
+                      onChange={(event) =>
+                        handleChange(
+                          event,
+                          "newPassword",
+                          inputStates.newPassword.type,
+                          setInputStates,
+                          inputStates.newPassword.value
+                        )
+                      }
                     />
                     <span
                       onClick={() => {
@@ -502,7 +438,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                       onFocus={() => handleFocus("confirmPassword")}
                       onBlur={() => handleBlur("confirmPassword")}
                       onChange={(event) =>
-                        handleChange(event, "confirmPassword")
+                        handleChange(
+                          event,
+                          "confirmPassword",
+                          inputStates.confirmPassword.type,
+                          setInputStates
+                        )
                       }
                     />
                     <span
@@ -589,7 +530,14 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           maxLength="30"
                           onFocus={() => handleFocus("email")}
                           onBlur={() => handleBlur("email")}
-                          onChange={(event) => handleChange(event, "email")}
+                          onChange={(event) =>
+                            handleChange(
+                              event,
+                              "email",
+                              inputStates.email.type,
+                              setInputStates
+                            )
+                          }
                         />
                       </div>
                       <p
@@ -625,7 +573,14 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           autoComplete="off"
                           onFocus={() => handleFocus("password")}
                           onBlur={() => handleBlur("password")}
-                          onChange={(event) => handleChange(event, "password")}
+                          onChange={(event) =>
+                            handleChange(
+                              event,
+                              "password",
+                              inputStates.password.type,
+                              setInputStates
+                            )
+                          }
                         />
                         <span
                           onClick={() => {
@@ -718,7 +673,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                               onFocus={() => handleFocus("retrieveEmail")}
                               onBlur={() => handleBlur("retrieveEmail")}
                               onChange={(event) =>
-                                handleChange(event, "retrieveEmail")
+                                handleChange(
+                                  event,
+                                  "retrieveEmail",
+                                  inputStates.retrieveEmail.type,
+                                  setInputStates
+                                )
                               }
                             />
                           </div>
@@ -780,6 +740,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                 className="create-account-form"
                 noValidate
               >
+                <div
+                  className="create-account-form__return"
+                  onClick={() => setPortal("login")}
+                >
+                  <p className="cap return-link">back to login form</p>
+                </div>
                 <div className="zig-zag-line"></div>
                 <div className="login-info">
                   <div className="login-info__header">
@@ -808,7 +774,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           onFocus={() => handleFocus("createEmail")}
                           onBlur={() => handleBlur("createEmail")}
                           onChange={(event) =>
-                            handleChange(event, "createEmail")
+                            handleChange(
+                              event,
+                              "createEmail",
+                              inputStates.createEmail.type,
+                              setInputStates
+                            )
                           }
                         />
                       </div>
@@ -850,7 +821,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           onFocus={() => handleFocus("createPassword")}
                           onBlur={() => handleBlur("createPassword")}
                           onChange={(event) =>
-                            handleChange(event, "createPassword")
+                            handleChange(
+                              event,
+                              "createPassword",
+                              inputStates.createPassword.type,
+                              setInputStates
+                            )
                           }
                           maxLength="25"
                         />
@@ -947,7 +923,14 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           autoComplete="off"
                           onFocus={() => handleFocus("firstName")}
                           onBlur={() => handleBlur("firstName")}
-                          onChange={(event) => handleChange(event, "firstName")}
+                          onChange={(event) =>
+                            handleChange(
+                              event,
+                              "firstName",
+                              inputStates.firstName.type,
+                              setInputStates
+                            )
+                          }
                         />
                       </div>
                       <p
@@ -980,7 +963,14 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           autoComplete="off"
                           onFocus={() => handleFocus("lastName")}
                           onBlur={() => handleBlur("lastName")}
-                          onChange={(event) => handleChange(event, "lastName")}
+                          onChange={(event) =>
+                            handleChange(
+                              event,
+                              "lastName",
+                              inputStates.lastName.type,
+                              setInputStates
+                            )
+                          }
                         />
                       </div>
                       <p
@@ -1014,7 +1004,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           autoComplete="off"
                           onBlur={() => handleBlur("phoneNumber")}
                           onChange={(event) =>
-                            handleChange(event, "phoneNumber", true)
+                            handleChange(
+                              event,
+                              "phoneNumber",
+                              inputStates.phoneNumber.type,
+                              setInputStates,
+                            )
                           }
                         />
                       </div>
@@ -1050,7 +1045,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           autoComplete="off"
                           onBlur={() => handleBlur("dateOfBirth")}
                           onChange={(event) =>
-                            handleChange(event, "dateOfBirth")
+                            handleChange(
+                              event,
+                              "dateOfBirth",
+                              inputStates.dateOfBirth.type,
+                              setInputStates
+                            )
                           }
                           max="9999-12-31"
                         />
@@ -1112,12 +1112,22 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                     create account
                   </button>
                 </div>
-                <div
+                <p className="disclaimer">
+                  Disclaimer: By clicking 'Create Account,' you confirm reading
+                  our <span className="privacy-policy">Privacy Statement</span>{" "}
+                  and consent to Bogue processing your personal data for account
+                  management and client relations. Your data may be shared
+                  globally with Bogue entities. You have the right to access,
+                  correct, and delete your data, and opt-out of personalized
+                  communications, as detailed in our{" "}
+                  <span className="privacy-policy">Privacy Statement</span>.
+                </p>
+                {/* <div
                   className="create-account-form__return"
                   onClick={() => setPortal("login")}
                 >
                   <p className="cap return-link">back to login form</p>
-                </div>
+                </div> */}
               </form>
             )}
           </div>

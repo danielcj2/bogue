@@ -57,12 +57,16 @@
             max-height: 46px;
         }
 
-        &__link, &__dropdown__button, &__item:has(.user-portal__logout){
+        &__link, &__dropdown__button, &__item:has(.user-portal__logout) .user-portal__logout{
             @include abstracts.link(black);
-
+            
             svg{
                 width: 25px;
                 height: 25px;
+            }
+
+            .user-portal__logout{
+                margin-top: 0;
             }
 
             &:hover{

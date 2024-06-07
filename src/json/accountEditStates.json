@@ -1,0 +1,54 @@
+{
+    "editPassword": {
+      "id": "editPassword",
+      "value": "",
+      "isVisible": false,
+      "hasError": "",
+      "type": "create-password",
+      "form": "credentials"
+    },
+    "editConfirmPassword": {
+      "id": "editConfirmPassword",
+      "value": "",
+      "isVisible": false,
+      "hasError": "",
+      "type": "confirm-password",
+      "form": "credentials"
+    },
+    "editEmail": {
+      "id": "editEmail",
+      "value": "",
+      "hasError": "",
+      "type": "email",
+      "form": "credentials"
+    },
+    "editFirstName": {
+      "id": "editFirstName",
+      "value": "",
+      "hasError": "",
+      "type": "name",
+      "form": "identity"
+    },
+    "editLastName": {
+      "id": "editLastName",
+      "value": "",
+      "hasError": "",
+      "type": "name",
+      "form": "identity"
+    },
+    "editPhone": {
+      "id": "editPhone",
+      "value": "",
+      "hasError": "",
+      "type": "phone",
+      "form": "identity"
+    },
+    "editDOB": {
+      "id": "editDOB",
+      "value": "",
+      "hasError": "",
+      "type": "date",
+      "form": "identity"
+    }
+  }
+  

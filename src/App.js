@@ -13,6 +13,7 @@ import Popup from "./components/Popup";
 import { supabase } from "./utils/supabaseClient";
 import { useDispatch } from "react-redux";
 import { logoutUser, setUser } from "./features/auth/authSlice";
+import Account from "./pages/Account";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,7 +21,6 @@ function App() {
   useEffect(() => {
     supabase.auth.onAuthStateChange((event, session) => {
       console.log(event);
-      console.log(session);
       switch (event) {
         case "SIGNED_IN":
           dispatch(setUser(session?.user));
@@ -32,7 +32,7 @@ function App() {
           break;
       }
     });
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -51,6 +51,8 @@ function App() {
           element={<ForgotPassword />}
         />
         <Route path="/access-portal" element={<AcessPortalPage />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/account/:section" element={<Account />} />
       </Routes>
       <div className="popups">
         <Popup />

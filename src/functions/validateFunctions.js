@@ -45,7 +45,7 @@ export const validateEmail = (email) => {
 };
 
 export const validatePhone = (phone) => {
-  if (phone.length < 10) {
+  if (phone.replace(/[^\d]/g, "").length < 10) {
     return "! Please enter a valid phone number.";
   }
 };

@@ -9,6 +9,7 @@
     align-content: center;
 
     cursor:pointer;
+
     &__heading{
         font-size: abstracts.$padding-md*0.9;
         align-self: center;
@@ -48,4 +49,10 @@
         background-color: abstracts.$gray-bg;
     }
 }
+
+// body:has(.section__account){
+//     .notice:has(.notice__no-content){
+//         margin-bottom: 0;
+//     }
+// }
 
