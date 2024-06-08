@@ -104,6 +104,10 @@
                     transform: translateY(-20px);            
                 }
 
+                .notFocused {
+                    transform: translateY(0);            
+                }
+
                 [class*="update-profile-form"] {
                     margin-top: 40px
                 }
@@ -193,12 +197,6 @@
         .create-pw-field{
             width: fit-content;
             span{
-                font-size: calc(abstracts.$padding-md - 4px);
-
-                &.hasError{
-                font-size: calc(abstracts.$padding-md - 4px);
-                }
-
                 &:not(:last-of-type)::after{
                     font-size: abstracts.$padding-md*0.9;
                 }
@@ -224,5 +222,26 @@
 
     .hasError{
         width: fit-content;
+    }
+}
+
+.edit-outcome{
+    position: relative;
+    background-color: #eeedec;
+    padding: 10px;
+    left: -10px;
+    min-width: 520px;
+    width: calc(50vw + 20px);
+
+    span{
+        font-size: abstracts.$padding-md*0.8;
+        letter-spacing: 1px;
+        word-spacing: 2px;
+        font-weight: 500;
+    }
+
+    p{
+        opacity: 0.6;
+        font-size: calc(abstracts.$padding-md - 4px);
     }
 }

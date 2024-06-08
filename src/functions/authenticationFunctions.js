@@ -1,5 +1,6 @@
 import { supabase } from "../utils/supabaseClient";
 import { showPopup } from "../features/popup/popupSlice";
+import { setUserComponentLoading, stopUserComponentLoading } from "../features/auth/authSlice";
 
 export const handleAuthenticate = async (
   userData,
@@ -90,7 +91,8 @@ export const handleSignInAuthentication = async (
         ...prevInputStates,
         password: {
           ...prevInputStates.password,
-          hasError: "! Invalid login credentials, please try again.",
+          hasError:
+            "! Invalid email or password credentials, please try again.",
         },
       }));
       dispatch(
@@ -242,65 +244,148 @@ export const handleResetPasswordAuthentication = async (
   }
 };
 
-export const handleUpdateEmail = async (email, setEditStates, dispatch) => {
-  try {
-    const { data, error } = await supabase.auth.updateUser({
-      email: email,
-    });
-
-    if (error) throw error;
-
-    if (data) {
-      dispatch(
-        showPopup({
-          message: "Great news! Your email has been updated successfully.",
-          type: "success",
-        })
-      );
-    }
-  } catch (error) {
-    console.error("Unexpected error occurred: ", error.message);
-    dispatch(
-      showPopup({
-        message: "An unexpected error occurred. Please try again.",
-        type: "error",
-      })
-    );
-  }
-};
-
-export const handleResetLoginInfo = async (
-  email,
+export const handleUpdatePassword = async (
   password,
-  setEditStates,
+  setEditOutcome,
+  setStates,
+  handleLoginEditCancel,
   dispatch
 ) => {
   try {
     const { data, error } = await supabase.auth.updateUser({
-      email: email,
       password: password,
     });
 
     if (error) throw error;
 
     if (data) {
-      dispatch(
-        showPopup({
-          message:
-            "Great news! Your password has been updated successfully. Your account is now more secure.",
-          type: "success",
-        })
-      );
+      setEditOutcome({
+        type: "login",
+        state: "password changed successfully!",
+        message:
+          "Your password change request has been successfully processed. We've updated your account security measures to ensure your information remains safeguarded.",
+      });
+      handleLoginEditCancel();
     }
   } catch (error) {
     if (
       error.message ===
       "New password should be different from the old password."
     ) {
-      setEditStates((setEditStates) => ({
-        ...setEditStates,
+      console.error("Pick a new password: ", error.message);
+      setStates((prevStates) => ({
+        ...prevStates,
         editConfirmPassword: {
-          ...setEditStates.editConfirmPassword,
+          ...prevStates.editConfirmPassword,
+          hasError: "! New password should be different from the old password.",
+        },
+      }));
+      dispatch(
+        showPopup({
+          message: "New password should be different from the old password.",
+          type: "error",
+        })
+      );
+    } else {
+      console.error(
+        "Unexpected error occurred during update-password: ",
+        error.message
+      );
+      dispatch(
+        showPopup({
+          message: "An unexpected error occurred. Please try again.",
+          type: "error",
+        })
+      );
+    }
+  }
+};
+
+export const handleUpdateEmail = async (
+  email,
+  setEditOutcome,
+  handleLoginEditCancel,
+  dispatch
+) => {
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      email: email,
+      data: { email: email },
+    });
+
+    if (error) throw error;
+
+    if (data) {
+      setEditOutcome({
+        type: "login",
+        state: "email update request sent!",
+        message:
+          "Your email change request has been successfully processed. To finalize the update, please check your inbox for a confirmation email. If you encounter any issues or did not initiate this change, please contact our support team immediately.",
+      });
+      handleLoginEditCancel();
+    }
+  } catch (error) {
+    if (
+      error.message ===
+      "A user with this email address has already been registered"
+    ) {
+      console.error(
+        "Unexpected error occurred during email-update: ",
+        error.message
+      );
+      dispatch(
+        showPopup({
+          message: "A user with this email address has already been registered",
+          type: "error",
+        })
+      );
+    } else {
+      console.error("Unexpected error occurred: ", error.message);
+      dispatch(
+        showPopup({
+          message: "An unexpected error occurred. Please try again.",
+          type: "error",
+        })
+      );
+    }
+  }
+};
+
+export const handleUpdateLogin = async (
+  email,
+  password,
+  setEditOutcome,
+  setStates,
+  handleLoginEditCancel,
+  dispatch
+) => {
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      email: email,
+      password: password,
+      data: { email: email },
+    });
+
+    if (error) throw error;
+
+    if (data) {
+      setEditOutcome({
+        type: "login",
+        state: "email update request sent && password updated!",
+        message:
+          "Your email change request && password update has been successfully processed. To finalize the update, please check your inbox for a confirmation email. If you encounter any issues or did not initiate this change, please contact our support team immediately.",
+      });
+      handleLoginEditCancel();
+    }
+  } catch (error) {
+    if (
+      error.message ===
+      "New password should be different from the old password."
+    ) {
+      setStates((prevStates) => ({
+        ...prevStates,
+        editConfirmPassword: {
+          ...prevStates.editConfirmPassword,
           hasError: "! New password should be different from the old password.",
         },
       }));
@@ -308,6 +393,20 @@ export const handleResetLoginInfo = async (
       dispatch(
         showPopup({
           message: "New password should be different from the old password.",
+          type: "error",
+        })
+      );
+    } else if (
+      error.message ===
+      "A user with this email address has already been registered"
+    ) {
+      console.error(
+        "Unexpected error occurred during login-update: ",
+        error.message
+      );
+      dispatch(
+        showPopup({
+          message: "A user with this email address has already been registered",
           type: "error",
         })
       );
@@ -333,3 +432,47 @@ export function getAuthToken() {
   //if no token was found
   return null;
 }
+
+export const handleUpdateIdentity = async (
+  userData,
+  setEditOutcome,
+  handlePersonalEditCancel,
+  dispatch
+) => {
+  try {
+    dispatch(setUserComponentLoading("update-identity"));
+    const { data, error } = await supabase.auth.updateUser({
+      data: {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        dob: userData.dob,
+        phone_number: userData.phone_number,
+      },
+    });
+
+    if (error) throw error;
+
+    if (data) {
+      setEditOutcome({
+        type: "personal",
+        state: "profile information changed successfully!",
+        message:
+          "Your profile personal information update request has been successfully processed. Thank you for keeping your information current and for entrusting us with your personal details.",
+      });
+      dispatch(stopUserComponentLoading("update-identity"));
+      handlePersonalEditCancel();
+    }
+  } catch (error) {
+    dispatch(stopUserComponentLoading("update-identity"));
+    console.error(
+      "Unexpected error occurred during update-personal-information: ",
+      error.message
+    );
+    dispatch(
+      showPopup({
+        message: "An unexpected error occurred. Please try again.",
+        type: "error",
+      })
+    );
+  }
+};

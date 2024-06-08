@@ -28,6 +28,9 @@ function App() {
         case "SIGNED_OUT":
           dispatch(logoutUser());
           break;
+        case "USER_UPDATED":
+        dispatch(setUser(session?.user));
+        break;
         default:
           break;
       }

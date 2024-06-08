@@ -3,6 +3,7 @@
       "id": "editPassword",
       "value": "",
       "isVisible": false,
+      "isFocused": false,
       "hasError": "",
       "type": "create-password",
       "form": "credentials"
@@ -11,6 +12,7 @@
       "id": "editConfirmPassword",
       "value": "",
       "isVisible": false,
+      "isFocused": false,
       "hasError": "",
       "type": "confirm-password",
       "form": "credentials"
@@ -18,6 +20,7 @@
     "editEmail": {
       "id": "editEmail",
       "value": "",
+      "isFocused": true,
       "hasError": "",
       "type": "email",
       "form": "credentials"
@@ -25,6 +28,7 @@
     "editFirstName": {
       "id": "editFirstName",
       "value": "",
+      "isFocused": true,
       "hasError": "",
       "type": "name",
       "form": "identity"
@@ -32,6 +36,7 @@
     "editLastName": {
       "id": "editLastName",
       "value": "",
+      "isFocused": true,
       "hasError": "",
       "type": "name",
       "form": "identity"
@@ -39,6 +44,7 @@
     "editPhone": {
       "id": "editPhone",
       "value": "",
+      "isFocused": true,
       "hasError": "",
       "type": "phone",
       "form": "identity"
@@ -46,6 +52,7 @@
     "editDOB": {
       "id": "editDOB",
       "value": "",
+      "isFocused": true,
       "hasError": "",
       "type": "date",
       "form": "identity"

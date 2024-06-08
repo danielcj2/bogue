@@ -81,7 +81,12 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
     let errors = [];
     for (const objState of Object.values(inputStates)) {
       if (objState.form === "login") {
-        if (objState.hasError) errors = errors.concat(objState.hasError);
+        if (
+          objState.hasError &&
+          objState.hasError !==
+            "! Invalid email or password credentials, please try again."
+        )
+          errors = errors.concat(objState.hasError);
         if (!objState.value.length) {
           empty = objState.id;
           const id = objState.id;
@@ -746,7 +751,6 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                 >
                   <p className="cap return-link">back to login form</p>
                 </div>
-                <div className="zig-zag-line"></div>
                 <div className="login-info">
                   <div className="login-info__header">
                     <h5 className="upp">login information</h5>
@@ -1008,7 +1012,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                               event,
                               "phoneNumber",
                               inputStates.phoneNumber.type,
-                              setInputStates,
+                              setInputStates
                             )
                           }
                         />

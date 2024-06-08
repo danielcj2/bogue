@@ -13,7 +13,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { PiEye, PiEyeClosed } from "react-icons/pi";
 import { PiPencilSimpleLineLight } from "react-icons/pi";
 import { PiPencilSimpleSlashLight } from "react-icons/pi";
-import { handleUpdateEmail, handleResetLoginInfo } from "../functions/authenticationFunctions";
+import {
+  handleUpdateEmail,
+  handleUpdateIdentity,
+  handleUpdateLogin,
+  handleUpdatePassword,
+} from "../functions/authenticationFunctions";
+import { GrClose } from "react-icons/gr";
 
 const Account = ({ defaultToggle = "profile" }) => {
   const toggleParams = useParams();
@@ -21,14 +27,23 @@ const Account = ({ defaultToggle = "profile" }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
+  const componentsLoading = useSelector(
+    (state) => state.auth.loadingComponents
+  );
+
   const [editStates, setEditStates] = useState(accountEditStates);
+  const [editOutcome, setEditOutcome] = useState({
+    type: "",
+    state: "",
+    message: "",
+  });
 
   const handleOnLoadLoginStates = () => {
     setEditStates((prevEditStates) => ({
       ...prevEditStates,
       editEmail: {
         ...prevEditStates.editEmail,
-        value: user.user_metadata.email,
+        value: user.email,
         hasError: "",
       },
       editPassword: {
@@ -69,7 +84,6 @@ const Account = ({ defaultToggle = "profile" }) => {
       },
     }));
   };
-
   useEffect(() => {
     const handleOnLoadStates = () => {
       handleOnLoadLoginStates();
@@ -77,9 +91,7 @@ const Account = ({ defaultToggle = "profile" }) => {
     };
 
     user?.identities ? handleOnLoadStates() : navigate("/access-portal");
-  }, [user, navigate]);
-
-  console.log(editStates);
+  }, [user, componentsLoading, navigate]);
 
   const [toggle, setToggle] = useState(defaultToggle);
   useEffect(() => {
@@ -90,11 +102,22 @@ const Account = ({ defaultToggle = "profile" }) => {
     navigate(`/account/${newSection}`);
   };
 
+  const handleFocus = (ID) => {
+    setEditStates({
+      ...editStates,
+      [ID]: {
+        ...editStates[ID],
+        isFocused: true,
+      },
+    });
+  };
+
   const handleBlur = (editID) => {
     setEditStates((prevEditStates) => ({
       ...prevEditStates,
       [editID]: {
         ...prevEditStates[editID],
+        isFocused: false,
         hasError:
           prevEditStates[editID].type === "create-password" &&
           prevEditStates[editID].value.length === 0
@@ -113,51 +136,81 @@ const Account = ({ defaultToggle = "profile" }) => {
   const handleLoginEdit = (event) => {
     event.preventDefault();
 
-    if (
-      editStates.editPassword.value === "" &&
-      editStates.editConfirmPassword.value === ""
-    ) {
-      if (editStates.editEmail.value !== user.user_metadata.email) {
-        if (!editStates.editEmail.hasError) {
-          handleUpdateEmail(
-            editStates.editEmail.value,
-            setEditStates,
-            dispatch
-          );
-          handleLoginEditCancel();
-          return;
-        }
-      } else if (editStates.editEmail.value === user.user_metadata.email){
-        handleLoginEditCancel();
-        return;
-      }
-    }
-
-    let empty = "";
     let errors = [];
     for (const objState of Object.values(editStates)) {
       if (objState.form === "credentials") {
         if (objState.hasError) errors = errors.concat(objState.hasError);
       }
     }
-    if (empty) {
-      return;
-    }
-    if (!errors.length) {
-      handleResetLoginInfo(
-        editStates.editEmail.value,
-        editStates.editPassword.value,
-        setEditStates,
-        dispatch
-      );
+
+    if (
+      editStates.editPassword.value === "" &&
+      editStates.editConfirmPassword.value === ""
+    ) {
+      if (editStates.editEmail.value !== user.email) {
+        if (!editStates.editEmail.hasError) {
+          handleUpdateEmail(
+            editStates.editEmail.value,
+            setEditOutcome,
+            handleLoginEditCancel,
+            dispatch
+          );
+        }
+      } else if (editStates.editEmail.value === user.email) {
+        handleLoginEditCancel();
+        return;
+      }
+    } else {
+      if (!errors.length) {
+        if (editStates.editEmail.value === user.email) {
+          handleUpdatePassword(
+            editStates.editPassword.value,
+            setEditOutcome,
+            setEditStates,
+            handleLoginEditCancel,
+            dispatch
+          );
+        } else if (editStates.editEmail.value !== user.email) {
+          handleUpdateLogin(
+            editStates.editEmail.value,
+            editStates.editPassword.value,
+            setEditOutcome,
+            setEditStates,
+            handleLoginEditCancel,
+            dispatch
+          );
+        }
+      }
     }
   };
 
   const handlePersonalEdit = (event) => {
     event.preventDefault();
+
+    let errors = [];
+    for (const objState of Object.values(editStates)) {
+      if (objState.form === "identity") {
+        if (objState.hasError) errors = errors.concat(objState.hasError);
+      }
+    }
+    if (!errors.length) {
+      handleUpdateIdentity(
+        {
+          first_name: editStates.editFirstName.value,
+          last_name: editStates.editLastName.value,
+          dob: editStates.editDOB.value,
+          phone_number: editStates.editPhone.value.replace(/[^\d]/g, ""),
+        },
+        setEditOutcome,
+        handlePersonalEditCancel,
+        dispatch
+      );
+    }
   };
 
   const handleLoginEditClick = () => {
+    setEditOutcome({ type: "", state: "", message: "" });
+    handleOnLoadPersonalStates();
     setFormActive("credentials");
     setEditStates((prevEditStates) => ({
       ...prevEditStates,
@@ -166,6 +219,11 @@ const Account = ({ defaultToggle = "profile" }) => {
         value: "",
       },
     }));
+  };
+  const handlePersonalEditClick = () => {
+    setEditOutcome({ type: "", state: "", message: "" });
+    handleOnLoadLoginStates();
+    setFormActive("identity");
   };
   const handleLoginEditCancel = () => {
     handleOnLoadLoginStates();
@@ -283,6 +341,29 @@ const Account = ({ defaultToggle = "profile" }) => {
                         )}
                       </h1>
                     </div>
+                    {editOutcome.type === "login" ? (
+                      <div className="edit-outcome">
+                        <div className="__container">
+                          <span className="edit-outcome__state upp">
+                            {editOutcome.state}
+                          </span>
+                          <span
+                            onClick={() =>
+                              setEditOutcome({
+                                type: "",
+                                state: "",
+                                message: "",
+                              })
+                            }
+                          >
+                            <GrClose />
+                          </span>
+                        </div>
+                        <p>{editOutcome.message}</p>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                     <div className="login-info__wrapper">
                       <div className="update-profile-form__email">
                         <div className="input-wrapper">
@@ -320,7 +401,17 @@ const Account = ({ defaultToggle = "profile" }) => {
                       </div>
                       <div className="update-profile-form__password">
                         <div className="input-wrapper">
-                          <label htmlFor="editPassword" className="cap">
+                          <label
+                            htmlFor="editPassword"
+                            className={`cap${
+                              formActive !== "credentials"
+                                ? " isFocused"
+                                : editStates.editPassword.isFocused ||
+                                  editStates.editPassword.value !== ""
+                                ? " isFocused"
+                                : " notFocused"
+                            }`}
+                          >
                             \password
                           </label>
                           <div className="__container">
@@ -339,6 +430,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                               }
                               placeholder="SillyPancake42@"
                               autoComplete="off"
+                              onFocus={() => handleFocus("editPassword")}
                               onBlur={() => handleBlur("editPassword")}
                               onChange={(event) =>
                                 handleChange(
@@ -435,7 +527,12 @@ const Account = ({ defaultToggle = "profile" }) => {
                           <div className="input-wrapper">
                             <label
                               htmlFor="editConfirmPassword"
-                              className="cap"
+                              className={`cap${
+                                editStates["editConfirmPassword"].isFocused ||
+                                editStates["editConfirmPassword"].value !== ""
+                                  ? " isFocused"
+                                  : " notFocused"
+                              }`}
                             >
                               \confirm password
                             </label>
@@ -449,6 +546,9 @@ const Account = ({ defaultToggle = "profile" }) => {
                                 id="editConfirmPassword"
                                 value={editStates.editConfirmPassword.value}
                                 autoComplete="off"
+                                onFocus={() =>
+                                  handleFocus("editConfirmPassword")
+                                }
                                 onBlur={() => handleBlur("editConfirmPassword")}
                                 onChange={(event) =>
                                   handleChange(
@@ -543,145 +643,178 @@ const Account = ({ defaultToggle = "profile" }) => {
                         ) : (
                           <span
                             className="edit-icon"
-                            onClick={() => setFormActive("identity")}
+                            onClick={() => handlePersonalEditClick()}
                           >
                             <PiPencilSimpleLineLight />
                           </span>
                         )}
                       </h1>
                     </div>
-                    <div className="update-profile-form__first-name">
-                      <div className="input-wrapper">
-                        <label htmlFor="editFirstName" className="cap">
-                          \first name
-                        </label>
-                        <div>
-                          <input
-                            type="text"
-                            id="editFirstName"
-                            value={editStates.editFirstName.value}
-                            maxLength="30"
-                            autoComplete="off"
-                            onBlur={() => handleBlur("editFirstName")}
-                            onChange={(event) =>
-                              handleChange(
-                                event,
-                                "editFirstName",
-                                editStates.editFirstName.type,
-                                setEditStates
-                              )
-                            }
-                          />
-                        </div>
-                        <p
-                          className={
-                            editStates.editFirstName.hasError
-                              ? "hasError"
-                              : "valid"
-                          }
-                        >
-                          {editStates.editFirstName.hasError}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="update-profile-form__last-name">
-                      <div className="input-wrapper">
-                        <label htmlFor="editLastName" className="cap">
-                          \last name
-                        </label>
-                        <div>
-                          <input
-                            type="text"
-                            id="editLastName"
-                            value={editStates.editLastName.value}
-                            maxLength="30"
-                            autoComplete="off"
-                            onBlur={() => handleBlur("editLastName")}
-                            onChange={(event) =>
-                              handleChange(
-                                event,
-                                "editLastName",
-                                editStates.editLastName.type,
-                                setEditStates
-                              )
-                            }
-                          />
-                        </div>
-                        <p
-                          className={
-                            editStates.editLastName.hasError
-                              ? "hasError"
-                              : "valid"
-                          }
-                        >
-                          {editStates.editLastName.hasError}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="update-profile-form__phone">
-                      <div className="input-wrapper">
-                        <label htmlFor="editPhone" className="cap">
-                          \phone number
-                        </label>
+                    {editOutcome.type === "personal" ? (
+                      <div className="edit-outcome">
                         <div className="__container">
-                          <span>+1</span>
-                          <input
-                            type="tel"
-                            id="editPhone"
-                            value={editStates.editPhone.value}
-                            autoComplete="off"
-                            onBlur={() => handleBlur("editPhone")}
-                            onChange={(event) =>
-                              handleChange(
-                                event,
-                                "editPhone",
-                                editStates.editPhone.type,
-                                setEditStates
-                              )
+                          <span className="edit-outcome__state upp">
+                            {editOutcome.state}
+                          </span>
+                          <span
+                            onClick={() =>
+                              setEditOutcome({
+                                type: "",
+                                state: "",
+                                message: "",
+                              })
                             }
-                          />
+                          >
+                            <GrClose />
+                          </span>
                         </div>
-                        <p
-                          className={
-                            editStates.editPhone.hasError ? "hasError" : "valid"
-                          }
-                        >
-                          {editStates.editPhone.hasError}
-                        </p>
+                        <p>{editOutcome.message}</p>
                       </div>
-                    </div>
-                    <div className="update-profile-form__date-of-birth">
-                      <div className="input-wrapper">
-                        <label htmlFor="editDOB" className="cap">
-                          \date of birth
-                        </label>
-                        <div>
-                          <input
-                            type="date"
-                            id="editDOB"
-                            value={editStates.editDOB.value}
-                            autoComplete="off"
-                            onBlur={() => handleBlur("editDOB")}
-                            onChange={(event) =>
-                              handleChange(
-                                event,
-                                "editDOB",
-                                editStates.editDOB.type,
-                                setEditStates
-                              )
-                            }
-                            max="9999-12-31"
-                          />
+                    ) : (
+                      ""
+                    )}
+                    {!componentsLoading.includes("update-identity") ? (
+                      <>
+                        <div className="update-profile-form__first-name">
+                          <div className="input-wrapper">
+                            <label htmlFor="editFirstName" className="cap">
+                              \first name
+                            </label>
+                            <div>
+                              <input
+                                type="text"
+                                id="editFirstName"
+                                value={editStates.editFirstName.value}
+                                maxLength="30"
+                                autoComplete="off"
+                                onBlur={() => handleBlur("editFirstName")}
+                                onChange={(event) =>
+                                  handleChange(
+                                    event,
+                                    "editFirstName",
+                                    editStates.editFirstName.type,
+                                    setEditStates
+                                  )
+                                }
+                              />
+                            </div>
+                            <p
+                              className={
+                                editStates.editFirstName.hasError
+                                  ? "hasError"
+                                  : "valid"
+                              }
+                            >
+                              {editStates.editFirstName.hasError}
+                            </p>
+                          </div>
                         </div>
-                        <p
-                          className={
-                            editStates.editDOB.hasError ? "hasError" : "valid"
-                          }
-                        >
-                          {editStates.editDOB.hasError}
-                        </p>
-                      </div>
-                    </div>
+                        <div className="update-profile-form__last-name">
+                          <div className="input-wrapper">
+                            <label htmlFor="editLastName" className="cap">
+                              \last name
+                            </label>
+                            <div>
+                              <input
+                                type="text"
+                                id="editLastName"
+                                value={editStates.editLastName.value}
+                                maxLength="30"
+                                autoComplete="off"
+                                onBlur={() => handleBlur("editLastName")}
+                                onChange={(event) =>
+                                  handleChange(
+                                    event,
+                                    "editLastName",
+                                    editStates.editLastName.type,
+                                    setEditStates
+                                  )
+                                }
+                              />
+                            </div>
+                            <p
+                              className={
+                                editStates.editLastName.hasError
+                                  ? "hasError"
+                                  : "valid"
+                              }
+                            >
+                              {editStates.editLastName.hasError}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="update-profile-form__phone">
+                          <div className="input-wrapper">
+                            <label htmlFor="editPhone" className="cap">
+                              \phone number
+                            </label>
+                            <div className="__container">
+                              <span>+1</span>
+                              <input
+                                type="tel"
+                                id="editPhone"
+                                value={editStates.editPhone.value}
+                                autoComplete="off"
+                                onBlur={() => handleBlur("editPhone")}
+                                onChange={(event) =>
+                                  handleChange(
+                                    event,
+                                    "editPhone",
+                                    editStates.editPhone.type,
+                                    setEditStates
+                                  )
+                                }
+                              />
+                            </div>
+                            <p
+                              className={
+                                editStates.editPhone.hasError
+                                  ? "hasError"
+                                  : "valid"
+                              }
+                            >
+                              {editStates.editPhone.hasError}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="update-profile-form__date-of-birth">
+                          <div className="input-wrapper">
+                            <label htmlFor="editDOB" className="cap">
+                              \date of birth
+                            </label>
+                            <div>
+                              <input
+                                type="date"
+                                id="editDOB"
+                                value={editStates.editDOB.value}
+                                autoComplete="off"
+                                onBlur={() => handleBlur("editDOB")}
+                                onChange={(event) =>
+                                  handleChange(
+                                    event,
+                                    "editDOB",
+                                    editStates.editDOB.type,
+                                    setEditStates
+                                  )
+                                }
+                                max="9999-12-31"
+                              />
+                            </div>
+                            <p
+                              className={
+                                editStates.editDOB.hasError
+                                  ? "hasError"
+                                  : "valid"
+                              }
+                            >
+                              {editStates.editDOB.hasError}
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      "Loading"
+                    )}
                     <p className="disclaimer">
                       Disclaimer: Bogue assumes full responsibility for the
                       management and protection of your personal information. We
@@ -713,12 +846,12 @@ const Account = ({ defaultToggle = "profile" }) => {
                         </p>
                       </>
                     ) : (
-                      <button
+                      <div
                         className="identity__button-light"
-                        onClick={() => setFormActive("identity")}
+                        onClick={() => handlePersonalEditClick()}
                       >
                         Edit
-                      </button>
+                      </div>
                     )}
                   </div>
                 </form>
