@@ -8,15 +8,6 @@ import { GrFormCheckmark } from "react-icons/gr";
 import { PiEye, PiEyeClosed } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
 
-// import {
-//   validateConfirmPassword,
-//   validateDate,
-//   validateEmail,
-//   validateName,
-//   validateNewPassword,
-//   validatePassword,
-//   validatePhone,
-// } from "../functions/validateFunctions";
 import { handleChange } from "../functions/handleChange";
 import {
   handleAuthenticate,
@@ -25,6 +16,8 @@ import {
   handleSignInAuthentication,
   handleSignOut,
 } from "../functions/authenticationFunctions";
+
+import InputWrapper from "../components/InputWrapper";
 
 const AccessPortal = ({ defaultPortal = "login" }) => {
   const dispatch = useDispatch();
@@ -325,162 +318,95 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
               noValidate
             >
               <div className="reset-password-form__new-password">
-                <div className="input-wrapper">
-                  <label
-                    htmlFor="newPassword"
-                    className={`cap${
-                      inputStates["newPassword"].isFocused ||
-                      inputStates["newPassword"].value !== ""
-                        ? " isFocused"
-                        : ""
+                <InputWrapper
+                  state={inputStates.newPassword}
+                  text="\Create a new password"
+                >
+                  <input
+                    type={`${
+                      inputStates.newPassword.isVisible ? "text" : "password"
                     }`}
+                    id="newPassword"
+                    value={inputStates.newPassword.value}
+                    placeholder="SillyPancake42@"
+                    autoComplete="off"
+                    spellCheck="false"
+                    maxLength="30"
+                    onFocus={() => handleFocus("newPassword")}
+                    onBlur={() => handleBlur("newPassword")}
+                    onChange={(event) =>
+                      handleChange(
+                        event,
+                        "newPassword",
+                        inputStates.newPassword.type,
+                        setInputStates,
+                        inputStates.newPassword.value
+                      )
+                    }
+                  />
+                  <span
+                    onClick={() => {
+                      setInputStates({
+                        ...inputStates,
+                        newPassword: {
+                          ...inputStates.newPassword,
+                          isVisible: !inputStates.newPassword.isVisible,
+                        },
+                      });
+                    }}
                   >
-                    \Create a new password
-                  </label>
-                  <div className="__container">
-                    <input
-                      type={`${
-                        inputStates.newPassword.isVisible ? "text" : "password"
-                      }`}
-                      id="newPassword"
-                      value={inputStates.newPassword.value}
-                      placeholder="SillyPancake42@"
-                      autoComplete="off"
-                      spellCheck="false"
-                      maxLength="30"
-                      onFocus={() => handleFocus("newPassword")}
-                      onBlur={() => handleBlur("newPassword")}
-                      onChange={(event) =>
-                        handleChange(
-                          event,
-                          "newPassword",
-                          inputStates.newPassword.type,
-                          setInputStates,
-                          inputStates.newPassword.value
-                        )
-                      }
-                    />
-                    <span
-                      onClick={() => {
-                        setInputStates({
-                          ...inputStates,
-                          newPassword: {
-                            ...inputStates.newPassword,
-                            isVisible: !inputStates.newPassword.isVisible,
-                          },
-                        });
-                      }}
-                    >
-                      {inputStates["newPassword"].isVisible ? (
-                        <PiEye />
-                      ) : (
-                        <PiEyeClosed />
-                      )}
-                    </span>
-                  </div>
-                  <p className="create-pw-field">
-                    <span
-                      className={
-                        inputStates.newPassword.hasError.includes("length")
-                          ? "hasError"
-                          : "valid"
-                      }
-                    >
-                      At least 6 characters
-                    </span>
-                    <span
-                      className={
-                        inputStates.newPassword.hasError.includes("lowercase")
-                          ? "hasError"
-                          : "valid"
-                      }
-                    >
-                      1 lowercase letter
-                    </span>
-                    <span
-                      className={
-                        inputStates.newPassword.hasError.includes("uppercase")
-                          ? "hasError"
-                          : "valid"
-                      }
-                    >
-                      1 uppercase letter
-                    </span>
-                    <span
-                      className={
-                        inputStates.newPassword.hasError.includes("digit")
-                          ? "hasError"
-                          : "valid"
-                      }
-                    >
-                      1 digit
-                    </span>
-                  </p>
-                </div>
+                    {inputStates["newPassword"].isVisible ? (
+                      <PiEye />
+                    ) : (
+                      <PiEyeClosed />
+                    )}
+                  </span>
+                </InputWrapper>
               </div>
               <div className="reset-password-form__confirmPassword">
-                <div className="input-wrapper">
-                  <label
-                    htmlFor="confirmPassword"
-                    className={`cap${
-                      inputStates["confirmPassword"].isFocused ||
-                      inputStates["confirmPassword"].value !== ""
-                        ? " isFocused"
-                        : ""
+                <InputWrapper
+                  state={inputStates.confirmPassword}
+                  text="\Confirm your new password"
+                >
+                  <input
+                    type={`${
+                      inputStates.confirmPassword.isVisible
+                        ? "text"
+                        : "password"
                     }`}
-                  >
-                    \Confirm your new Password
-                  </label>
-                  <div className="__container">
-                    <input
-                      type={`${
-                        inputStates.confirmPassword.isVisible
-                          ? "text"
-                          : "password"
-                      }`}
-                      id="confirmPassword"
-                      value={inputStates.confirmPassword.value}
-                      autoComplete="off"
-                      spellCheck="false"
-                      onFocus={() => handleFocus("confirmPassword")}
-                      onBlur={() => handleBlur("confirmPassword")}
-                      onChange={(event) =>
-                        handleChange(
-                          event,
-                          "confirmPassword",
-                          inputStates.confirmPassword.type,
-                          setInputStates
-                        )
-                      }
-                    />
-                    <span
-                      onClick={() => {
-                        setInputStates({
-                          ...inputStates,
-                          confirmPassword: {
-                            ...inputStates.confirmPassword,
-                            isVisible: !inputStates.confirmPassword.isVisible,
-                          },
-                        });
-                      }}
-                    >
-                      {inputStates["confirmPassword"].isVisible ? (
-                        <PiEye />
-                      ) : (
-                        <PiEyeClosed />
-                      )}
-                    </span>
-                  </div>
-                  <p
-                    className={
-                      inputStates.confirmPassword.hasError
-                        ? "hasError"
-                        : "valid"
+                    id="confirmPassword"
+                    value={inputStates.confirmPassword.value}
+                    autoComplete="off"
+                    spellCheck="false"
+                    onFocus={() => handleFocus("confirmPassword")}
+                    onBlur={() => handleBlur("confirmPassword")}
+                    onChange={(event) =>
+                      handleChange(
+                        event,
+                        "confirmPassword",
+                        inputStates.confirmPassword.type,
+                        setInputStates
+                      )
                     }
+                  />
+                  <span
+                    onClick={() => {
+                      setInputStates({
+                        ...inputStates,
+                        confirmPassword: {
+                          ...inputStates.confirmPassword,
+                          isVisible: !inputStates.confirmPassword.isVisible,
+                        },
+                      });
+                    }}
                   >
-                    {inputStates.confirmPassword.hasError}
-                  </p>
-                </div>
+                    {inputStates["confirmPassword"].isVisible ? (
+                      <PiEye />
+                    ) : (
+                      <PiEyeClosed />
+                    )}
+                  </span>
+                </InputWrapper>
               </div>
               <div className="button__wrapper">
                 <button
@@ -514,109 +440,69 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
               {portal === "login" ? (
                 <form onSubmit={handleSignIn} className="login-form" noValidate>
                   <div className="login-form__email">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="email"
-                        className={`cap${
-                          inputStates["email"].isFocused ||
-                          inputStates["email"].value !== ""
-                            ? " isFocused"
-                            : ""
-                        }`}
-                      >
-                        \email
-                      </label>
-                      <div>
-                        <input
-                          ref={emailRef}
-                          type="email"
-                          id="email"
-                          value={inputStates.email.value}
-                          placeholder="bogue@email.com"
-                          autoComplete="off"
-                          maxLength="30"
-                          spellCheck="false"
-                          onFocus={() => handleFocus("email")}
-                          onBlur={() => handleBlur("email")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "email",
-                              inputStates.email.type,
-                              setInputStates
-                            )
-                          }
-                        />
-                      </div>
-                      <p
-                        className={
-                          inputStates.email.hasError ? "hasError" : "valid"
+                    <InputWrapper state={inputStates.email} text="\email">
+                      <input
+                        ref={emailRef}
+                        type="email"
+                        id="email"
+                        value={inputStates.email.value}
+                        placeholder="bogue@email.com"
+                        autoComplete="off"
+                        maxLength="30"
+                        spellCheck="false"
+                        onFocus={() => handleFocus("email")}
+                        onBlur={() => handleBlur("email")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "email",
+                            inputStates.email.type,
+                            setInputStates
+                          )
                         }
-                      >
-                        {inputStates.email.hasError}
-                      </p>
-                    </div>
+                      />
+                    </InputWrapper>
                   </div>
                   <div className="login-form__password">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="password"
-                        className={`cap${
-                          inputStates["password"].isFocused ||
-                          inputStates["password"].value !== ""
-                            ? " isFocused"
-                            : ""
+                    <InputWrapper state={inputStates.password} text="\password">
+                      <input
+                        type={`${
+                          inputStates.password.isVisible ? "text" : "password"
                         }`}
-                      >
-                        \password
-                      </label>
-                      <div className="__container">
-                        <input
-                          type={`${
-                            inputStates.password.isVisible ? "text" : "password"
-                          }`}
-                          id="password"
-                          value={inputStates.password.value}
-                          placeholder="SillyPancake42@"
-                          autoComplete="off"
-                          spellCheck="false"
-                          onFocus={() => handleFocus("password")}
-                          onBlur={() => handleBlur("password")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "password",
-                              inputStates.password.type,
-                              setInputStates
-                            )
-                          }
-                        />
-                        <span
-                          onClick={() => {
-                            setInputStates({
-                              ...inputStates,
-                              password: {
-                                ...inputStates.password,
-                                isVisible: !inputStates.password.isVisible,
-                              },
-                            });
-                          }}
-                        >
-                          {inputStates["password"].isVisible ? (
-                            <PiEye />
-                          ) : (
-                            <PiEyeClosed />
-                          )}
-                        </span>
-                      </div>
-                      <p
-                        className={
-                          inputStates.password.hasError ? "hasError" : "valid"
+                        id="password"
+                        value={inputStates.password.value}
+                        placeholder="SillyPancake42@"
+                        autoComplete="off"
+                        spellCheck="false"
+                        onFocus={() => handleFocus("password")}
+                        onBlur={() => handleBlur("password")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "password",
+                            inputStates.password.type,
+                            setInputStates
+                          )
                         }
+                      />
+                      <span
+                        onClick={() => {
+                          setInputStates({
+                            ...inputStates,
+                            password: {
+                              ...inputStates.password,
+                              isVisible: !inputStates.password.isVisible,
+                            },
+                          });
+                        }}
                       >
-                        {inputStates.password.hasError}
-                      </p>
-                    </div>
+                        {inputStates.password.isVisible ? (
+                          <PiEye />
+                        ) : (
+                          <PiEyeClosed />
+                        )}
+                      </span>
+                    </InputWrapper>
                   </div>
                   <div
                     className="login-form__forgot-password"
@@ -659,49 +545,30 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                         </p>
                       </div>
                       <div className="login-form__retrieve-email">
-                        <div className="input-wrapper">
-                          <label
-                            htmlFor="retrieve-email"
-                            className={`cap${
-                              inputStates["retrieveEmail"].isFocused ||
-                              inputStates["retrieveEmail"].value !== ""
-                                ? " isFocused"
-                                : ""
-                            }`}
-                          >
-                            \email address
-                          </label>
-                          <div>
-                            <input
-                              type="email"
-                              id="retrieve-email"
-                              value={inputStates.retrieveEmail.value}
-                              placeholder="SillyPancake42@"
-                              autoComplete="off"
-                              maxLength="30"
-                              spellCheck="false"
-                              onFocus={() => handleFocus("retrieveEmail")}
-                              onBlur={() => handleBlur("retrieveEmail")}
-                              onChange={(event) =>
-                                handleChange(
-                                  event,
-                                  "retrieveEmail",
-                                  inputStates.retrieveEmail.type,
-                                  setInputStates
-                                )
-                              }
-                            />
-                          </div>
-                          <p
-                            className={
-                              inputStates.retrieveEmail.hasError
-                                ? "hasError"
-                                : "valid"
+                        <InputWrapper
+                          state={inputStates.retrieveEmail}
+                          text="\email address"
+                        >
+                          <input
+                            type="email"
+                            id="retrieve-email"
+                            value={inputStates.retrieveEmail.value}
+                            placeholder="SillyPancake42@"
+                            autoComplete="off"
+                            maxLength="30"
+                            spellCheck="false"
+                            onFocus={() => handleFocus("retrieveEmail")}
+                            onBlur={() => handleBlur("retrieveEmail")}
+                            onChange={(event) =>
+                              handleChange(
+                                event,
+                                "retrieveEmail",
+                                inputStates.retrieveEmail.type,
+                                setInputStates
+                              )
                             }
-                          >
-                            {inputStates.retrieveEmail.hasError}
-                          </p>
-                        </div>
+                          />
+                        </InputWrapper>
                       </div>
                       <div className="button__wrapper">
                         <button
@@ -761,152 +628,73 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                     <h5 className="upp">login information</h5>
                   </div>
                   <div className="create-account-form__email">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="createEmail"
-                        className={`cap${
-                          inputStates["createEmail"].isFocused ||
-                          inputStates["createEmail"].value !== ""
-                            ? " isFocused"
-                            : ""
-                        }`}
-                      >
-                        \email
-                      </label>
-                      <div>
-                        <input
-                          type="email"
-                          id="createEmail"
-                          value={inputStates.createEmail.value}
-                          placeholder="bogue@email.com"
-                          autoComplete="off"
-                          spellCheck="false"
-                          onFocus={() => handleFocus("createEmail")}
-                          onBlur={() => handleBlur("createEmail")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "createEmail",
-                              inputStates.createEmail.type,
-                              setInputStates
-                            )
-                          }
-                        />
-                      </div>
-                      <p
-                        className={
-                          inputStates.createEmail.hasError
-                            ? "hasError"
-                            : "valid"
+                    <InputWrapper state={inputStates.createEmail} text="\email">
+                      <input
+                        type="email"
+                        id="createEmail"
+                        value={inputStates.createEmail.value}
+                        placeholder="bogue@email.com"
+                        autoComplete="off"
+                        spellCheck="false"
+                        onFocus={() => handleFocus("createEmail")}
+                        onBlur={() => handleBlur("createEmail")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "createEmail",
+                            inputStates.createEmail.type,
+                            setInputStates
+                          )
                         }
-                      >
-                        {inputStates.createEmail.hasError}
-                      </p>
-                    </div>
+                      />
+                    </InputWrapper>
                   </div>
                   <div className="create-account-form__password">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="createPassword"
-                        className={`cap${
-                          inputStates["createPassword"].isFocused ||
-                          inputStates["createPassword"].value !== ""
-                            ? " isFocused"
-                            : ""
+                    <InputWrapper
+                      state={inputStates.createPassword}
+                      text="\create a password"
+                    >
+                      <input
+                        type={`${
+                          inputStates.createPassword.isVisible
+                            ? "text"
+                            : "password"
                         }`}
+                        id="createPassword"
+                        value={inputStates.createPassword.value}
+                        placeholder="SillyPancake42@"
+                        autoComplete="off"
+                        spellCheck="false"
+                        onFocus={() => handleFocus("createPassword")}
+                        onBlur={() => handleBlur("createPassword")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "createPassword",
+                            inputStates.createPassword.type,
+                            setInputStates
+                          )
+                        }
+                        maxLength="25"
+                      />
+                      <span
+                        onClick={() => {
+                          setInputStates({
+                            ...inputStates,
+                            createPassword: {
+                              ...inputStates.createPassword,
+                              isVisible: !inputStates.createPassword.isVisible,
+                            },
+                          });
+                        }}
                       >
-                        \create a password
-                      </label>
-                      <div className="__container">
-                        <input
-                          type={`${
-                            inputStates.createPassword.isVisible
-                              ? "text"
-                              : "password"
-                          }`}
-                          id="createPassword"
-                          value={inputStates.createPassword.value}
-                          placeholder="SillyPancake42@"
-                          autoComplete="off"
-                          spellCheck="false"
-                          onFocus={() => handleFocus("createPassword")}
-                          onBlur={() => handleBlur("createPassword")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "createPassword",
-                              inputStates.createPassword.type,
-                              setInputStates
-                            )
-                          }
-                          maxLength="25"
-                        />
-                        <span
-                          onClick={() => {
-                            setInputStates({
-                              ...inputStates,
-                              createPassword: {
-                                ...inputStates.createPassword,
-                                isVisible:
-                                  !inputStates.createPassword.isVisible,
-                              },
-                            });
-                          }}
-                        >
-                          {inputStates["createPassword"].isVisible ? (
-                            <PiEye />
-                          ) : (
-                            <PiEyeClosed />
-                          )}
-                        </span>
-                      </div>
-                      <p className="create-pw-field">
-                        <span
-                          className={
-                            inputStates.createPassword.hasError.includes(
-                              "length"
-                            )
-                              ? "hasError"
-                              : "valid"
-                          }
-                        >
-                          At least 6 characters
-                        </span>
-                        <span
-                          className={
-                            inputStates.createPassword.hasError.includes(
-                              "lowercase"
-                            )
-                              ? "hasError"
-                              : "valid"
-                          }
-                        >
-                          1 lowercase letter
-                        </span>
-                        <span
-                          className={
-                            inputStates.createPassword.hasError.includes(
-                              "uppercase"
-                            )
-                              ? "hasError"
-                              : "valid"
-                          }
-                        >
-                          1 uppercase letter
-                        </span>
-                        <span
-                          className={
-                            inputStates.createPassword.hasError.includes(
-                              "digit"
-                            )
-                              ? "hasError"
-                              : "valid"
-                          }
-                        >
-                          1 digit
-                        </span>
-                      </p>
-                    </div>
+                        {inputStates["createPassword"].isVisible ? (
+                          <PiEye />
+                        ) : (
+                          <PiEyeClosed />
+                        )}
+                      </span>
+                    </InputWrapper>
                   </div>
                 </div>
                 <div className="personal-info">
@@ -914,170 +702,98 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                     <h5 className="upp">personal information</h5>
                   </div>
                   <div className="create-account-form__first-name">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="firstName"
-                        className={`cap${
-                          inputStates["firstName"].isFocused ||
-                          inputStates["firstName"].value !== ""
-                            ? " isFocused"
-                            : ""
-                        }`}
-                      >
-                        \first name
-                      </label>
-                      <div>
-                        <input
-                          type="text"
-                          id="firstName"
-                          value={inputStates.firstName.value}
-                          autoComplete="off"
-                          spellCheck="false"
-                          onFocus={() => handleFocus("firstName")}
-                          onBlur={() => handleBlur("firstName")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "firstName",
-                              inputStates.firstName.type,
-                              setInputStates
-                            )
-                          }
-                        />
-                      </div>
-                      <p
-                        className={
-                          inputStates.firstName.hasError ? "hasError" : "valid"
+                    <InputWrapper
+                      state={inputStates.firstName}
+                      text="\first name"
+                    >
+                      <input
+                        type="text"
+                        id="firstName"
+                        value={inputStates.firstName.value}
+                        autoComplete="off"
+                        spellCheck="false"
+                        onFocus={() => handleFocus("firstName")}
+                        onBlur={() => handleBlur("firstName")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "firstName",
+                            inputStates.firstName.type,
+                            setInputStates
+                          )
                         }
-                      >
-                        {inputStates.firstName.hasError}
-                      </p>
-                    </div>
+                      />
+                    </InputWrapper>
                   </div>
                   <div className="create-account-form__last-name">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="lastName"
-                        className={`cap${
-                          inputStates["lastName"].isFocused ||
-                          inputStates["lastName"].value !== ""
-                            ? " isFocused"
-                            : ""
-                        }`}
-                      >
-                        \last name
-                      </label>
-                      <div>
-                        <input
-                          type="text"
-                          id="lastName"
-                          value={inputStates.lastName.value}
-                          autoComplete="off"
-                          spellCheck="false"
-                          onFocus={() => handleFocus("lastName")}
-                          onBlur={() => handleBlur("lastName")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "lastName",
-                              inputStates.lastName.type,
-                              setInputStates
-                            )
-                          }
-                        />
-                      </div>
-                      <p
-                        className={
-                          inputStates.lastName.hasError ? "hasError" : "valid"
+                    <InputWrapper
+                      state={inputStates.lastName}
+                      text="\last name"
+                    >
+                      <input
+                        type="text"
+                        id="lastName"
+                        value={inputStates.lastName.value}
+                        autoComplete="off"
+                        spellCheck="false"
+                        onFocus={() => handleFocus("lastName")}
+                        onBlur={() => handleBlur("lastName")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "lastName",
+                            inputStates.lastName.type,
+                            setInputStates
+                          )
                         }
-                      >
-                        {inputStates.lastName.hasError}
-                      </p>
-                    </div>
+                      />
+                    </InputWrapper>
                   </div>
                   <div className="create-account-form__phone">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="phoneNumber"
-                        className={`cap${
-                          inputStates["phoneNumber"].isFocused ||
-                          inputStates["phoneNumber"].value !== ""
-                            ? " isFocused"
-                            : ""
-                        }`}
-                      >
-                        \phone number
-                      </label>
-                      <div className="__container">
-                        <span>+1</span>
-                        <input
-                          type="tel"
-                          id="phoneNumber"
-                          value={inputStates.phoneNumber.value}
-                          autoComplete="off"
-                          onBlur={() => handleBlur("phoneNumber")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "phoneNumber",
-                              inputStates.phoneNumber.type,
-                              setInputStates
-                            )
-                          }
-                        />
-                      </div>
-                      <p
-                        className={
-                          inputStates.phoneNumber.hasError
-                            ? "hasError"
-                            : "valid"
+                    <InputWrapper
+                      state={inputStates.phoneNumber}
+                      text="\phone number"
+                    >
+                      <span>+1</span>
+                      <input
+                        type="tel"
+                        id="phoneNumber"
+                        value={inputStates.phoneNumber.value}
+                        autoComplete="off"
+                        onBlur={() => handleBlur("phoneNumber")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "phoneNumber",
+                            inputStates.phoneNumber.type,
+                            setInputStates
+                          )
                         }
-                      >
-                        {inputStates.phoneNumber.hasError}
-                      </p>
-                    </div>
+                      />
+                    </InputWrapper>
                   </div>
                   <div className="create-account-form__date-of-birth">
-                    <div className="input-wrapper">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className={`cap${
-                          inputStates["dateOfBirth"].isFocused ||
-                          inputStates["dateOfBirth"].value !== ""
-                            ? " isFocused"
-                            : ""
-                        }`}
-                      >
-                        \date of birth
-                      </label>
-                      <div>
-                        <input
-                          type="date"
-                          id="dateOfBirth"
-                          value={inputStates.dateOfBirth.value}
-                          autoComplete="off"
-                          onBlur={() => handleBlur("dateOfBirth")}
-                          onChange={(event) =>
-                            handleChange(
-                              event,
-                              "dateOfBirth",
-                              inputStates.dateOfBirth.type,
-                              setInputStates
-                            )
-                          }
-                          max="9999-12-31"
-                        />
-                      </div>
-                      <p
-                        className={
-                          inputStates.dateOfBirth.hasError
-                            ? "hasError"
-                            : "valid"
+                    <InputWrapper
+                      state={inputStates.dateOfBirth}
+                      text="\date of birth"
+                    >
+                      <input
+                        type="date"
+                        id="dateOfBirth"
+                        value={inputStates.dateOfBirth.value}
+                        autoComplete="off"
+                        onBlur={() => handleBlur("dateOfBirth")}
+                        onChange={(event) =>
+                          handleChange(
+                            event,
+                            "dateOfBirth",
+                            inputStates.dateOfBirth.type,
+                            setInputStates
+                          )
                         }
-                      >
-                        {inputStates.dateOfBirth.hasError}
-                      </p>
-                    </div>
+                        max="9999-12-31"
+                      />
+                    </InputWrapper>
                   </div>
                 </div>
                 <div className="create-account-form__tos">
@@ -1111,7 +827,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                         </span>
                       </span>
                       <p ref={pRef}>
-                        I've read the privacy policy and agree to the use of my
+                        I've read the <span className="privacy-policy">privacy policy</span> and agree to the use of my
                         personal data to create my account.
                       </p>
                     </label>

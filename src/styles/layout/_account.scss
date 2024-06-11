@@ -240,10 +240,12 @@
     }
 }
 
-.disclaimer{
+.disclaimer {
     opacity: 0.6;
     font-size: calc(abstracts.$padding-md - 4px);
+}
 
+.checkbox, .disclaimer{
     .privacy-policy{
         text-decoration: underline;
         cursor: pointer;

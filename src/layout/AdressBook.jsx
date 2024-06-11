@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import InputWrapper from "../components/InputWrapper";
+
 import accountAddressStates from "../json/accountAddressStates.json";
 
 import { fetchUserAddresses } from "../functions/fetchFunctions";
@@ -15,7 +17,8 @@ const AdressBook = ({ userID }) => {
     });
   }, []);
 
-  const [addressFormStates, setAddressFormStates] = useState(accountAddressStates);
+  const [addressFormStates, setAddressFormStates] =
+    useState(accountAddressStates);
   const handleFocus = (addressID) => {
     setAddressFormStates({
       ...addressFormStates,
@@ -64,392 +67,242 @@ const AdressBook = ({ userID }) => {
         <div className="add-address">
           <div className="add-address__wrapper">
             <div className="update-address-book__first-name">
-              <div className="input-wrapper">
-                <label
-                  htmlFor="addressFirstName"
-                  className={`cap${
-                    addressFormStates.addressFirstName.isFocused ||
-                    addressFormStates.addressFirstName.value !== ""
-                      ? " isFocused"
-                      : " notFocused"
-                  }`}
-                >
-                  \first name
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    id="addressFirstName"
-                    value={addressFormStates.addressFirstName.value}
-                    maxLength="30"
-                    autoComplete="off"
-                    spellCheck="false"
-                    onFocus={() => handleFocus("addressFirstName")}
-                    onBlur={() => handleBlur("addressFirstName")}
-                    onChange={(event) =>
-                      handleChange(
-                        event,
-                        "addressFirstName",
-                        addressFormStates.addressFirstName.type,
-                        setAddressFormStates
-                      )
-                    }
-                  />
-                </div>
-                <p
-                  className={
-                    addressFormStates.addressFirstName.hasError ? "hasError" : "valid"
+              <InputWrapper
+                state={addressFormStates.addressFirstName}
+                text="\first name"
+              >
+                <input
+                  type="text"
+                  id="addressFirstName"
+                  value={addressFormStates.addressFirstName.value}
+                  maxLength="30"
+                  autoComplete="off"
+                  spellCheck="false"
+                  onFocus={() => handleFocus("addressFirstName")}
+                  onBlur={() => handleBlur("addressFirstName")}
+                  onChange={(event) =>
+                    handleChange(
+                      event,
+                      "addressFirstName",
+                      addressFormStates.addressFirstName.type,
+                      setAddressFormStates
+                    )
                   }
-                >
-                  {addressFormStates.addressFirstName.hasError}
-                </p>
-              </div>
+                />
+              </InputWrapper>
             </div>
             <div className="update-address-book__last-name">
-              <div className="input-wrapper">
-                <label
-                  htmlFor="addressLastName"
-                  className={`cap${
-                    addressFormStates.addressLastName.isFocused ||
-                    addressFormStates.addressLastName.value !== ""
-                      ? " isFocused"
-                      : " notFocused"
-                  }`}
-                >
-                  \last name
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    id="addressLastName"
-                    value={addressFormStates.addressLastName.value}
-                    maxLength="30"
-                    autoComplete="off"
-                    spellCheck="false"
-                    onFocus={() => handleFocus("addressLastName")}
-                    onBlur={() => handleBlur("addressLastName")}
-                    onChange={(event) =>
-                      handleChange(
-                        event,
-                        "addressLastName",
-                        addressFormStates.addressLastName.type,
-                        setAddressFormStates
-                      )
-                    }
-                  />
-                </div>
-                <p
-                  className={
-                    addressFormStates.addressLastName.hasError ? "hasError" : "valid"
+              <InputWrapper
+                state={addressFormStates.addressLastName}
+                text="\last name"
+              >
+                <input
+                  type="text"
+                  id="addressLastName"
+                  value={addressFormStates.addressLastName.value}
+                  maxLength="30"
+                  autoComplete="off"
+                  spellCheck="false"
+                  onFocus={() => handleFocus("addressLastName")}
+                  onBlur={() => handleBlur("addressLastName")}
+                  onChange={(event) =>
+                    handleChange(
+                      event,
+                      "addressLastName",
+                      addressFormStates.addressLastName.type,
+                      setAddressFormStates
+                    )
                   }
-                >
-                  {addressFormStates.addressLastName.hasError}
-                </p>
-              </div>
+                />
+              </InputWrapper>
             </div>
           </div>
           <div className="update-address-book__street">
-            <div className="input-wrapper">
-              <label
-                htmlFor="addressStreet"
-                className={`cap${
-                  addressFormStates.addressStreet.isFocused ||
-                  addressFormStates.addressStreet.value !== ""
-                    ? " isFocused"
-                    : " notFocused"
-                }`}
-              >
-                \address line 1
-                <span className="address-line">- street address</span>
-              </label>
-              <div>
-                <input
-                  type="text"
-                  id="addressStreet"
-                  value={addressFormStates.addressStreet.value}
-                  maxLength="50"
-                  autoComplete="street-address"
-                  spellCheck="false"
-                  onFocus={() => handleFocus("addressStreet")}
-                  onBlur={() => handleBlur("addressStreet")}
-                  onChange={(event) =>
-                    handleChange(
-                      event,
-                      "addressStreet",
-                      addressFormStates.addressStreet.type,
-                      setAddressFormStates
-                    )
-                  }
-                />
-              </div>
-              <p
-                className={
-                  addressFormStates.addressStreet.hasError ? "hasError" : "valid"
+            <InputWrapper
+              state={addressFormStates.addressStreet}
+              text={
+                <>
+                  \address line 1
+                  <span className="address-line">- street address</span>
+                </>
+              }
+            >
+              <input
+                type="text"
+                id="addressStreet"
+                value={addressFormStates.addressStreet.value}
+                maxLength="50"
+                autoComplete="street-address"
+                spellCheck="false"
+                onFocus={() => handleFocus("addressStreet")}
+                onBlur={() => handleBlur("addressStreet")}
+                onChange={(event) =>
+                  handleChange(
+                    event,
+                    "addressStreet",
+                    addressFormStates.addressStreet.type,
+                    setAddressFormStates
+                  )
                 }
-              >
-                {addressFormStates.addressStreet.hasError}
-              </p>
-            </div>
+              />
+            </InputWrapper>
           </div>
           <div className="update-address-book__street-two">
-            <div className="input-wrapper">
-              <label
-                htmlFor="addressStreetTwo"
-                className={`cap${
-                  addressFormStates.addressStreetTwo.isFocused ||
-                  addressFormStates.addressStreetTwo.value !== ""
-                    ? " isFocused"
-                    : " notFocused"
-                }`}
-              >
-                \address line 2
-                <span className="address-line">
-                  - apartment / floor / suite / access code
-                </span>
-              </label>
-              <div>
-                <input
-                  type="text"
-                  id="addressStreetTwo"
-                  value={addressFormStates.addressStreetTwo.value}
-                  maxLength="50"
-                  autoComplete="off"
-                  spellCheck="false"
-                  onFocus={() => handleFocus("addressStreetTwo")}
-                  onBlur={() => handleBlur("addressStreetTwo")}
-                  onChange={(event) =>
-                    handleChange(
-                      event,
-                      "addressStreetTwo",
-                      addressFormStates.addressStreetTwo.type,
-                      setAddressFormStates
-                    )
-                  }
-                />
-              </div>
-              <p
-                className={
-                  addressFormStates.addressStreetTwo.hasError ? "hasError" : "valid"
+            <InputWrapper
+              state={addressFormStates.addressStreetTwo}
+              text={
+                <>
+                  \address line 2
+                  <span className="address-line">
+                    - apartment / floor / suite / access code
+                  </span>
+                </>
+              }
+            >
+              <input
+                type="text"
+                id="addressStreetTwo"
+                value={addressFormStates.addressStreetTwo.value}
+                maxLength="50"
+                autoComplete="off"
+                spellCheck="false"
+                onFocus={() => handleFocus("addressStreetTwo")}
+                onBlur={() => handleBlur("addressStreetTwo")}
+                onChange={(event) =>
+                  handleChange(
+                    event,
+                    "addressStreetTwo",
+                    addressFormStates.addressStreetTwo.type,
+                    setAddressFormStates
+                  )
                 }
-              >
-                {addressFormStates.addressStreetTwo.hasError}
-              </p>
-            </div>
+              />
+            </InputWrapper>
           </div>
           <div className="add-address__wrapper">
             <div className="update-address-book__city">
-              <div className="input-wrapper">
-                <label
-                  htmlFor="addressCity"
-                  className={`cap${
-                    addressFormStates.addressCity.isFocused ||
-                    addressFormStates.addressCity.value !== ""
-                      ? " isFocused"
-                      : " notFocused"
-                  }`}
-                >
-                  \city
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    id="addressCity"
-                    value={addressFormStates.addressCity.value}
-                    maxLength="30"
-                    autoComplete="off"
-                    spellCheck="false"
-                    onFocus={() => handleFocus("addressCity")}
-                    onBlur={() => handleBlur("addressCity")}
-                    onChange={(event) =>
-                      handleChange(
-                        event,
-                        "addressCity",
-                        addressFormStates.addressCity.type,
-                        setAddressFormStates
-                      )
-                    }
-                  />
-                </div>
-                <p
-                  className={
-                    addressFormStates.addressCity.hasError ? "hasError" : "valid"
+              <InputWrapper state={addressFormStates.addressCity} text="\city">
+                <input
+                  type="text"
+                  id="addressCity"
+                  value={addressFormStates.addressCity.value}
+                  maxLength="30"
+                  autoComplete="off"
+                  spellCheck="false"
+                  onFocus={() => handleFocus("addressCity")}
+                  onBlur={() => handleBlur("addressCity")}
+                  onChange={(event) =>
+                    handleChange(
+                      event,
+                      "addressCity",
+                      addressFormStates.addressCity.type,
+                      setAddressFormStates
+                    )
                   }
-                >
-                  {addressFormStates.addressCity.hasError}
-                </p>
-              </div>
+                />
+              </InputWrapper>
             </div>
             <div className="update-address-book__postal-code">
-              <div className="input-wrapper">
-                <label
-                  htmlFor="addressPostalCode"
-                  className={`cap${
-                    addressFormStates.addressPostalCode.isFocused ||
-                    addressFormStates.addressPostalCode.value !== ""
-                      ? " isFocused"
-                      : " notFocused"
-                  }`}
-                >
-                  \postal code
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    id="addressPostalCode"
-                    value={addressFormStates.addressPostalCode.value}
-                    maxLength="30"
-                    autoComplete="off"
-                    spellCheck="false"
-                    onFocus={() => handleFocus("addressPostalCode")}
-                    onBlur={() => handleBlur("addressPostalCode")}
-                    onChange={(event) =>
-                      handleChange(
-                        event,
-                        "addressPostalCode",
-                        addressFormStates.addressPostalCode.type,
-                        setAddressFormStates
-                      )
-                    }
-                  />
-                </div>
-                <p
-                  className={
-                    addressFormStates.addressPostalCode.hasError
-                      ? "hasError"
-                      : "valid"
+              <InputWrapper
+                state={addressFormStates.addressPostalCode}
+                text="\postal code"
+              >
+                <input
+                  type="text"
+                  id="addressPostalCode"
+                  value={addressFormStates.addressPostalCode.value}
+                  maxLength="30"
+                  autoComplete="off"
+                  spellCheck="false"
+                  onFocus={() => handleFocus("addressPostalCode")}
+                  onBlur={() => handleBlur("addressPostalCode")}
+                  onChange={(event) =>
+                    handleChange(
+                      event,
+                      "addressPostalCode",
+                      addressFormStates.addressPostalCode.type,
+                      setAddressFormStates
+                    )
                   }
-                >
-                  {addressFormStates.addressPostalCode.hasError}
-                </p>
-              </div>
+                />
+              </InputWrapper>
             </div>
           </div>
           <div className="add-address__wrapper">
             <div className="update-address-book__province">
-              <div className="input-wrapper">
-                <label
-                  htmlFor="addressProvince"
-                  className={`cap${
-                    addressFormStates.addressProvince.isFocused ||
-                    addressFormStates.addressProvince.value !== ""
-                      ? " isFocused"
-                      : " notFocused"
-                  }`}
-                >
-                  \province
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    id="addressProvince"
-                    value={addressFormStates.addressProvince.value}
-                    maxLength="30"
-                    autoComplete="off"
-                    spellCheck="false"
-                    onFocus={() => handleFocus("addressProvince")}
-                    onBlur={() => handleBlur("addressProvince")}
-                    onChange={(event) =>
-                      handleChange(
-                        event,
-                        "addressProvince",
-                        addressFormStates.addressProvince.type,
-                        setAddressFormStates
-                      )
-                    }
-                  />
-                </div>
-                <p
-                  className={
-                    addressFormStates.addressProvince.hasError ? "hasError" : "valid"
+              <InputWrapper
+                state={addressFormStates.addressProvince}
+                text="\province"
+              >
+                <input
+                  type="text"
+                  id="addressProvince"
+                  value={addressFormStates.addressProvince.value}
+                  maxLength="30"
+                  autoComplete="off"
+                  spellCheck="false"
+                  onFocus={() => handleFocus("addressProvince")}
+                  onBlur={() => handleBlur("addressProvince")}
+                  onChange={(event) =>
+                    handleChange(
+                      event,
+                      "addressProvince",
+                      addressFormStates.addressProvince.type,
+                      setAddressFormStates
+                    )
                   }
-                >
-                  {addressFormStates.addressProvince.hasError}
-                </p>
-              </div>
+                />
+              </InputWrapper>
             </div>
             <div className="update-address-book__country">
-              <div className="input-wrapper">
-                <label
-                  htmlFor="addressCountry"
-                  className={`cap${
-                    addressFormStates.addressCountry.isFocused ||
-                    addressFormStates.addressCountry.value !== ""
-                      ? " isFocused"
-                      : " notFocused"
-                  }`}
-                >
-                  \country
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    id="addressCountry"
-                    value={addressFormStates.addressCountry.value}
-                    maxLength="30"
-                    autoComplete="off"
-                    spellCheck="false"
-                    onChange={(event) =>
-                      handleChange(
-                        event,
-                        "addressCountry",
-                        addressFormStates.addressCountry.type,
-                        setAddressFormStates
-                      )
-                    }
-                  />
-                </div>
-                <p
-                  className={
-                    addressFormStates.addressCountry.hasError ? "hasError" : "valid"
+              <InputWrapper
+                state={addressFormStates.addressCountry}
+                text="\country"
+              >
+                <input
+                  type="text"
+                  id="addressCountry"
+                  value={addressFormStates.addressCountry.value}
+                  maxLength="30"
+                  autoComplete="off"
+                  spellCheck="false"
+                  onChange={(event) =>
+                    handleChange(
+                      event,
+                      "addressCountry",
+                      addressFormStates.addressCountry.type,
+                      setAddressFormStates
+                    )
                   }
-                >
-                  {addressFormStates.addressCountry.hasError}
-                </p>
-              </div>
+                />
+              </InputWrapper>
             </div>
           </div>
           <div className="add-address__wrapper">
             <div className="update-address-book__phone">
-              <div className="input-wrapper">
-                <label
-                  htmlFor="addressPhone"
-                  className={`cap${
-                    addressFormStates.addressPhone.isFocused ||
-                    addressFormStates.addressPhone.value !== ""
-                      ? " isFocused"
-                      : " notFocused"
-                  }`}
-                >
-                  \phone number
-                </label>
-                <div className="__container">
-                  <span>+1</span>
-                  <input
-                    type="tel"
-                    id="addressPhone"
-                    value={addressFormStates.addressPhone.value}
-                    autoComplete="off"
-                    onChange={(event) =>
-                      handleChange(
-                        event,
-                        "addressPhone",
-                        addressFormStates.addressPhone.type,
-                        setAddressFormStates
-                      )
-                    }
-                  />
-                </div>
-                <p
-                  className={
-                    addressFormStates.addressPhone.hasError ? "hasError" : "valid"
+              <InputWrapper
+                state={addressFormStates.addressPhone}
+                text="\phone number"
+              >
+                <span>+1</span>
+                <input
+                  type="tel"
+                  id="addressPhone"
+                  value={addressFormStates.addressPhone.value}
+                  autoComplete="off"
+                  onChange={(event) =>
+                    handleChange(
+                      event,
+                      "addressPhone",
+                      addressFormStates.addressPhone.type,
+                      setAddressFormStates
+                    )
                   }
-                >
-                  {addressFormStates.addressPhone.hasError}
-                </p>
-              </div>
+                />
+              </InputWrapper>
             </div>
             <div className="update-address-book__null">
-              <div className="input-wrapper"></div>
+              <InputWrapper state={null}></InputWrapper>
             </div>
           </div>
           <p className="disclaimer">

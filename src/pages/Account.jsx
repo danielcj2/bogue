@@ -22,8 +22,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 //svg
 import { PiEye, PiEyeClosed } from "react-icons/pi";
-import { PiPencilSimpleLineLight, PiPencilSimpleSlashLight } from "react-icons/pi";
+import {
+  PiPencilSimpleLineLight,
+  PiPencilSimpleSlashLight,
+} from "react-icons/pi";
 import { GrClose } from "react-icons/gr";
+import InputWrapper from "../components/InputWrapper";
 
 const Account = ({ defaultToggle = "profile" }) => {
   const toggleParams = useParams();
@@ -122,7 +126,7 @@ const Account = ({ defaultToggle = "profile" }) => {
       ...prevEditStates,
       [editID]: {
         ...prevEditStates[editID],
-        isFocused: false,
+        isFocused: prevEditStates[editID].type === "phone" ? true : false,
         hasError:
           prevEditStates[editID].type === "create-password" &&
           prevEditStates[editID].value.length === 0
@@ -371,39 +375,28 @@ const Account = ({ defaultToggle = "profile" }) => {
                     )}
                     <div className="login-info__wrapper">
                       <div className="update-profile-form__email">
-                        <div className="input-wrapper">
-                          <label htmlFor="editEmail" className="cap">
-                            \email
-                          </label>
-                          <div>
-                            <input
-                              type="email"
-                              id="editEmail"
-                              value={editStates.editEmail.value}
-                              placeholder="bogue@email.com"
-                              autoComplete="off"
-                              spellCheck="false"
-                              onBlur={() => handleBlur("editEmail")}
-                              onChange={(event) =>
-                                handleChange(
-                                  event,
-                                  "editEmail",
-                                  editStates.editEmail.type,
-                                  setEditStates
-                                )
-                              }
-                            />
-                          </div>
-                          <p
-                            className={
-                              editStates.editEmail.hasError
-                                ? "hasError"
-                                : "valid"
+                        <InputWrapper
+                          state={editStates.editEmail}
+                          text="\email"
+                        >
+                          <input
+                            type="email"
+                            id="editEmail"
+                            value={editStates.editEmail.value}
+                            placeholder="bogue@email.com"
+                            autoComplete="off"
+                            spellCheck="false"
+                            onBlur={() => handleBlur("editEmail")}
+                            onChange={(event) =>
+                              handleChange(
+                                event,
+                                "editEmail",
+                                editStates.editEmail.type,
+                                setEditStates
+                              )
                             }
-                          >
-                            {editStates.editEmail.hasError}
-                          </p>
-                        </div>
+                          />
+                        </InputWrapper>
                       </div>
                       <div className="update-profile-form__password">
                         <div className="input-wrapper">
@@ -528,76 +521,55 @@ const Account = ({ defaultToggle = "profile" }) => {
                     {formActive === "credentials" ? (
                       <div className="login-info__wrapper">
                         <div className="update-profile-form__null">
-                          <div className="input-wrapper"></div>
+                          <InputWrapper state={null}></InputWrapper>
                         </div>
                         <div className="update-profile-form__editConfirmPassword">
-                          <div className="input-wrapper">
-                            <label
-                              htmlFor="editConfirmPassword"
-                              className={`cap${
-                                editStates["editConfirmPassword"].isFocused ||
-                                editStates["editConfirmPassword"].value !== ""
-                                  ? " isFocused"
-                                  : " notFocused"
+                          <InputWrapper
+                            state={editStates.editConfirmPassword}
+                            text="\confirm password"
+                          >
+                            <input
+                              type={`${
+                                editStates.editPassword.isVisible
+                                  ? "text"
+                                  : "password"
                               }`}
-                            >
-                              \confirm password
-                            </label>
-                            <div className="__container">
-                              <input
-                                type={`${
-                                  editStates.editPassword.isVisible
-                                    ? "text"
-                                    : "password"
-                                }`}
-                                id="editConfirmPassword"
-                                value={editStates.editConfirmPassword.value}
-                                autoComplete="off"
-                                spellCheck="false"
-                                onFocus={() =>
-                                  handleFocus("editConfirmPassword")
-                                }
-                                onBlur={() => handleBlur("editConfirmPassword")}
-                                onChange={(event) =>
-                                  handleChange(
-                                    event,
-                                    "editConfirmPassword",
-                                    editStates.editConfirmPassword.type,
-                                    setEditStates,
-                                    editStates.editPassword.value
-                                  )
-                                }
-                                maxLength="25"
-                              />
-                              <span
-                                onClick={() => {
-                                  setEditStates({
-                                    ...editStates,
-                                    editPassword: {
-                                      ...editStates.editPassword,
-                                      isVisible:
-                                        !editStates.editPassword.isVisible,
-                                    },
-                                  });
-                                }}
-                              >
-                                {editStates.editPassword.isVisible ? (
-                                  <PiEye />
-                                ) : (
-                                  <PiEyeClosed />
-                                )}
-                              </span>
-                            </div>
-                            <p
-                              className={
-                                editStates.editConfirmPassword.hasError
-                                  ? "hasError"
-                                  : "valid"
+                              id="editConfirmPassword"
+                              value={editStates.editConfirmPassword.value}
+                              autoComplete="off"
+                              spellCheck="false"
+                              onFocus={() => handleFocus("editConfirmPassword")}
+                              onBlur={() => handleBlur("editConfirmPassword")}
+                              onChange={(event) =>
+                                handleChange(
+                                  event,
+                                  "editConfirmPassword",
+                                  editStates.editConfirmPassword.type,
+                                  setEditStates,
+                                  editStates.editPassword.value
+                                )
                               }
+                              maxLength="25"
+                            />
+                            <span
+                              onClick={() => {
+                                setEditStates({
+                                  ...editStates,
+                                  editPassword: {
+                                    ...editStates.editPassword,
+                                    isVisible:
+                                      !editStates.editPassword.isVisible,
+                                  },
+                                });
+                              }}
                             >
-                              {editStates.editConfirmPassword.hasError}
-                            </p>
-                          </div>
+                              {editStates.editPassword.isVisible ? (
+                                <PiEye />
+                              ) : (
+                                <PiEyeClosed />
+                              )}
+                            </span>
+                          </InputWrapper>
                         </div>
                       </div>
                     ) : (
@@ -684,142 +656,98 @@ const Account = ({ defaultToggle = "profile" }) => {
                     {!componentsLoading.includes("update-identity") ? (
                       <>
                         <div className="update-profile-form__first-name">
-                          <div className="input-wrapper">
-                            <label htmlFor="editFirstName" className="cap">
-                              \first name
-                            </label>
-                            <div>
-                              <input
-                                type="text"
-                                id="editFirstName"
-                                value={editStates.editFirstName.value}
-                                maxLength="30"
-                                autoComplete="off"
-                                spellCheck="false"
-                                onBlur={() => handleBlur("editFirstName")}
-                                onChange={(event) =>
-                                  handleChange(
-                                    event,
-                                    "editFirstName",
-                                    editStates.editFirstName.type,
-                                    setEditStates
-                                  )
-                                }
-                              />
-                            </div>
-                            <p
-                              className={
-                                editStates.editFirstName.hasError
-                                  ? "hasError"
-                                  : "valid"
+                          <InputWrapper
+                            state={editStates.editFirstName}
+                            text="\first name"
+                          >
+                            <input
+                              type="text"
+                              id="editFirstName"
+                              value={editStates.editFirstName.value}
+                              maxLength="30"
+                              autoComplete="off"
+                              spellCheck="false"
+                              onBlur={() => handleBlur("editFirstName")}
+                              onChange={(event) =>
+                                handleChange(
+                                  event,
+                                  "editFirstName",
+                                  editStates.editFirstName.type,
+                                  setEditStates
+                                )
                               }
-                            >
-                              {editStates.editFirstName.hasError}
-                            </p>
-                          </div>
+                            />
+                          </InputWrapper>
                         </div>
                         <div className="update-profile-form__last-name">
-                          <div className="input-wrapper">
-                            <label htmlFor="editLastName" className="cap">
-                              \last name
-                            </label>
-                            <div>
-                              <input
-                                type="text"
-                                id="editLastName"
-                                value={editStates.editLastName.value}
-                                maxLength="30"
-                                autoComplete="off"
-                                spellCheck="false"
-                                onBlur={() => handleBlur("editLastName")}
-                                onChange={(event) =>
-                                  handleChange(
-                                    event,
-                                    "editLastName",
-                                    editStates.editLastName.type,
-                                    setEditStates
-                                  )
-                                }
-                              />
-                            </div>
-                            <p
-                              className={
-                                editStates.editLastName.hasError
-                                  ? "hasError"
-                                  : "valid"
+                          <InputWrapper
+                            state={editStates.editLastName}
+                            text="\last name"
+                          >
+                            <input
+                              type="text"
+                              id="editLastName"
+                              value={editStates.editLastName.value}
+                              maxLength="30"
+                              autoComplete="off"
+                              spellCheck="false"
+                              onBlur={() => handleBlur("editLastName")}
+                              onChange={(event) =>
+                                handleChange(
+                                  event,
+                                  "editLastName",
+                                  editStates.editLastName.type,
+                                  setEditStates
+                                )
                               }
-                            >
-                              {editStates.editLastName.hasError}
-                            </p>
-                          </div>
+                            />
+                          </InputWrapper>
                         </div>
                         <div className="update-profile-form__phone">
-                          <div className="input-wrapper">
-                            <label htmlFor="editPhone" className="cap">
-                              \phone number
-                            </label>
-                            <div className="__container">
-                              <span>+1</span>
-                              <input
-                                type="tel"
-                                id="editPhone"
-                                value={editStates.editPhone.value}
-                                autoComplete="off"
-                                onBlur={() => handleBlur("editPhone")}
-                                onChange={(event) =>
-                                  handleChange(
-                                    event,
-                                    "editPhone",
-                                    editStates.editPhone.type,
-                                    setEditStates
-                                  )
-                                }
-                              />
-                            </div>
-                            <p
-                              className={
-                                editStates.editPhone.hasError
-                                  ? "hasError"
-                                  : "valid"
+                          <InputWrapper
+                            state={editStates.editPhone}
+                            text="\phone number"
+                          >
+                            <span>+1</span>
+                            <input
+                              type="tel"
+                              id="editPhone"
+                              value={editStates.editPhone.value}
+                              autoComplete="off"
+                              onBlur={() => handleBlur("editPhone")}
+                              onChange={(event) =>
+                                handleChange(
+                                  event,
+                                  "editPhone",
+                                  editStates.editPhone.type,
+                                  setEditStates
+                                )
                               }
-                            >
-                              {editStates.editPhone.hasError}
-                            </p>
-                          </div>
+                            />
+                          </InputWrapper>
                         </div>
                         <div className="update-profile-form__date-of-birth">
-                          <div className="input-wrapper">
-                            <label htmlFor="editDOB" className="cap">
-                              \date of birth
-                            </label>
-                            <div>
-                              <input
-                                type="date"
-                                id="editDOB"
-                                value={editStates.editDOB.value}
-                                autoComplete="off"
-                                onBlur={() => handleBlur("editDOB")}
-                                onChange={(event) =>
-                                  handleChange(
-                                    event,
-                                    "editDOB",
-                                    editStates.editDOB.type,
-                                    setEditStates
-                                  )
-                                }
-                                max="9999-12-31"
-                              />
-                            </div>
-                            <p
-                              className={
-                                editStates.editDOB.hasError
-                                  ? "hasError"
-                                  : "valid"
+                          <InputWrapper
+                            state={editStates.editDOB}
+                            text="\date of birth"
+                          >
+                            <input
+                              type="date"
+                              id="editDOB"
+                              value={editStates.editDOB.value}
+                              autoComplete="off"
+                              onBlur={() => handleBlur("editDOB")}
+                              onChange={(event) =>
+                                handleChange(
+                                  event,
+                                  "editDOB",
+                                  editStates.editDOB.type,
+                                  setEditStates
+                                )
                               }
-                            >
-                              {editStates.editDOB.hasError}
-                            </p>
-                          </div>
+                              max="9999-12-31"
+                            />
+                          </InputWrapper>
                         </div>
                       </>
                     ) : (
@@ -880,7 +808,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                     smoother and more convenient.
                   </p>
                 </div>
-                <AdressBook userID={user?.id}/>
+                <AdressBook userID={user?.id} />
               </div>
             )}
             {toggle === "payment-methods" && (
@@ -896,7 +824,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                     hassles.
                   </p>
                 </div>
-                <PaymentMethods userID={user?.id}/>
+                <PaymentMethods userID={user?.id} />
               </div>
             )}
             {toggle === "orders" && (
