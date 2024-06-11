@@ -1,4 +1,5 @@
 import {
+  validateCity,
   validateConfirmPassword,
   validateDate,
   validateEmail,
@@ -6,6 +7,9 @@ import {
   validateNewPassword,
   validatePassword,
   validatePhone,
+  validatePostalCode,
+  validateProvince,
+  validateStreet,
 } from "./validateFunctions";
 
 export const handleChange = (event, ID, type, setStates, newPW) => {
@@ -53,6 +57,18 @@ export const handleChange = (event, ID, type, setStates, newPW) => {
       break;
     case "date":
       updateInputState(setStates, ID, formattedValue, validateDate);
+      break;
+    case "street":
+      updateInputState(setStates, ID, formattedValue, validateStreet);
+      break;
+    case "city":
+      updateInputState(setStates, ID, formattedValue, validateCity);
+      break;
+    case "province":
+      updateInputState(setStates, ID, formattedValue, validateProvince);
+      break;
+    case "postal-code":
+      updateInputState(setStates, ID, formattedValue, validatePostalCode);
       break;
     default:
       break;

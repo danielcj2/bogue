@@ -14,12 +14,13 @@ import tshirt from "../imgs/crewneck_shirt_red.png";
 import { ReactComponent as Logo } from "../svgs/logo.svg";
 import { IoIosLogOut } from "react-icons/io";
 
-//components
+//layout
 import CategoryList from "./CategoryList";
 
 import { useDispatch, useSelector } from "react-redux";
 import { handleSignOut } from "../functions/authenticationFunctions";
 
+//todo
 const Header = ({ setModal }) => {
   const dispatch = useDispatch();
 

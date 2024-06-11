@@ -4,7 +4,8 @@ import { ReactComponent as Heart } from "../svgs/heart.svg";
 import { ReactComponent as HeartRed } from "../svgs/heart-red.svg";
 import { Link } from "react-router-dom";
 
-const CatalogCard = ({ item }) => {
+//todo
+const CardCatalog = ({ item }) => {
   const [hover, setHover] = useState(false);
 
   return (
@@ -34,4 +35,4 @@ const CatalogCard = ({ item }) => {
   );
 };
 
-export default CatalogCard;
+export default CardCatalog;

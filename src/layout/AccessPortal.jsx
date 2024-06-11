@@ -272,7 +272,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                 <Link to="/account/profile">my profile</Link>
               </li>
               <li className="quick-select__profile__item">
-                <Link to="/account/addresses">address book</Link>
+                <Link to="/account/address-book">address book</Link>
               </li>
               <li className="quick-select__profile__item">
                 <Link to="/account/payment-methods">payment methods</Link>
@@ -294,7 +294,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                 <h5>account hub</h5>
               </li>
               <li className="quick-select__account__item">
-                <Link to="/account/settings">settings</Link>
+                <Link to="/account/account-settings">settings</Link>
               </li>
               <li className="quick-select__account__item">
                 <div className="user-portal__logout">
@@ -346,6 +346,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                       value={inputStates.newPassword.value}
                       placeholder="SillyPancake42@"
                       autoComplete="off"
+                      spellCheck="false"
                       maxLength="30"
                       onFocus={() => handleFocus("newPassword")}
                       onBlur={() => handleBlur("newPassword")}
@@ -440,6 +441,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                       id="confirmPassword"
                       value={inputStates.confirmPassword.value}
                       autoComplete="off"
+                      spellCheck="false"
                       onFocus={() => handleFocus("confirmPassword")}
                       onBlur={() => handleBlur("confirmPassword")}
                       onChange={(event) =>
@@ -533,6 +535,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           placeholder="bogue@email.com"
                           autoComplete="off"
                           maxLength="30"
+                          spellCheck="false"
                           onFocus={() => handleFocus("email")}
                           onBlur={() => handleBlur("email")}
                           onChange={(event) =>
@@ -576,6 +579,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           value={inputStates.password.value}
                           placeholder="SillyPancake42@"
                           autoComplete="off"
+                          spellCheck="false"
                           onFocus={() => handleFocus("password")}
                           onBlur={() => handleBlur("password")}
                           onChange={(event) =>
@@ -675,6 +679,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                               placeholder="SillyPancake42@"
                               autoComplete="off"
                               maxLength="30"
+                              spellCheck="false"
                               onFocus={() => handleFocus("retrieveEmail")}
                               onBlur={() => handleBlur("retrieveEmail")}
                               onChange={(event) =>
@@ -775,6 +780,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           value={inputStates.createEmail.value}
                           placeholder="bogue@email.com"
                           autoComplete="off"
+                          spellCheck="false"
                           onFocus={() => handleFocus("createEmail")}
                           onBlur={() => handleBlur("createEmail")}
                           onChange={(event) =>
@@ -822,6 +828,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           value={inputStates.createPassword.value}
                           placeholder="SillyPancake42@"
                           autoComplete="off"
+                          spellCheck="false"
                           onFocus={() => handleFocus("createPassword")}
                           onBlur={() => handleBlur("createPassword")}
                           onChange={(event) =>
@@ -925,6 +932,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           id="firstName"
                           value={inputStates.firstName.value}
                           autoComplete="off"
+                          spellCheck="false"
                           onFocus={() => handleFocus("firstName")}
                           onBlur={() => handleBlur("firstName")}
                           onChange={(event) =>
@@ -965,6 +973,7 @@ const AccessPortal = ({ defaultPortal = "login" }) => {
                           id="lastName"
                           value={inputStates.lastName.value}
                           autoComplete="off"
+                          spellCheck="false"
                           onFocus={() => handleFocus("lastName")}
                           onBlur={() => handleBlur("lastName")}
                           onChange={(event) =>

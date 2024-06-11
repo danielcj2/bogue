@@ -2,7 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import { setSortBy } from "../features/filters/filterSlice";
 import { useDispatch } from "react-redux";
 
-import OptionLink from "./OptionLink";
+import LinkCheckmark from "./LinkCheckmark";
 import accessibleSorts from "../json/accessibleSorts.json";
 
 const SortDropdown = ({active}) => {
@@ -35,7 +35,7 @@ const SortDropdown = ({active}) => {
       {accessibleSorts.map((sItem, sIndex) => (
         <li className={`sort__${sItem.cText}`} key={sIndex}>
           <div onClick={() => toggleSort(sItem.param)}>
-            <OptionLink 
+            <LinkCheckmark 
               type="sort"
               param={sItem.param}
               text={sItem.text}

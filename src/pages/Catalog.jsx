@@ -16,13 +16,15 @@ import {
 } from "../features/path/pathAsyncThunks";
 
 //components
-import Header from "../components/Header";
 import Notice from "../components/Notice";
-import CategoryList from "../components/CategoryList";
-import SortDropdown from "../components/SortDropdown";
-import FilterDropdown from "../components/FilterDropdown";
+import CategoryList from "../layout/CategoryList";
+import DropdownSort from "../components/DropdownSort";
+import DropdownFilter from "../components/DropdownFilter";
 import Modal from "../components/Modal";
-import AccessPortal from "../components/AccessPortal";
+
+//layout
+import AccessPortal from "../layout/AccessPortal";
+import Header from "../layout/Header";
 
 //icons
 import { IoChevronDownSharp } from "react-icons/io5";
@@ -207,9 +209,9 @@ const Catalog = () => {
                     }`}
                   >
                     {optionsType === "sort" ? (
-                      <SortDropdown active={activeSort} />
+                      <DropdownSort active={activeSort} />
                     ) : (
-                      <FilterDropdown />
+                      <DropdownFilter />
                     )}
                   </ul>
                 </div>

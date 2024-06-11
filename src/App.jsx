@@ -6,14 +6,18 @@ import Product from "./pages/Product";
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 
+//layout
 import ForgotPassword from "./pages/ForgotPassword";
-import AcessPortalPage from "./pages/AcessPortalPage";
+import Gateway from "./pages/Gateway";
+import Account from "./pages/Account";
+
+//components 
 import Popup from "./components/Popup";
+
 
 import { supabase } from "./utils/supabaseClient";
 import { useDispatch } from "react-redux";
 import { logoutUser, setUser } from "./features/auth/authSlice";
-import Account from "./pages/Account";
 
 function App() {
   const dispatch = useDispatch();
@@ -53,7 +57,7 @@ function App() {
           path="/access-portal/account/change-password"
           element={<ForgotPassword />}
         />
-        <Route path="/access-portal" element={<AcessPortalPage />} />
+        <Route path="/access-portal" element={<Gateway />} />
         <Route path="/account" element={<Account />} />
         <Route path="/account/:section" element={<Account />} />
       </Routes>

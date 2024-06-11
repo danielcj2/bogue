@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 
 //components
-import Header from '../components/Header';
+import Header from '../layout/Header';
 import Notice from '../components/Notice';
 import Modal from '../components/Modal';
-import AccessPortal from '../components/AccessPortal';
-import Settings from '../components/Settings';
 
 import img from '../imgs/homepage-background.jpg';
 
 import useClickOutside from '../hooks/useClickOutside';
+
+//layout
+import AccessPortal from '../layout/AccessPortal';
+import Settings from '../layout/Settings';
 
 const Homepage = () => {
   const [modal, setModal] = useState("");

@@ -8,10 +8,9 @@ import handleOptionDropdown from "../functions/handleOptionDropdown";
 import useClickOutside from "../hooks/useClickOutside";
 
 //components
-import Header from "../components/Header";
+import Header from "../layout/Header";
 import Notice from "../components/Notice";
 import Tooltip from "../components/Tooltip";
-import ProductGallery from "../components/ProductGallery";
 import Modal from "../components/Modal";
 
 //json files
@@ -29,7 +28,10 @@ import { ReactComponent as Visa } from "../svgs/visa.svg";
 import { ReactComponent as PayPal } from "../svgs/paypal.svg";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { GrDown, GrUp } from "react-icons/gr";
-import Login from "../components/AccessPortal";
+
+//layout
+import Login from "../layout/AccessPortal";
+import ProductGallery from "../layout/ProductGallery";
 
 const Product = () => {
   const dispatch = useDispatch();

@@ -2,10 +2,12 @@ import React from "react";
 
 //components
 import Notice from "../components/Notice";
-import Header from "../components/Header";
-import AccessPortal from "../components/AccessPortal";
 
-const AcessPortalPage = () => {
+//layout
+import AccessPortal from "../layout/AccessPortal";
+import Header from "../layout/Header";
+
+const Gateway = () => {
   return (
     <>
       <Notice duplicate={0} shipping={false} />
@@ -19,4 +21,4 @@ const AcessPortalPage = () => {
   );
 };
 
-export default AcessPortalPage;
+export default Gateway;

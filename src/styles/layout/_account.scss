@@ -33,19 +33,25 @@
         }
 
         &__content{            
-            .update-profile-form, [class^="content__"][class$="__header"]{
+            .update-profile-form, [class^="content__"][class$="__header"], .update-address-book, .update-payment-methods{
                 @include abstracts.flex-column(center);
                 padding: abstracts.$padding-md*3 0;
 
                 border-bottom: solid 1px rgba(0,0,0,0.2);
             }
 
-            .login-info, .personal-info, [class^="content__"][class$="__header"]>h1, [class^="content__"][class$="__header"]>p, .credentials__button__wrapper, .identity__button__wrapper{
+            .login-info, .personal-info, .add-address, [class^="content__"][class$="__header"]>h1, [class^="content__"][class$="__header"]>p, .credentials__button__wrapper, .identity__button__wrapper, form>[class*="__header"]{
                 min-width: 500px;
                 width: 50vw;
             }
 
-            .update-profile-form{  
+            .update-profile-form, .update-address-book__country{
+                input{
+                    pointer-events: none;
+                }
+            }
+
+            .update-profile-form, .update-address-book{  
                 .disclaimer{
                     padding-top: 30px;
                 }
@@ -80,8 +86,6 @@
                     background-color: abstracts.$light-bg;
                     font-family: abstracts.$Poppins;
                     font-size: abstracts.$padding-md*0.8;
-
-                    pointer-events: none;
                 }
         
                 input::placeholder{
@@ -108,18 +112,20 @@
                     transform: translateY(0);            
                 }
 
-                [class*="update-profile-form"] {
+                [class*="update-profile-form"], [class*="update-address-book"]:not(.update-address-book__header) {
                     margin-top: 40px
                 }
 
-                .login-info, .personal-info{
-                    padding: abstracts.$padding-md*2 0;
-
+                .login-info, .personal-info, .add-address{
                     &__wrapper{
                         @include abstracts.flex-row(space-between);
                         align-items: baseline;
+
+                        .input-wrapper{
+                            min-width: 240px !important;
+                        }
                         
-                        [class^="update-profile-form"]{
+                        [class^="update-profile-form"], [class^="update-address-book"]{
                             flex-grow: 1;
                             width: 50%;
 
@@ -148,6 +154,35 @@
                 }
             }
 
+            .update-address-book, .update-payment-methods{
+                p{
+                    opacity: 0.6;
+                    font-size: calc(1rem - 2.5px);
+                }
+
+                .no-addresses, .no-payments{
+                    @include abstracts.flex-column(center);
+
+                    position: relative;
+                    width: calc(50vw + 20px);
+                    min-width: 520px;
+
+                    padding: abstracts.$padding-md*2 10px;
+                    margin-top: 10px;
+
+                    background-color: abstracts.$light-gray-bg;
+                    .create-address__button-light, .create-payment__button-light{
+                        min-width: 250px;
+                        width: 20vw;
+                    }
+                }
+
+                .address-line{
+                    margin-left: 5px;
+                    opacity: 0.5;
+                }
+            }
+
             [class$="__header"]{
                 padding-bottom: 10px;
 
@@ -165,7 +200,7 @@
                 padding-bottom: 2px;
             }
 
-            .credentials__button__wrapper, .identity__button__wrapper{
+            .credentials__button__wrapper, .identity__button__wrapper, .add-address__button__wrapper{
                 cursor: default;
                 padding: 0;
                 @include abstracts.flex-column(center);
@@ -176,7 +211,7 @@
                     width: calc(50% - 10px);
                 }
 
-                .cancel-edit{
+                .cancel-edit, .cancel-add-address{
                     cursor: pointer;
                     display: block;
                     margin-top: 10px;
@@ -227,7 +262,7 @@
 
 .edit-outcome{
     position: relative;
-    background-color: #eeedec;
+    background-color: abstracts.$light-gray-bg;
     padding: 10px;
     left: -10px;
     min-width: 520px;

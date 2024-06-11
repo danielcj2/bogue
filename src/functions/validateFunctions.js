@@ -78,3 +78,19 @@ export const validateDate = (date) => {
     return "! Please provide a valid DOB.";
   }
 };
+
+export const validateStreet = (street) => {
+  
+};
+
+export const validateCity = (city) => {
+  
+};
+
+export const validateProvince = (province) => {
+  
+};
+
+export const validatePostalCode = (postalCode) => {
+
+};

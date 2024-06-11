@@ -1,6 +1,7 @@
 import React from "react";
 
 const CategoryList = () => {
+  //todo
   return (
     <>
       <ul className="trending">

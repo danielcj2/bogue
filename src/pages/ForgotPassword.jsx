@@ -2,9 +2,10 @@ import React from "react";
 
 //components
 import Notice from "../components/Notice";
-import Header from "../components/Header";
-import AccessPortal from "../components/AccessPortal";
 
+//layout
+import AccessPortal from "../layout/AccessPortal";
+import Header from "../layout/Header";
 
 const ForgotPassword = () => {
   return (

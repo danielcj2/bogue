@@ -2,28 +2,42 @@ import React, { useEffect, useState } from "react";
 
 //components
 import Notice from "../components/Notice";
-import Header from "../components/Header";
+import Header from "../layout/Header";
+
+//layout
+import AdressBook from "../layout/AdressBook";
+import PaymentMethods from "../layout/PaymentMethods";
 
 import accountEditStates from "../json/accountEditStates.json";
 import { formatPhone, handleChange } from "../functions/handleChange";
-
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-
-import { PiEye, PiEyeClosed } from "react-icons/pi";
-import { PiPencilSimpleLineLight } from "react-icons/pi";
-import { PiPencilSimpleSlashLight } from "react-icons/pi";
 import {
   handleUpdateEmail,
   handleUpdateIdentity,
   handleUpdateLogin,
   handleUpdatePassword,
 } from "../functions/authenticationFunctions";
+
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+//svg
+import { PiEye, PiEyeClosed } from "react-icons/pi";
+import { PiPencilSimpleLineLight, PiPencilSimpleSlashLight } from "react-icons/pi";
 import { GrClose } from "react-icons/gr";
 
 const Account = ({ defaultToggle = "profile" }) => {
   const toggleParams = useParams();
   const navigate = useNavigate();
+
+  const [toggle, setToggle] = useState(defaultToggle);
+  useEffect(() => {
+    if (toggleParams) setToggle(toggleParams.section);
+  }, [toggleParams]);
+
+  const handleNavigate = (newSection) => {
+    navigate(`/account/${newSection}`);
+  };
+
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
@@ -92,15 +106,6 @@ const Account = ({ defaultToggle = "profile" }) => {
 
     user?.identities ? handleOnLoadStates() : navigate("/access-portal");
   }, [user, componentsLoading, navigate]);
-
-  const [toggle, setToggle] = useState(defaultToggle);
-  useEffect(() => {
-    if (toggleParams) setToggle(toggleParams.section);
-  }, [toggleParams]);
-
-  const handleNavigate = (newSection) => {
-    navigate(`/account/${newSection}`);
-  };
 
   const handleFocus = (ID) => {
     setEditStates({
@@ -377,6 +382,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                               value={editStates.editEmail.value}
                               placeholder="bogue@email.com"
                               autoComplete="off"
+                              spellCheck="false"
                               onBlur={() => handleBlur("editEmail")}
                               onChange={(event) =>
                                 handleChange(
@@ -430,6 +436,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                               }
                               placeholder="SillyPancake42@"
                               autoComplete="off"
+                              spellCheck="false"
                               onFocus={() => handleFocus("editPassword")}
                               onBlur={() => handleBlur("editPassword")}
                               onChange={(event) =>
@@ -546,6 +553,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                                 id="editConfirmPassword"
                                 value={editStates.editConfirmPassword.value}
                                 autoComplete="off"
+                                spellCheck="false"
                                 onFocus={() =>
                                   handleFocus("editConfirmPassword")
                                 }
@@ -687,6 +695,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                                 value={editStates.editFirstName.value}
                                 maxLength="30"
                                 autoComplete="off"
+                                spellCheck="false"
                                 onBlur={() => handleBlur("editFirstName")}
                                 onChange={(event) =>
                                   handleChange(
@@ -721,6 +730,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                                 value={editStates.editLastName.value}
                                 maxLength="30"
                                 autoComplete="off"
+                                spellCheck="false"
                                 onBlur={() => handleBlur("editLastName")}
                                 onChange={(event) =>
                                   handleChange(
@@ -870,14 +880,15 @@ const Account = ({ defaultToggle = "profile" }) => {
                     smoother and more convenient.
                   </p>
                 </div>
+                <AdressBook userID={user?.id}/>
               </div>
             )}
             {toggle === "payment-methods" && (
               <div className="content__payment-methods">
                 <div className="content__payment-methods__header">
-                  <h1 className="upp">manage your payment methods</h1>
+                  <h1 className="upp">credit and debit cards</h1>
                   <p>
-                    Here, you can manage the various payment methods associated
+                    Here, you can control the various payment methods associated
                     with your account. This includes adding new credit or debit
                     cards, editing existing ones, and removing outdated or
                     unused payment options. Keeping your payment methods updated
@@ -885,6 +896,7 @@ const Account = ({ defaultToggle = "profile" }) => {
                     hassles.
                   </p>
                 </div>
+                <PaymentMethods userID={user?.id}/>
               </div>
             )}
             {toggle === "orders" && (

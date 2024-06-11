@@ -7,34 +7,15 @@ import {
   setSize,
   resetFilters,
 } from "../features/filters/filterSlice";
-import OptionLink from "./OptionLink";
+import LinkCheckmark from "./LinkCheckmark";
 import accessibleColors from "../json/accessibleColors.json";
 import accessibleSizes from "../json/accessibleSizes.json";
 
-const FilterDropdown = () => {
+const DropdownFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const dispatch = useDispatch();
   const filters = useSelector(selectFilters);
-
-  // useEffect(() => {
-  //   // Fetch data from URL parameters and set it to the Redux store
-  //   let colors = searchParams.get("color");
-  //   let sizes = searchParams.get("size");
-
-  //   if (colors) {
-  //     dispatch(setColor(colors.split("%")));
-  //   } else {
-  //     //reset state
-  //     dispatch(setColor([]));
-  //   }
-  //   if (sizes) {
-  //     dispatch(setSize(sizes.split("%")));
-  //   } else {
-  //     //reset state
-  //     dispatch(setSize([]));
-  //   }
-  // }, [searchParams, dispatch]);
 
   const toggleColorFilter = (color) => {
     //check for filter
@@ -106,7 +87,7 @@ const FilterDropdown = () => {
         {accessibleColors.map((cItem, cIndex) => (
           <li className={`color__${cItem.color}`} key={cIndex}>
             <div onClick={() => toggleColorFilter(cItem.color)}>
-              <OptionLink
+              <LinkCheckmark
                 type="filter"
                 param={cItem.color}
                 text={cItem.color.charAt(0).toUpperCase() + cItem.color.slice(1)}
@@ -122,7 +103,7 @@ const FilterDropdown = () => {
         {accessibleSizes.map((sItem, sIndex) => (
           <li className={`size__${sItem.abbreviation}`} key={sIndex}>
             <div onClick={() => toggleSizeFilter(sItem.full)}>
-              <OptionLink
+              <LinkCheckmark
                 type="filter"
                 param={sItem.full}
                 text={sItem.abbreviation}
@@ -137,4 +118,4 @@ const FilterDropdown = () => {
   );
 };
 
-export default FilterDropdown;
+export default DropdownFilter;

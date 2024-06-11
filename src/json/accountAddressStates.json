@@ -1,0 +1,74 @@
+{
+  "addressFirstName": {
+    "id": "addressFirstName",
+    "value": "",
+    "isFocused": false,
+    "hasError": "",
+    "type": "name",
+    "form": "address"
+  },
+  "addressLastName": {
+    "id": "addressLastName",
+    "value": "",
+    "isFocused": false,
+    "hasError": "",
+    "type": "name",
+    "form": "address"
+  },
+  "addressStreet": {
+    "id": "addressStreet",
+    "value": "",
+    "isFocused": false,
+    "hasError": "",
+    "type": "street",
+    "form": "address"
+  },
+  "addressStreetTwo": {
+    "id": "addressStreetTwo",
+    "value": "",
+    "isFocused": false,
+    "hasError": "",
+    "type": "street",
+    "form": "address"
+  },
+  "addressCity": {
+    "id": "addressCity",
+    "value": "",
+    "isFocused": false,
+    "hasError": "",
+    "type": "city",
+    "form": "address"
+  },
+  "addressProvince": {
+    "id": "addressProvince",
+    "value": "",
+    "isFocused": false,
+    "hasError": "",
+    "type": "province",
+    "form": "address"
+  },
+  "addressPostalCode": {
+    "id": "addressPostalCode",
+    "value": "",
+    "isFocused": false,
+    "hasError": "",
+    "type": "postal-code",
+    "form": "address"
+  },
+  "addressCountry": {
+    "id": "addressCountry",
+    "value": "Canada",
+    "isFocused": true,
+    "hasError": "",
+    "type": "country",
+    "form": "address"
+  },
+  "addressPhone": {
+    "id": "addressPhone",
+    "value": "",
+    "isFocused": true,
+    "hasError": "",
+    "type": "phone",
+    "form": "address"
+  }
+}

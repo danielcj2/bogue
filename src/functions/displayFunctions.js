@@ -1,4 +1,4 @@
-import CatalogCard from "../components/CatalogCard";
+import CardCatalog from "../components/CardCatalog";
 import { Link } from "react-router-dom";
 
 export const displayInfo = (pData, expanded) => {
@@ -53,7 +53,7 @@ export const displayCards = (data) => {
   let cardEntries = [];
   for (var i = 0; i < data.length; i++) {
     cardEntries.push(
-      <CatalogCard
+      <CardCatalog
         key={`${data[i].apparel_name}_${data[i].category_id}`}
         item={data[i]}
       />
