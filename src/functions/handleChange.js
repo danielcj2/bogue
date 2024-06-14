@@ -89,7 +89,7 @@ const updateInputState = (setStates, ID, value, validationFunction, newPW) => {
 };
 
 export const formatPhone = (value) => {
-  if (!value.length) {
+  if (!value?.length) {
     return "";
   } else if (value.length <= 3) {
     return `(${value}`;

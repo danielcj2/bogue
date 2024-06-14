@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import InputWrapper from "../components/InputWrapper";
 
@@ -33,9 +33,12 @@ const AdressBook = ({ userID }) => {
       ...prevAddressForm,
       [addressID]: {
         ...prevAddressForm[addressID],
-        isFocused: false,
+        isFocused:
+          prevAddressForm[addressID].id === "addressPhone" ? true : false,
         hasError:
-          prevAddressForm[addressID].value.length === 0
+          prevAddressForm[addressID].id === "addressStreetTwo"
+            ? prevAddressForm[addressID].hasError
+            : prevAddressForm[addressID].value.length === 0
             ? "! Input field required."
             : prevAddressForm[addressID].hasError,
       },
@@ -55,6 +58,66 @@ const AdressBook = ({ userID }) => {
       console.log("goood");
     }
   };
+
+  const handleCancelSubmit = () => {
+    setIsCreating(false);
+    setAddressFormStates(accountAddressStates);
+  };
+
+  const autoCompleteRef = useRef();
+  const inputRef = useRef();
+  const options = {
+    componentRestrictions: { country: "ca" },
+    fields: ["address_components", "name"],
+    types: ["street_address"],
+  };
+  useEffect(() => {
+    if (!isCreating) return; 
+
+    autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      options
+    );
+    autoCompleteRef.current.addListener("place_changed", async function () {
+      const place = await autoCompleteRef.current.getPlace();
+      console.log({ place });
+
+      let address = place.name;
+      let city = "";
+      let postalCode = "";
+      let province = "";
+
+      place.address_components.forEach((component) => {
+        if (component.types.includes("postal_code")) {
+          postalCode = component.long_name;
+        } else if (component.types.includes("locality")) {
+          city = component.long_name;
+        } else if (component.types.includes("administrative_area_level_1")) {
+          province = component.long_name;
+        }
+      });
+
+      setAddressFormStates((prevAddressForm) => ({
+        ...prevAddressForm,
+        addressStreet: {
+          ...prevAddressForm.addressStreet,
+          value: address,
+        },
+        addressCity: {
+          ...prevAddressForm.addressCity,
+          value: city,
+        },
+        addressPostalCode: {
+          ...prevAddressForm.addressPostalCode,
+          value: postalCode,
+        },
+        addressProvince: {
+          ...prevAddressForm.addressProvince,
+          value: province,
+        },
+      }));
+    });
+  }, [isCreating]);
 
   return (
     <form onSubmit={handleAddressSubmit} className="update-address-book">
@@ -129,6 +192,7 @@ const AdressBook = ({ userID }) => {
             >
               <input
                 type="text"
+                ref={inputRef}
                 id="addressStreet"
                 value={addressFormStates.addressStreet.value}
                 maxLength="50"
@@ -163,6 +227,7 @@ const AdressBook = ({ userID }) => {
                 type="text"
                 id="addressStreetTwo"
                 value={addressFormStates.addressStreetTwo.value}
+                placeholder="Optional"
                 maxLength="50"
                 autoComplete="off"
                 spellCheck="false"
@@ -290,6 +355,8 @@ const AdressBook = ({ userID }) => {
                   id="addressPhone"
                   value={addressFormStates.addressPhone.value}
                   autoComplete="off"
+                  onFocus={() => handleFocus("addressPhone")}
+                  onBlur={() => handleBlur("addressPhone")}
                   onChange={(event) =>
                     handleChange(
                       event,
@@ -315,10 +382,7 @@ const AdressBook = ({ userID }) => {
             <button className="add-address__button-dark">
               add new address
             </button>
-            <p
-              className="cancel-add-address cap"
-              onClick={() => setIsCreating(false)}
-            >
+            <p className="cancel-add-address cap" onClick={handleCancelSubmit}>
               Cancel
             </p>
           </div>

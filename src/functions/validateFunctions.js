@@ -80,17 +80,37 @@ export const validateDate = (date) => {
 };
 
 export const validateStreet = (street) => {
+  const streetPattern = /^\d+\s.+/;
   
+  if (!streetPattern.test(street.trim())) {
+    return "! Please enter a valid street address.";
+  }
 };
 
 export const validateCity = (city) => {
+  const containsNonAlphabetic = /[^\p{L}]/u.test(city);
   
+  if (containsNonAlphabetic) {
+    return "! Please enter a valid city.";
+  }
 };
 
+const canadianProvinces = [
+  "Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador",
+  "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Northwest Territories",
+  "Nunavut", "Yukon"
+];
+
 export const validateProvince = (province) => {
-  
+  if (!canadianProvinces.includes(province.trim())) {
+    return "! Please enter a valid Canadian province.";
+  }
 };
 
 export const validatePostalCode = (postalCode) => {
-
+  const postalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
+  
+  if (!postalCodePattern.test(postalCode)) {
+    return "! Please enter a valid postal code (e.g., A1A 1A1).";
+  }
 };

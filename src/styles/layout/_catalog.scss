@@ -14,7 +14,6 @@ $gap: 2px;
     position: relative;
     display: flex;
     font-family: abstracts.$Lato;
-    gap: $gap;
 
     svg{
         @include abstracts.disable-select;
@@ -119,11 +118,11 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
     $nav-width: 6vw;
 
     &:before{
-        border-right: calc(50vw - $nav-width - $gap) solid transparent;
+        border-right: calc(50vw - $nav-width) solid transparent;
     }
 
     svg{
-        left: calc(50vw - $nav-width - 25px - $gap);
+        left: calc(50vw - $nav-width - 25px);
     }
 }
 
@@ -142,7 +141,7 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
             width: 0;
             height: 0;
             border-bottom: 30px solid abstracts.$light-bg-two;
-            border-right: calc(50vw - $nav-width - $gap) solid transparent;
+            border-right: calc(50vw - $nav-width) solid transparent;
         }
 
         &:after{
@@ -161,7 +160,7 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
             width: 50px;
             height: 50px;
             top: -25px;
-            left: calc(50vw - $nav-width - 25px - $gap);
+            left: calc(50vw - $nav-width - 25px);
             // transform: translate(-50%);
             z-index: 50;
         }

@@ -11,9 +11,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Gateway from "./pages/Gateway";
 import Account from "./pages/Account";
 
-//components 
+//components
 import Popup from "./components/Popup";
-
 
 import { supabase } from "./utils/supabaseClient";
 import { useDispatch } from "react-redux";
@@ -23,7 +22,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    const handleAuthStateChange = (event, session) => {
       console.log(event);
       switch (event) {
         case "SIGNED_IN":
@@ -33,12 +32,14 @@ function App() {
           dispatch(logoutUser());
           break;
         case "USER_UPDATED":
-        dispatch(setUser(session?.user));
-        break;
+          dispatch(setUser(session?.user));
+          break;
         default:
           break;
       }
-    });
+    };
+
+    supabase.auth.onAuthStateChange(handleAuthStateChange);
   }, [dispatch]);
 
   return (
