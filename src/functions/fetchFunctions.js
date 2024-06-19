@@ -2,15 +2,29 @@ import { supabase } from "../utils/supabaseClient";
 
 export const fetchUserAddresses = async () => {
   try {
-    const { data, error } = await supabase
+    const { data: addressIDs, error } = await supabase
       .from("profile")
       .select("address_book");
 
     if (error) throw error;
 
-    if (data && data.length !== 0)
-      if (data.address_book !== undefined) return data.address_book;
-      else return null;
+    if (addressIDs && addressIDs.length !== 0) {
+      let addresses = [];
+      const id = addressIDs[0].address_book;
+
+      for (let i = 0; i < id.length; i++) {
+        const { data: addressData, error: addressError } = await supabase
+          .from("address_book")
+          .select("*")
+          .eq("address_id", id[i]);
+
+        if (addressError) continue;
+
+        if (addressData) addresses.push(addressData[0]);
+      }
+      
+      if (addresses && addresses.length !== 0) return addresses;
+    }
   } catch (error) {
     console.error(
       "Unexpected error occurred during fetch-addresses: ",

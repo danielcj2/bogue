@@ -1,6 +1,9 @@
 import { supabase } from "../utils/supabaseClient";
 import { showPopup } from "../features/popup/popupSlice";
-import { setUserComponentLoading, stopUserComponentLoading } from "../features/auth/authSlice";
+import {
+  setUserComponentLoading,
+  stopUserComponentLoading,
+} from "../features/auth/authSlice";
 
 export const handleAuthenticate = async (
   userData,
@@ -246,7 +249,7 @@ export const handleResetPasswordAuthentication = async (
 
 export const handleUpdatePassword = async (
   password,
-  setEditOutcome,
+  setAlert,
   setStates,
   handleLoginEditCancel,
   dispatch
@@ -259,7 +262,7 @@ export const handleUpdatePassword = async (
     if (error) throw error;
 
     if (data) {
-      setEditOutcome({
+      setAlert({
         type: "login",
         state: "password changed successfully!",
         message:
@@ -303,7 +306,7 @@ export const handleUpdatePassword = async (
 
 export const handleUpdateEmail = async (
   email,
-  setEditOutcome,
+  setAlert,
   handleLoginEditCancel,
   dispatch
 ) => {
@@ -316,7 +319,7 @@ export const handleUpdateEmail = async (
     if (error) throw error;
 
     if (data) {
-      setEditOutcome({
+      setAlert({
         type: "login",
         state: "email update request sent!",
         message:
@@ -354,7 +357,7 @@ export const handleUpdateEmail = async (
 export const handleUpdateLogin = async (
   email,
   password,
-  setEditOutcome,
+  setAlert,
   setStates,
   handleLoginEditCancel,
   dispatch
@@ -369,7 +372,7 @@ export const handleUpdateLogin = async (
     if (error) throw error;
 
     if (data) {
-      setEditOutcome({
+      setAlert({
         type: "login",
         state: "email update request sent && password updated!",
         message:
@@ -435,7 +438,7 @@ export function getAuthToken() {
 
 export const handleUpdateIdentity = async (
   userData,
-  setEditOutcome,
+  setAlert,
   handlePersonalEditCancel,
   dispatch
 ) => {
@@ -453,7 +456,7 @@ export const handleUpdateIdentity = async (
     if (error) throw error;
 
     if (data) {
-      setEditOutcome({
+      setAlert({
         type: "personal",
         state: "profile information changed successfully!",
         message:
@@ -466,6 +469,47 @@ export const handleUpdateIdentity = async (
     dispatch(stopUserComponentLoading("update-identity"));
     console.error(
       "Unexpected error occurred during update-personal-information: ",
+      error.message
+    );
+    dispatch(
+      showPopup({
+        message: "An unexpected error occurred. Please try again.",
+        type: "error",
+      })
+    );
+  }
+};
+
+export const handleCreateAddress = async (userData, setAlert, closeCreating, dispatch) => {
+  try {
+    dispatch(setUserComponentLoading("create-address"));
+    const { data, error } = await supabase.from("address_book").insert({
+      first_name: userData.first_name,
+      last_name: userData.last_name,
+      street: userData.street,
+      streetTwo: userData.streetTwo,
+      city: userData.city,
+      postal_code: userData.postal_code,
+      province: userData.province,
+      country: userData.country,
+    });
+
+    if (error) throw error;
+
+    if (data) {
+      setAlert({
+        type: "address",
+        state: "address entry created successfully!",
+        message:
+          "Congratulations! Your new address has been successfully added to your profile. Thank you for updating your information!",
+      });
+      dispatch(stopUserComponentLoading("create-address"));
+      closeCreating(false);
+    }
+  } catch (error) {
+    dispatch(stopUserComponentLoading("create-address"));
+    console.error(
+      "Unexpected error occurred during create-address: ",
       error.message
     );
     dispatch(

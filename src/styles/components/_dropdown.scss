@@ -213,3 +213,32 @@
         }
     }
 }
+
+.pac-container{
+    background-color: abstracts.$light-bg;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    font-family: abstracts.$Poppins;
+    border: solid 1px rgba(0,0,0,0.5);
+    
+    .pac-item{
+        cursor: pointer;
+        padding: 4px 4px;
+
+        &:first-of-type{
+            border-top: none;
+        }
+
+        &:hover{
+            background-color: abstracts.$light-gray-bg;
+        }
+    }
+
+    span{
+        font-size: calc(abstracts.$padding-md - 4px);
+    }
+
+    &::after{
+        content: none;
+    }
+}

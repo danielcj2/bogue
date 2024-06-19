@@ -19,12 +19,13 @@ import {
 } from "../functions/authenticationFunctions";
 
 import accountEditStates from "../json/accountEditStates.json";
+import PopupAlert from "../components/PopupAlert";
 
 const Profile = () => {
   const dispatch = useDispatch();
 
   const [editStates, setEditStates] = useState(accountEditStates);
-  const [editOutcome, setEditOutcome] = useState({
+  const [alert, setAlert] = useState({
     type: "",
     state: "",
     message: "",
@@ -139,7 +140,7 @@ const Profile = () => {
         if (!editStates.editEmail.hasError) {
           handleUpdateEmail(
             editStates.editEmail.value,
-            setEditOutcome,
+            setAlert,
             handleLoginEditCancel,
             dispatch
           );
@@ -153,7 +154,7 @@ const Profile = () => {
         if (editStates.editEmail.value === user.email) {
           handleUpdatePassword(
             editStates.editPassword.value,
-            setEditOutcome,
+            setAlert,
             setEditStates,
             handleLoginEditCancel,
             dispatch
@@ -162,7 +163,7 @@ const Profile = () => {
           handleUpdateLogin(
             editStates.editEmail.value,
             editStates.editPassword.value,
-            setEditOutcome,
+            setAlert,
             setEditStates,
             handleLoginEditCancel,
             dispatch
@@ -189,7 +190,7 @@ const Profile = () => {
           dob: editStates.editDOB.value,
           phone_number: editStates.editPhone.value.replace(/[^\d]/g, ""),
         },
-        setEditOutcome,
+        setAlert,
         handlePersonalEditCancel,
         dispatch
       );
@@ -197,7 +198,7 @@ const Profile = () => {
   };
 
   const handleLoginEditClick = () => {
-    setEditOutcome({ type: "", state: "", message: "" });
+    setAlert({ type: "", state: "", message: "" });
     handleOnLoadPersonalStates();
     setFormActive("credentials");
     setEditStates((prevEditStates) => ({
@@ -209,7 +210,7 @@ const Profile = () => {
     }));
   };
   const handlePersonalEditClick = () => {
-    setEditOutcome({ type: "", state: "", message: "" });
+    setAlert({ type: "", state: "", message: "" });
     handleOnLoadLoginStates();
     setFormActive("identity");
   };
@@ -249,26 +250,8 @@ const Profile = () => {
               )}
             </h1>
           </div>
-          {editOutcome.type === "login" ? (
-            <div className="edit-outcome">
-              <div className="__container">
-                <span className="edit-outcome__state upp">
-                  {editOutcome.state}
-                </span>
-                <span
-                  onClick={() =>
-                    setEditOutcome({
-                      type: "",
-                      state: "",
-                      message: "",
-                    })
-                  }
-                >
-                  <GrClose />
-                </span>
-              </div>
-              <p>{editOutcome.message}</p>
-            </div>
+          {alert.type === "login" ? (
+            <PopupAlert alert={alert} setAlert={setAlert} />
           ) : (
             ""
           )}
@@ -511,26 +494,8 @@ const Profile = () => {
               )}
             </h1>
           </div>
-          {editOutcome.type === "personal" ? (
-            <div className="edit-outcome">
-              <div className="__container">
-                <span className="edit-outcome__state upp">
-                  {editOutcome.state}
-                </span>
-                <span
-                  onClick={() =>
-                    setEditOutcome({
-                      type: "",
-                      state: "",
-                      message: "",
-                    })
-                  }
-                >
-                  <GrClose />
-                </span>
-              </div>
-              <p>{editOutcome.message}</p>
-            </div>
+          {alert.type === "personal" ? (
+            <PopupAlert alert={alert} setAlert={setAlert} />
           ) : (
             ""
           )}

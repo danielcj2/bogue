@@ -80,7 +80,7 @@ export const validateDate = (date) => {
 };
 
 export const validateStreet = (street) => {
-  const streetPattern = /^\d+\s.+/;
+  const streetPattern = /^\d+\s*.+/;
   
   if (!streetPattern.test(street.trim())) {
     return "! Please enter a valid street address.";
@@ -88,8 +88,8 @@ export const validateStreet = (street) => {
 };
 
 export const validateCity = (city) => {
-  const containsNonAlphabetic = /[^\p{L}]/u.test(city);
-  
+  const containsNonAlphabetic = /[^A-Za-z\s]/.test(city);
+
   if (containsNonAlphabetic) {
     return "! Please enter a valid city.";
   }
