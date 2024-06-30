@@ -11,7 +11,6 @@ import useClickOutside from '../hooks/useClickOutside';
 
 //layout
 import AccessPortal from '../layout/AccessPortal';
-import Settings from '../layout/Settings';
 
 const Homepage = () => {
   const [modal, setModal] = useState("");
@@ -21,8 +20,8 @@ const Homepage = () => {
 
   return (
     <>
-      <Header setModal={setModal}/>
       <Notice duplicate={9}/>
+      <Header setModal={setModal}/>
       <div className="section">
           <div className="section__home">
               <img src={img} alt="homepage background img" draggable="false"></img>

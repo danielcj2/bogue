@@ -5,8 +5,11 @@ import InputWrapper from "../components/InputWrapper";
 import accountAddressStates from "../json/accountAddressStates.json";
 
 import { fetchUserAddresses } from "../functions/fetchFunctions";
-import { handleChange } from "../functions/handleChange";
-import { handleCreateAddress } from "../functions/authenticationFunctions";
+import { formatPhone, handleChange } from "../functions/handleChange";
+import {
+  handleCreateAddress,
+  handleEditAddress,
+} from "../functions/authenticationFunctions";
 import { useDispatch } from "react-redux";
 import PopupAlert from "../components/PopupAlert";
 import CardAddress from "../components/CardAddress";
@@ -14,12 +17,19 @@ import CardAddress from "../components/CardAddress";
 const AdressBook = () => {
   const [addressList, setAddressList] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditting, setIsEditting] = useState(false);
+  const dispatch = useDispatch();
+  const [alert, setAlert] = useState({
+    type: "",
+    state: "",
+    message: "",
+  });
 
   useEffect(() => {
     fetchUserAddresses().then((list) => {
       setAddressList(list);
     });
-  }, []);
+  }, [alert]);
 
   const [addressFormStates, setAddressFormStates] =
     useState(accountAddressStates);
@@ -42,14 +52,13 @@ const AdressBook = () => {
         hasError:
           prevAddressForm[addressID].id === "addressStreetTwo"
             ? prevAddressForm[addressID].hasError
-            : prevAddressForm[addressID].value.length === 0
+            : prevAddressForm[addressID].value?.length === 0
             ? "! Input field required."
             : prevAddressForm[addressID].hasError,
       },
     }));
   };
 
-  const dispatch = useDispatch();
   const handleAddressSubmit = (event) => {
     event.preventDefault();
 
@@ -76,27 +85,80 @@ const AdressBook = () => {
       return;
     }
     if (!errors.length) {
-      handleCreateAddress(
-        {
-          first_name: addressFormStates.addressFirstName.value,
-          last_name: addressFormStates.addressLastName.value,
-          street: addressFormStates.addressStreet.value,
-          streetTwo: addressFormStates.addressStreetTwo.value,
-          city: addressFormStates.addressCity.value,
-          postal_code: addressFormStates.addressPostalCode.value,
-          province: addressFormStates.addressProvince.value,
-          country: addressFormStates.addressCountry.value,
-        },
-        setAlert,
-        handleCloseCreating,
-        dispatch
-      );
+      if (!isEditting) {
+        handleCreateAddress(
+          {
+            first_name: addressFormStates.addressFirstName.value,
+            last_name: addressFormStates.addressLastName.value,
+            street: addressFormStates.addressStreet.value,
+            streetTwo: addressFormStates.addressStreetTwo.value,
+            city: addressFormStates.addressCity.value,
+            postal_code: addressFormStates.addressPostalCode.value,
+            province: addressFormStates.addressProvince.value,
+            country: addressFormStates.addressCountry.value,
+            phone_number: addressFormStates.addressPhone.value.replace(
+              /[^\d]/g,
+              ""
+            ),
+          },
+          setAlert,
+          handleCloseCreating,
+          dispatch
+        );
+      } else {
+        handleEditAddress(
+          {
+            id: addressFormStates.id.value,
+            first_name: addressFormStates.addressFirstName.value,
+            last_name: addressFormStates.addressLastName.value,
+            street: addressFormStates.addressStreet.value,
+            streetTwo: addressFormStates.addressStreetTwo.value,
+            city: addressFormStates.addressCity.value,
+            postal_code: addressFormStates.addressPostalCode.value,
+            province: addressFormStates.addressProvince.value,
+            country: addressFormStates.addressCountry.value,
+            phone_number: addressFormStates.addressPhone.value.replace(
+              /[^\d]/g,
+              ""
+            ),
+          },
+          setAlert,
+          handleCloseCreating,
+          dispatch
+        );
+      }
     }
   };
 
   const handleCancelSubmit = () => {
     setIsCreating(false);
+    setIsEditting(false);
     setAddressFormStates(accountAddressStates);
+  };
+  const handleCloseCreating = () => {
+    setIsCreating(false);
+    setIsEditting(false);
+  };
+
+  const handleEdit = (data) => {
+    setAddressFormStates((prev) => ({
+      ...prev,
+      id: { value: data.address_id },
+      addressFirstName: { ...prev.addressFirstName, value: data.first_name },
+      addressLastName: { ...prev.addressLastName, value: data.last_name },
+      addressStreet: { ...prev.addressStreet, value: data.street },
+      addressStreetTwo: { ...prev.addressStreetTwo, value: data.streetTwo },
+      addressCity: { ...prev.addressCity, value: data.city },
+      addressPostalCode: { ...prev.addressPostalCode, value: data.postal_code },
+      addressProvince: { ...prev.addressProvince, value: data.province },
+      addressCountry: { ...prev.addressCountry, value: data.country },
+      addressPhone: {
+        ...prev.addressPhone,
+        value: formatPhone(data.phone_number),
+      },
+    }));
+    setIsCreating(true);
+    setIsEditting(true);
   };
 
   const autoCompleteRef = useRef();
@@ -155,28 +217,23 @@ const AdressBook = () => {
     });
   }, [isCreating]);
 
-  const [alert, setAlert] = useState({
-    type: "",
-    state: "",
-    message: "",
-  });
-  const handleCloseCreating = () => {
-    setIsCreating(false);
-  }
-
   return (
     <>
-      {alert.type === "address" ? (
-        <PopupAlert alert={alert} setAlert={setAlert} />
-      ) : (
-        ""
-      )}
       <form onSubmit={handleAddressSubmit} className="update-address-book">
         <div className="update-address-book__header">
           <h1 className="upp">
-            {isCreating ? "add a new address" : "manage your saved addresses"}
+            {isEditting
+              ? "edit address"
+              : isCreating
+              ? "add a new address"
+              : "manage your saved addresses"}
           </h1>
         </div>
+        {alert.type === "address" ? (
+          <PopupAlert alert={alert} setAlert={setAlert} />
+        ) : (
+          ""
+        )}
         {isCreating ? (
           <div className="add-address">
             <div className="add-address__wrapper">
@@ -434,7 +491,7 @@ const AdressBook = () => {
             </p>
             <div className="add-address__button__wrapper">
               <button className="add-address__button-dark">
-                add new address
+                {isEditting ? "save changes" : "add new address"}
               </button>
               <p
                 className="cancel-add-address cap"
@@ -444,19 +501,23 @@ const AdressBook = () => {
               </p>
             </div>
           </div>
-        ) : addressList !== null ? (
+        ) : addressList && addressList !== null ? (
           <>
-            {addressList.map((add) => (
-              //add Address Component
-              <>{console.log(add)}
-              <CardAddress address={add} /></>
+            {addressList?.map((add) => (
+              <CardAddress
+                address={add}
+                edit={handleEdit}
+                setAlert={setAlert}
+                dispatch={dispatch}
+                key={`address-entry-${add.address_id}`}
+              />
             ))}
             <div className="found-addresses">
               <div
                 className="create-address__button-light"
                 onClick={() => setIsCreating(true)}
               >
-                add new address
+                Add new address
               </div>
             </div>
           </>

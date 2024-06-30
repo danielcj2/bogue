@@ -1,7 +1,7 @@
 import React from "react";
 import { GrClose } from "react-icons/gr";
 
-const PopupAlert = (alert, setAlert) => {
+const PopupAlert = ({alert, setAlert}) => {
   return (
     <div className="alert">
       <div className="__container">

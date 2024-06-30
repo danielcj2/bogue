@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -8,9 +6,8 @@ import useHoverOutside from "../hooks/useHoverOutside";
 
 //icons & images
 import { FiSearch } from "react-icons/fi";
-import { LuUser2, LuUserCircle2 } from "react-icons/lu";
+import { LuUserCircle2 } from "react-icons/lu";
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import tshirt from "../imgs/crewneck_shirt_red.png";
 import { ReactComponent as Logo } from "../svgs/logo.svg";
 import { IoIosLogOut } from "react-icons/io";
 
@@ -23,21 +20,9 @@ import { handleSignOut } from "../functions/authenticationFunctions";
 //todo
 const Header = ({ setModal }) => {
   const dispatch = useDispatch();
-
-  const [cartDropdown, setCartDropdown] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
-  useEffect(() => {
-    user?.aud === "authenticated" ? setIsLoggedIn(true) : setIsLoggedIn(false);
-  }, [user]);
-
-  let cartRef = useHoverOutside(() => {
-    setCartDropdown(false);
-  });
-
   const [optionsDropdown, setOptionsDropdown] = useState(false);
-
   let optionsRef = useHoverOutside(() => {
     setOptionsDropdown(false);
   });
@@ -88,65 +73,10 @@ const Header = ({ setModal }) => {
             </a>
           </li>
           <li className="header-list__item">
-            <div className="header-list__dropdown" ref={cartRef}>
-              <button
-                className="header-list__dropdown__button"
-                onMouseEnter={() => {
-                  setCartDropdown(!cartDropdown);
-                }}
-              >
+            <div className="header-list__dropdown">
+              <button className="header-list__dropdown__button">
                 <HiOutlineShoppingCart />
               </button>
-              <ul
-                className={`dropdown ${cartDropdown ? "active" : "inactive"}`}
-              >
-                <div className="shop-cart-item__container">
-                  <div className="shop-cart-item__image-right">
-                    <img src={tshirt} alt="stock t-shirt"></img>
-                  </div>
-                  <div className="shop-cart-item">
-                    <h4 className="shop-cart-item__header">
-                      Regular Plain T-Shirt
-                    </h4>
-                    <div className="shop-cart-item__cost bold">$70.00</div>
-                    <div className="shop-cart-item__spacer__container"></div>
-                    <div className="shop-cart-item__size__container__start">
-                      <div className="size__text">Size:</div>
-                      <div className="size">L</div>
-                    </div>
-                    <div className="shop-cart-item__quantity__container__start">
-                      <div className="quantity__text">Quantity:</div>
-                      <div className="quantity">1</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="dropdown__break">
-                  <hr />
-                </div>
-                <div className="dropdown__subtotal__container">
-                  <div className="subtotal__text">Order</div>
-                  <div className="subtotal__cost">$70.00</div>
-                </div>
-                <div className="dropdown__shipping__container">
-                  <div className="shipping__text">Shipping</div>
-                  <div className="shipping__cost">$7.00</div>
-                </div>
-                <div className="dropdown__break">
-                  <hr />
-                </div>
-                <div className="dropdown__total__container">
-                  <div className="total__text bold">TOTAL</div>
-                  <div className="total__cost bold">$77.00</div>
-                </div>
-                <div className="dropdown__checkout__container">
-                  <button className="checkout__button-dark">CHECKOUT</button>
-                </div>
-                <div className="dropdown__shopping-cart__container">
-                  <button className="shopping-cart__button-light">
-                    VIEW SHOPPING CART
-                  </button>
-                </div>
-              </ul>
             </div>
           </li>
           <li className="header-list__item">
@@ -155,7 +85,7 @@ const Header = ({ setModal }) => {
               style={{ cursor: "pointer" }}
               onClick={() => setModal("access-portal")}
             >
-              {isLoggedIn ? <LuUser2 /> : <LuUserCircle2 />}
+              <LuUserCircle2 />
             </div>
           </li>
         </ul>
@@ -173,7 +103,10 @@ const Header = ({ setModal }) => {
         <ul className="header-list">
           <li className="header-list__item">
             <div className="user-portal__logout cap">
-              <span onClick={() => handleSignOut(dispatch)}>Log out<IoIosLogOut/></span>
+              <span onClick={() => handleSignOut(dispatch)}>
+                Log out
+                <IoIosLogOut />
+              </span>
             </div>
           </li>
         </ul>

@@ -8,11 +8,11 @@ export const fetchUserAddresses = async () => {
 
     if (error) throw error;
 
-    if (addressIDs && addressIDs.length !== 0) {
+    if (addressIDs && addressIDs?.length !== 0) {
       let addresses = [];
       const id = addressIDs[0].address_book;
 
-      for (let i = 0; i < id.length; i++) {
+      for (let i = 0; i < id?.length; i++) {
         const { data: addressData, error: addressError } = await supabase
           .from("address_book")
           .select("*")

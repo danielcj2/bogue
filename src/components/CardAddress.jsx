@@ -1,9 +1,8 @@
-import {
-  PiTrashLight,
-  PiPencilSimpleLight 
-} from "react-icons/pi";
+import { PiTrashLight, PiPencilSimpleLight } from "react-icons/pi";
+import { formatPhone } from "../functions/handleChange";
+import { handleDeleteAddress } from "../functions/authenticationFunctions";
 
-const CardAddress = ({ address }) => {
+const CardAddress = ({ address, edit, setAlert, dispatch }) => {
   return (
     <div className="icon__wrapper">
       <div className="update-address-book__card" key={address.address_id}>
@@ -15,20 +14,26 @@ const CardAddress = ({ address }) => {
             {address.street}, {address.city}, {address.province},{" "}
             {address.postal_code}
           </p>
+          <p>+1 {formatPhone(address.phone_number)}</p>
         </div>
         <div className="update-address-book__card__wrapper">
-          <div className="address__button">
+          <div className="address__button" onClick={() => edit(address)}>
             <span>Edit</span>
           </div>
-          <div className="address__button">
+          <div
+            className="address__button"
+            onClick={() =>
+              handleDeleteAddress(address.address_id, setAlert, dispatch)
+            }
+          >
             <PiTrashLight />
             <span>Remove</span>
           </div>
         </div>
       </div>
-      <span>
+      {/* <span onClick={() => edit(address)}>
         <PiPencilSimpleLight />
-      </span>
+      </span> */}
     </div>
   );
 };

@@ -480,10 +480,15 @@ export const handleUpdateIdentity = async (
   }
 };
 
-export const handleCreateAddress = async (userData, setAlert, closeCreating, dispatch) => {
+export const handleCreateAddress = async (
+  userData,
+  setAlert,
+  handleCloseCreating,
+  dispatch
+) => {
   try {
     dispatch(setUserComponentLoading("create-address"));
-    const { data, error } = await supabase.from("address_book").insert({
+    const { error } = await supabase.from("address_book").insert({
       first_name: userData.first_name,
       last_name: userData.last_name,
       street: userData.street,
@@ -492,11 +497,12 @@ export const handleCreateAddress = async (userData, setAlert, closeCreating, dis
       postal_code: userData.postal_code,
       province: userData.province,
       country: userData.country,
+      phone_number: userData.phone_number,
     });
 
     if (error) throw error;
 
-    if (data) {
+    if (!error) {
       setAlert({
         type: "address",
         state: "address entry created successfully!",
@@ -504,12 +510,97 @@ export const handleCreateAddress = async (userData, setAlert, closeCreating, dis
           "Congratulations! Your new address has been successfully added to your profile. Thank you for updating your information!",
       });
       dispatch(stopUserComponentLoading("create-address"));
-      closeCreating(false);
+      handleCloseCreating();
     }
   } catch (error) {
     dispatch(stopUserComponentLoading("create-address"));
     console.error(
       "Unexpected error occurred during create-address: ",
+      error.message
+    );
+    dispatch(
+      showPopup({
+        message: "An unexpected error occurred. Please try again.",
+        type: "error",
+      })
+    );
+  }
+};
+
+export const handleEditAddress = async (
+  userData,
+  setAlert,
+  handleCloseEditing,
+  dispatch
+) => {
+  try {
+    dispatch(setUserComponentLoading("edit-address"));
+    const { error } = await supabase
+      .from("address_book")
+      .update({
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        street: userData.street,
+        streetTwo: userData.streetTwo,
+        city: userData.city,
+        postal_code: userData.postal_code,
+        province: userData.province,
+        country: userData.country,
+        phone_number: userData.phone_number,
+      })
+      .eq("address_id", userData.id);
+
+    if (error) throw error;
+
+    if (!error) {
+      setAlert({
+        type: "address",
+        state: "address updated successfully!",
+        message:
+          "Congratulations! Your address has been successfully updated in your profile. Thank you for keeping your information up to date!",
+      });
+      dispatch(stopUserComponentLoading("edit-address"));
+      handleCloseEditing();
+    }
+  } catch (error) {
+    dispatch(stopUserComponentLoading("edit-address"));
+    console.error(
+      "Unexpected error occurred during edit-address: ",
+      error.message
+    );
+    dispatch(
+      showPopup({
+        message: "An unexpected error occurred. Please try again.",
+        type: "error",
+      })
+    );
+  }
+};
+
+export const handleDeleteAddress = async (address_id, setAlert, dispatch) => {
+  try {
+    dispatch(setUserComponentLoading("delete-address"));
+
+    const { error } = await supabase
+      .from("address_book")
+      .delete()
+      .eq("address_id", address_id);
+
+    if (error) throw error;
+
+    if (!error) {
+      setAlert({
+        type: "address",
+        state: "address deleted successfully!",
+        message:
+          "The selected address has been successfully deleted from your profile. Thank you for keeping your information up to date!",
+      });
+      dispatch(stopUserComponentLoading("delete-address"));
+    }
+  } catch (error) {
+    dispatch(stopUserComponentLoading("delete-address"));
+    console.error(
+      "Unexpected error occurred during delete-address: ",
       error.message
     );
     dispatch(

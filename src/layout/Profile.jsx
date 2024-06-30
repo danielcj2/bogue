@@ -8,7 +8,6 @@ import {
   PiPencilSimpleLineLight,
   PiPencilSimpleSlashLight,
 } from "react-icons/pi";
-import { GrClose } from "react-icons/gr";
 
 import { formatPhone, handleChange } from "../functions/handleChange";
 import {
