@@ -1,32 +1,44 @@
-@use '../abstracts';
+@use "../abstracts";
 
-.dropdown, .product__card, .dropdown-long, .modal, .section__change-password, .section__access-portal, .section__account{
-    [class*="__button"] {
-        text-align: center;
-        width: 100%;
-        padding: calc(abstracts.$padding-md / 1.3);
-        margin-top: calc(abstracts.$padding-md/2);
-        text-transform: uppercase;
-    }
+.dropdown,
+.product__card,
+.dropdown-long,
+.modal,
+.section__change-password,
+.section__access-portal,
+.section__account {
+  [class*="__button"] {
+    text-align: center;
+    width: 100%;
+    padding: calc(abstracts.$padding-md / 1.3);
+    margin-top: calc(abstracts.$padding-md/2);
+    text-transform: uppercase;
+  }
 
-    [class$="-dark"]{
-        @include abstracts.clr(abstracts.$dark-bg);
-        border: solid transparent 1px;
-    }
+  [class$="-dark"] {
+    @include abstracts.clr(abstracts.$dark-bg);
+    border: solid transparent 1px;
+  }
 
-    [class$="-light"]{
-        @include abstracts.clr(abstracts.$light-bg);
-        border: solid black 1px;
-    }
+  [class$="-light"] {
+    @include abstracts.clr(abstracts.$light-bg);
+    border: solid black 1px;
+  }
+
+  [class$="loading"] {
+    @include abstracts.clr(abstracts.$light-gray-bg);
+    border: solid transparent 1px;
+  }
 }
 
-[class*="__button"], [class$="__toggle"] {
-    cursor: pointer;
+[class*="__button"],
+[class$="__toggle"] {
+  cursor: pointer;
 }
 
-[class*="__filter__"]{
-    position: relative;
-    margin-right: 5px;
-    font-weight: 500;
-    cursor: pointer;
+[class*="__filter__"] {
+  position: relative;
+  margin-right: 5px;
+  font-weight: 500;
+  cursor: pointer;
 }

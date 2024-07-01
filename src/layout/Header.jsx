@@ -74,7 +74,10 @@ const Header = ({ setModal }) => {
           </li>
           <li className="header-list__item">
             <div className="header-list__dropdown">
-              <button className="header-list__dropdown__button">
+              <button
+                className="header-list__dropdown__button"
+                onClick={() => setModal("cart")}
+              >
                 <HiOutlineShoppingCart />
               </button>
             </div>

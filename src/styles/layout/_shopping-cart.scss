@@ -1,0 +1,32 @@
+@use "../abstracts";
+
+.cart {
+  padding: abstracts.$padding-md * 2 abstracts.$padding-md * 3;
+
+  &__item {
+    margin-bottom: abstracts.$padding-md * 2;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: abstracts.$padding-md;
+
+    &__remove {
+      margin-top: abstracts.$padding-md * 0.5;
+      font-size: calc(abstracts.$padding-md - 2.5px);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+  }
+
+  p {
+    font-size: calc(abstracts.$padding-md - 2.5px);
+    opacity: 0.6;
+  }
+
+  &__total span {
+    padding-left: abstracts.$padding-md * 0.5;
+  }
+
+  &__checkout {
+    width: 50%;
+  }
+}

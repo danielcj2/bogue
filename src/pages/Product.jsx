@@ -32,12 +32,20 @@ import { GrDown, GrUp } from "react-icons/gr";
 //layout
 import Login from "../layout/AccessPortal";
 import ProductGallery from "../layout/ProductGallery";
+import { addItemToCart } from "../features/cart/cartSlice";
+import ShoppingCart from "../layout/ShoppingCart";
 
 const Product = () => {
   const dispatch = useDispatch();
   const { product, filters, loading, error } = useSelector(
     (state) => state.product
   );
+  const cart = useSelector((state) => state.cart);
+
+  const addItem = async () => {
+    await dispatch(addItemToCart(product));
+    setModal("cart");
+  };
 
   //heart svg fill
   const [favoriteHeart, setFavoriteHeart] = useState(false);
@@ -346,9 +354,20 @@ const Product = () => {
                   >
                     Find your size <PiRuler />
                   </div>
-                  <button className="product__cart__button-dark">
-                    <HiOutlineShoppingCart />
-                    <div>add to cart</div>
+                  <button
+                    className={`product__cart__button-dark${
+                      cart.isLoading ? " loading" : ""
+                    }`}
+                    onClick={addItem}
+                  >
+                    {!cart.isLoading ? (
+                      <>
+                        <HiOutlineShoppingCart />
+                        <span>add to cart</span>
+                      </>
+                    ) : (
+                      "adding..."
+                    )}
                   </button>
                   <div
                     className="product__general__controls"
@@ -648,7 +667,16 @@ const Product = () => {
           id="access-portal"
           setModal={setModal}
         >
-          <Login/>
+          <Login />
+        </Modal>
+        <Modal
+          title="shopping cart"
+          isActive={modal === "cart" && true}
+          type="side"
+          id="shopping-cart"
+          setModal={setModal}
+        >
+          <ShoppingCart />
         </Modal>
       </div>
     </>
