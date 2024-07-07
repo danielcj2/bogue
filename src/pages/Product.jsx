@@ -43,8 +43,12 @@ const Product = () => {
   const cart = useSelector((state) => state.cart);
 
   const addItem = async () => {
-    await dispatch(addItemToCart(product));
-    setModal("cart");
+    if (selectedColor !== "" && selectedColor !== "") {
+      await dispatch(
+        addItemToCart({ ...product, color: selectedColor, size: selectedSize })
+      );
+      setModal("cart");
+    }
   };
 
   //heart svg fill

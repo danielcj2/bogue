@@ -1,19 +1,92 @@
 @use "../abstracts";
 
 .cart {
-  padding: abstracts.$padding-md * 2 abstracts.$padding-md * 3;
+  // padding: abstracts.$padding-md * 2 abstracts.$padding-md * 3;
+
+  &__no-items {
+    padding: abstracts.$padding-md * 2 abstracts.$padding-md * 3;
+    opacity: 0.6;
+  }
 
   &__item {
-    margin-bottom: abstracts.$padding-md * 2;
+    @include abstracts.flex-row(flex-start);
+
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    padding-bottom: abstracts.$padding-md;
+    height: fit-content;
+
+    &__picture {
+      height: 275px;
+      width: 250px;
+
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
 
     &__remove {
-      margin-top: abstracts.$padding-md * 0.5;
+      width: fit-content;
+      margin-top: auto;
       font-size: calc(abstracts.$padding-md - 2.5px);
       text-decoration: underline;
       text-underline-offset: 2px;
       cursor: pointer;
+    }
+
+    &__color {
+      margin-top: abstracts.$padding-md;
+    }
+
+    &__color,
+    &__size {
+      font-size: calc(abstracts.$padding-md - 2.5px);
+      opacity: 0.6;
+    }
+
+    &__quantity {
+      @include abstracts.flex-row(flex-start);
+      font-size: calc(abstracts.$padding-md - 2.5px);
+      line-height: 12px;
+      background-color: abstracts.$light-bg-two;
+      padding: 5px 0;
+
+      &__decrease,
+      &__increase {
+        @include abstracts.disable-select;
+
+        cursor: pointer;
+        padding: 0 5px;
+      }
+
+      &__decrease {
+        border-right: solid 1px rgba(0, 0, 0, 0.1);
+      }
+      &__increase {
+        border-left: solid 1px rgba(0, 0, 0, 0.1);
+      }
+
+      &__number {
+        width: 25px;
+        text-align: center;
+      }
+    }
+
+    &__wrapper {
+      &:has(.cart__item__name) {
+        flex: 1;
+        @include abstracts.flex-column(flex-start);
+        align-items: flex-start;
+        margin: 0 abstracts.$padding-md * 3;
+      }
+
+      &:last-of-type {
+        padding-right: abstracts.$padding-md * 3;
+      }
+
+      &:has(.cart__item__name),
+      &:has(.cart__item__quantity) {
+        height: 175px;
+      }
     }
   }
 
@@ -22,11 +95,22 @@
     opacity: 0.6;
   }
 
-  &__total span {
-    padding-left: abstracts.$padding-md * 0.5;
+  &__total {
+    margin-top: abstracts.$padding-md * 2;
+
+    span {
+      padding-left: abstracts.$padding-md * 0.5;
+    }
   }
 
   &__checkout {
     width: 50%;
+    margin-bottom: 7px;
+  }
+
+  &__total,
+  &__checkout {
+    margin-left: 250px;
+    padding: 0 abstracts.$padding-md * 3;
   }
 }

@@ -53,7 +53,6 @@ export const cartSlice = createSlice({
 
       if (existingItem) {
         existingItem.quantity++;
-        state.total++;
         state.total += existingItem.cost;
       }
     },
@@ -72,7 +71,7 @@ export const cartSlice = createSlice({
           existingItem.quantity--;
         }
 
-        state.total--;
+        state.quantity--;
         state.total -= existingItem.cost;
       }
     },
@@ -107,5 +106,6 @@ export const cartSlice = createSlice({
   },
 });
 
-export const { removeItemFromCart } = cartSlice.actions;
+export const { removeItemFromCart, increaseQuantity, decreaseQuantity } =
+  cartSlice.actions;
 export default cartSlice.reducer;
