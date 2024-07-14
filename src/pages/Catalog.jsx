@@ -44,6 +44,7 @@ import {
 // import { selectApparelData } from "../features/apparel/apparelSlice";
 import { selectSortedApparel } from "../functions/sortFunction";
 import { setColor, setSize, setSortBy } from "../features/filters/filterSlice";
+import CardCatalog from "../components/CardCatalog";
 
 const Catalog = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,10 @@ const Catalog = () => {
   const { pData, pLoading } = useSelector((state) => state.path);
 
   const filteredData = useSelector(selectSortedApparel);
+  const [toShow, setToShow] = useState(8);
+  const handleLoadMore = () => {
+    setToShow((prev) => prev + 8);
+  };
 
   const [searchParams] = useSearchParams();
   const { slug } = useParams();
@@ -73,6 +78,9 @@ const Catalog = () => {
   const [activeSort, setActiveSort] = useState(null);
 
   useEffect(() => {
+    //reset # of apparels shown
+    setToShow(8);
+
     // Fetch data from URL parameters and set it to the Redux store
     let colors = searchParams.get("color");
     let sizes = searchParams.get("size");
@@ -97,6 +105,9 @@ const Catalog = () => {
   }, [searchParams, dispatch]);
 
   useEffect(() => {
+    //reset # of apparels shown
+    setToShow(8);
+    
     if (slug === undefined) {
       dispatch(fetchDefaultPath());
       dispatch(fetchDefaultApparel());
@@ -220,8 +231,26 @@ const Catalog = () => {
                   {loading ? (
                     <p>Loading....</p>
                   ) : (
-                    filteredData && displayCards(filteredData)
+                    filteredData &&
+                    filteredData
+                      .slice(0, toShow)
+                      .map((item) => (
+                        <CardCatalog
+                          key={`${item.apparel_name}_${item.category_id}`}
+                          item={item}
+                        />
+                      ))
                   )}
+                </div>
+                <div className="cards__load-more__wrapper">
+                  <div
+                    className={`cards__load-more${
+                      toShow > filteredData?.length ? " disabled" : ""
+                    }`}
+                    onClick={handleLoadMore}
+                  >
+                    Load More
+                  </div>
                 </div>
               </div>
             </div>

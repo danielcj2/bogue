@@ -127,6 +127,7 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
 }
 
 .catalog{
+    flex: 1;
     // width: 100%;
     &__description{
         position: relative;
@@ -272,5 +273,30 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
         &:hover{
             opacity: 0.6;
         }
+    }
+}
+
+.cards__load-more{
+    text-align: center;
+    width: 300px;
+    padding: calc(abstracts.$padding-md / 1.3);
+    margin-top: calc(abstracts.$padding-md/2);
+    text-transform: uppercase;
+    @include abstracts.clr(abstracts.$light-bg);
+    border: solid black 1px;
+    cursor: pointer;
+
+    &__wrapper{
+        @include abstracts.flex-row(center);
+        width: 100%;
+        padding: 10px;
+        padding-bottom: 30px;
+        background-color: white;
+    }
+
+    &.disabled{
+        @include abstracts.disable-select;
+        opacity: 0.3;
+        cursor: default;
     }
 }
