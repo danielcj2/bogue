@@ -32,6 +32,7 @@ body:has(.modal-active){
     }
 
     &-side{
+        display: block;
         top: 0;
         right: 0;
         min-width: 550px;
@@ -39,7 +40,15 @@ body:has(.modal-active){
         height: 100%;
         padding: abstracts.$padding-md*1.5 0;
         font-family: abstracts.$Poppins;
-        font-size: abstracts.$padding-md*0.9
+        font-size: abstracts.$padding-md*0.9;
+        transition: transform 0.3s ease-in;
+        transform: scaleX(0);
+        transform-origin: right;
+
+        & div{
+            transition: opacity 0.3s ease-in 0.1s;
+            opacity: 0;
+        }
     }
 
     &__header{
@@ -215,5 +224,13 @@ body:has(.modal-active){
     svg{
         min-width: 15px;   
         min-height: 15px;
+    }
+}
+
+.modal-active.modal-side{
+    transform: scaleX(1);
+
+    & div{
+        opacity: 1;
     }
 }

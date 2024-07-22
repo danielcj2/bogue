@@ -3,6 +3,20 @@
 $nav-width: 15vw;
 $gap: 2px;
 
+body:has(.catalog) {
+    header {
+      justify-content: flex-end;
+        
+      .header__left {
+        visibility: hidden;
+        display: none;
+      }
+      .header__right{
+        justify-self: end;
+      }
+    }
+  }
+
 .section{
     &__spacer{
         height: 13vh;

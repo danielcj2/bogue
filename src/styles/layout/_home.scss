@@ -1,15 +1,97 @@
-body:has(.section__home){
-    overflow: hidden;
+@use "../abstracts";
+
+body:has(.section__home) {
+  .header {
+    background-color: transparent;
+    transition: ease-in 0.4s;
+
+    &-list__item a,
+    svg {
+      color: abstracts.$light-bg;
+    }
+
+    &__center {
+      a svg path {
+        fill: abstracts.$light-bg;
+      }
+    }
+
+    button {
+      background-color: transparent;
+    }
+
+    &:hover {
+      background-color: abstracts.$light-bg;
+      .header-list__item a,
+      svg {
+        color: black;
+      }
+      .header__center {
+        a svg path {
+          fill: black;
+        }
+      }
+    }
+  }
+
+  .notice {
+    background-color: abstracts.$gray-bg;
+    font-size: abstracts.$padding-md * 0.8;
+    letter-spacing: 1px;
+    text-align: center;
+    height: 40px;
+  }
 }
 
-.section{
-    &__home{
-        img{
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: -10;
-        }
+body:has(.modal-active):has(.section__home),
+body:has(.header-list__item__options__dropdown.active):has(.section__home) {
+  .header {
+    background-color: abstracts.$light-bg;
+  }
+  .header-list__item a,
+  svg {
+    color: black;
+  }
+  .header__center {
+    a svg path {
+      fill: black;
     }
+  }
+}
+
+.section {
+  &__home {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -100;
+
+    &__split {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+      transition: flex-grow 1s ease;
+    }
+
+    &__split:hover {
+      flex-grow: 3;
+    }
+
+    .split__right {
+      border-left: solid 1px black;
+
+      img {
+        position: absolute;
+        right: 0;
+      }
+    }
+
+    img {
+      display: block;
+      width: auto;
+      height: 100vh;
+    }
+  }
 }
