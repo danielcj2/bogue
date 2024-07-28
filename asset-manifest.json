@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/bogue/static/css/main.767fa8c8.css",
-    "main.js": "/bogue/static/js/main.ae7a04d5.js",
+    "main.js": "/bogue/static/js/main.fa402700.js",
     "static/js/952.f95b599e.chunk.js": "/bogue/static/js/952.f95b599e.chunk.js",
     "static/media/crewneck_shirt_red.png": "/bogue/static/media/crewneck_shirt_red.ac361e532cb6862c3cf4.png",
     "static/media/background2.jpg": "/bogue/static/media/background2.27d7a2ca64bf2d19827b.jpg",
@@ -15,11 +15,11 @@
     "index.html": "/bogue/index.html",
     "static/media/icon-divider.svg": "/bogue/static/media/icon-divider.5f8cce6246be5caf12582173e417d5a4.svg",
     "main.767fa8c8.css.map": "/bogue/static/css/main.767fa8c8.css.map",
-    "main.ae7a04d5.js.map": "/bogue/static/js/main.ae7a04d5.js.map",
+    "main.fa402700.js.map": "/bogue/static/js/main.fa402700.js.map",
     "952.f95b599e.chunk.js.map": "/bogue/static/js/952.f95b599e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.767fa8c8.css",
-    "static/js/main.ae7a04d5.js"
+    "static/js/main.fa402700.js"
   ]
 }
