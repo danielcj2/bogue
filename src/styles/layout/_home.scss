@@ -21,7 +21,7 @@ body:has(.section__home) {
     }
 
     &:hover {
-      background-color: abstracts.$light-bg;
+      background-color: abstracts.$main-bg;
       .header-list__item a,
       svg {
         color: black;
@@ -35,18 +35,14 @@ body:has(.section__home) {
   }
 
   .notice {
-    background-color: abstracts.$gray-bg;
-    font-size: abstracts.$padding-md * 0.8;
-    letter-spacing: 1px;
-    text-align: center;
-    height: 40px;
+    background-color: #574a3a;
   }
 }
 
 body:has(.modal-active):has(.section__home),
 body:has(.header-list__item__options__dropdown.active):has(.section__home) {
   .header {
-    background-color: abstracts.$light-bg;
+    background-color: abstracts.$main-bg;
   }
   .header-list__item a,
   svg {
@@ -80,8 +76,6 @@ body:has(.header-list__item__options__dropdown.active):has(.section__home) {
     }
 
     .split__right {
-      border-left: solid 1px black;
-
       img {
         position: absolute;
         right: 0;

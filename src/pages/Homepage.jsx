@@ -6,8 +6,8 @@ import Modal from "../components/Modal";
 
 import useClickOutside from "../hooks/useClickOutside";
 
-import img1 from "../imgs/img1.jpg";
-import img2 from "../imgs/img2.jpg";
+import background1 from "../imgs/background1.jpg";
+import background2 from "../imgs/background2.jpg";
 
 //layout
 import AccessPortal from "../layout/AccessPortal";
@@ -26,10 +26,10 @@ const Homepage = () => {
       <div className="section">
         <div className="section__home">
           <div className="section__home__split split__left">
-            <img src={img1} alt="home background left"/>
+            <img src={background1} alt="home background left" loading="lazy" />
           </div>
           <div className="section__home__split split__right">
-            <img src={img2} alt="home background right"/>
+            <img src={background2} alt="home background right" loading="lazy" />
           </div>
         </div>
       </div>

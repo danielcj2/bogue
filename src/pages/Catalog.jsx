@@ -16,7 +16,7 @@ import {
 } from "../features/path/pathAsyncThunks";
 
 //components
-import Notice from "../components/Notice";
+// import Notice from "../components/Notice";
 import CategoryList from "../layout/CategoryList";
 import DropdownSort from "../components/DropdownSort";
 import DropdownFilter from "../components/DropdownFilter";
@@ -107,7 +107,7 @@ const Catalog = () => {
   useEffect(() => {
     //reset # of apparels shown
     setToShow(8);
-    
+
     if (slug === undefined) {
       dispatch(fetchDefaultPath());
       dispatch(fetchDefaultApparel());
@@ -152,7 +152,7 @@ const Catalog = () => {
 
   return (
     <>
-      <Notice duplicate={9} />
+      <div className="notice">Free shipping on orders over $100 CAD</div>
       <Header setModal={setModal} />
       <div className="section">
         <div className="section__catalog">

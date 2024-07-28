@@ -9,7 +9,7 @@ import useClickOutside from "../hooks/useClickOutside";
 
 //components
 import Header from "../layout/Header";
-import Notice from "../components/Notice";
+// import Notice from "../components/Notice";
 import Tooltip from "../components/Tooltip";
 import Modal from "../components/Modal";
 
@@ -153,7 +153,7 @@ const Product = () => {
 
   return (
     <>
-      <Notice duplicate="9" />
+      <div className="notice">Free shipping on orders over $100 CAD</div>
       <Header setModal={setModal} />
       <div className="section">
         {error && <p>404</p>}

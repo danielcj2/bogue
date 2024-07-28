@@ -5,7 +5,6 @@
   position: relative;
   padding: 0 abstracts.$padding-md * 7;
 
-  @include abstracts.clr(abstracts.$light-bg);
 
   font-family: abstracts.$Lato;
   font-weight: 500;
@@ -24,7 +23,7 @@
   &__left {
     .header-list {
       &__item {
-        padding: 0 calc(abstracts.$padding-md/2);
+        padding: 0 abstracts.$padding-md*0.7;
         height: 60px;
         display: flex;
         align-items: center;
@@ -37,7 +36,7 @@
           border-left: none;
           border-right: none;
           font-size: abstracts.$padding-md * 0.8;
-          background-color: abstracts.$light-bg;
+          background-color: abstracts.$main-bg;
           justify-content: space-around;
           min-height: 34vh;
           transition: all 0.3s ease;
