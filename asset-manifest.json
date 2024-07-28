@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/bogue/static/css/main.767fa8c8.css",
+    "main.js": "/bogue/static/js/main.ae7a04d5.js",
+    "static/js/952.f95b599e.chunk.js": "/bogue/static/js/952.f95b599e.chunk.js",
+    "static/media/crewneck_shirt_red.png": "/bogue/static/media/crewneck_shirt_red.ac361e532cb6862c3cf4.png",
+    "static/media/background2.jpg": "/bogue/static/media/background2.27d7a2ca64bf2d19827b.jpg",
+    "static/media/background1.jpg": "/bogue/static/media/background1.f5842badac3fbac2b184.jpg",
+    "static/media/paypal.svg": "/bogue/static/media/paypal.19814ee6ae0292786cd7b203c33b986f.svg",
+    "static/media/mastercard.svg": "/bogue/static/media/mastercard.8a0e6d8f4cad66c03587a4a68b05c2d8.svg",
+    "static/media/logo.svg": "/bogue/static/media/logo.4fb87b38f1de42c5e59ce882652721aa.svg",
+    "static/media/visa.svg": "/bogue/static/media/visa.2709cf850a7dc02978721c178fa5e97b.svg",
+    "static/media/heart.svg": "/bogue/static/media/heart.5f02f7efe072ccb86eb7ca757f02273b.svg",
+    "static/media/heart-red.svg": "/bogue/static/media/heart-red.c06322cda076609b20443b9271b8bc2e.svg",
+    "index.html": "/bogue/index.html",
+    "static/media/icon-divider.svg": "/bogue/static/media/icon-divider.5f8cce6246be5caf12582173e417d5a4.svg",
+    "main.767fa8c8.css.map": "/bogue/static/css/main.767fa8c8.css.map",
+    "main.ae7a04d5.js.map": "/bogue/static/js/main.ae7a04d5.js.map",
+    "952.f95b599e.chunk.js.map": "/bogue/static/js/952.f95b599e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.767fa8c8.css",
+    "static/js/main.ae7a04d5.js"
+  ]
+}
