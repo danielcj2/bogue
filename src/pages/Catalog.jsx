@@ -21,6 +21,8 @@ import CategoryList from "../layout/CategoryList";
 import DropdownSort from "../components/DropdownSort";
 import DropdownFilter from "../components/DropdownFilter";
 import Modal from "../components/Modal";
+import CardCatalog from "../components/CardCatalog";
+import ShoppingCart from "../layout/ShoppingCart";
 
 //layout
 import AccessPortal from "../layout/AccessPortal";
@@ -40,7 +42,6 @@ import { displayInfo, displayLinks } from "../functions/displayFunctions";
 // import { selectApparelData } from "../features/apparel/apparelSlice";
 import { selectSortedApparel } from "../functions/sortFunction";
 import { setColor, setSize, setSortBy } from "../features/filters/filterSlice";
-import CardCatalog from "../components/CardCatalog";
 
 const Catalog = () => {
   const dispatch = useDispatch();
@@ -260,6 +261,15 @@ const Catalog = () => {
           setModal={setModal}
         >
           <AccessPortal />
+        </Modal>
+        <Modal
+          title="shopping cart"
+          isActive={modal === "cart" && true}
+          type="side"
+          id="shopping-cart"
+          setModal={setModal}
+        >
+          <ShoppingCart />
         </Modal>
       </div>
     </>

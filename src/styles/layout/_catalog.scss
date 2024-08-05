@@ -19,7 +19,7 @@ body:has(.catalog) {
 
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 80;
     }
 
     .header button{
@@ -72,7 +72,7 @@ body:has(.catalog) {
     border-right: solid 1px rgba(0,0,0,0.1);
 
     background-color: abstracts.$light-bg;
-    z-index: 100;
+    z-index: 80;
 
     ul{
         margin-bottom: 30px;
@@ -88,7 +88,6 @@ body:has(.catalog) {
         width: 50px;
         height: 50px;
         top: -25px;
-        z-index: 50;
         left: calc(50% - 25px);
     }
 
@@ -171,7 +170,6 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
     }
 
     &__list {
-        min-height: 40vh;
         width: 100%;
         
         @include abstracts.clr(abstracts.$light-bg);
@@ -180,7 +178,7 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
             position: -webkit-sticky;
             position: sticky;
             top: 60px;
-            z-index: 1000;
+            z-index: 80;
 
             background-color: abstracts.$main-bg;
             padding: abstracts.$padding-md*2;
@@ -243,6 +241,19 @@ body:has(.catalog-nav.catalog-nav.not-expanded) .catalog__description{
             background-color: abstracts.$main-bg;
         }
         
+        &__options__dropdown{
+            flex-direction: row;
+            justify-content: end;
+            transition: all 0.5s ease;
+            transform-origin: top;
+        }
+        &__options__dropdown.active{
+            transform: scaleY(1);
+        }
+        &__options__dropdown.inactive{
+            transform: scaleY(0);
+            display: flex;
+        }
     }
 }
 
