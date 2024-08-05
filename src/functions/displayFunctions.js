@@ -13,7 +13,7 @@ export const displayInfo = (pData, expanded) => {
   return (
     <>
       <h2 className="catalog__description__title upp">
-        Men's {info && info.category_name}
+        {info && info.category_name}
       </h2>
       {expanded && (
         <p className="catalog__description__text">

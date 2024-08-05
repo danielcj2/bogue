@@ -35,11 +35,7 @@ import useHoverOutside from "../hooks/useHoverOutside";
 import useClickOutside from "../hooks/useClickOutside";
 
 //functions
-import {
-  displayCards,
-  displayInfo,
-  displayLinks,
-} from "../functions/displayFunctions";
+import { displayInfo, displayLinks } from "../functions/displayFunctions";
 
 // import { selectApparelData } from "../features/apparel/apparelSlice";
 import { selectSortedApparel } from "../functions/sortFunction";
@@ -53,9 +49,9 @@ const Catalog = () => {
   const { pData, pLoading } = useSelector((state) => state.path);
 
   const filteredData = useSelector(selectSortedApparel);
-  const [toShow, setToShow] = useState(8);
+  const [toShow, setToShow] = useState(9);
   const handleLoadMore = () => {
-    setToShow((prev) => prev + 8);
+    setToShow((prev) => prev + 9);
   };
 
   const [searchParams] = useSearchParams();
@@ -135,14 +131,9 @@ const Catalog = () => {
     }
   }, [slug, dispatch]);
 
-  const [catalogExpanded, setCatalogExpanded] = useState(true);
-  const [descriptionExpanded, setDescriptionExpanded] = useState(true);
-
+  const [catalogExpanded, setCatalogExpanded] = useState(false);
   const toggleCatalogExpand = () => {
     setCatalogExpanded(!catalogExpanded);
-  };
-  const toggleDescriptionExpand = () => {
-    setDescriptionExpanded(!descriptionExpanded);
   };
 
   const [modal, setModal] = useState("");
@@ -156,7 +147,11 @@ const Catalog = () => {
       <Header setModal={setModal} />
       <div className="section">
         <div className="section__catalog">
-          <div className="section__spacer"></div>
+          <div className="section__spacer">
+            <h1>
+              MEN's<span>Collection</span>
+            </h1>
+          </div>
           <div className="catalog-content">
             <aside
               className={`catalog-nav ${
@@ -165,17 +160,16 @@ const Catalog = () => {
             >
               <IconDivider onClick={toggleCatalogExpand} />
               {!catalogExpanded ? (
-                <h1 className="vertical-text upp">Catalog Navigation</h1>
+                <h1 className="vertical-text upp" onClick={toggleCatalogExpand}>
+                  Catalog Navigation
+                </h1>
               ) : (
                 <CategoryList />
               )}
             </aside>
             <div className="catalog">
               <div className="catalog__description">
-                <IconDivider onClick={toggleDescriptionExpand} />
-                {pLoading
-                  ? "Loading..."
-                  : pData && displayInfo(pData, descriptionExpanded)}
+                {pLoading ? "Loading..." : pData && displayInfo(pData, true)}
               </div>
               <div className="catalog__list">
                 <div
@@ -184,7 +178,7 @@ const Catalog = () => {
                 >
                   <div className="catalog__list__path">
                     <div>
-                      <Link to="/">Home</Link>
+                      <Link to="/catalog">Browse All</Link>
                     </div>
                     {pLoading ? "Loading..." : pData && displayLinks(pData)}
                   </div>

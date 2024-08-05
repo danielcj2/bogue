@@ -28,8 +28,7 @@ const CategoryList = () => {
         <li className="style-guide__option" onClick={() => navigate("/catalog/")}>Street Looks</li>
       </ul>
       <ul className="offers-and-deals">
-        <li className="offers-and-deals__title cap">Offers & Deals</li>
-        <li className="offers-and-deals__option" onClick={() => navigate("/catalog/")}>Offers & Deals</li>
+        <li className="offers-and-deals__title cap" onClick={() => navigate("/catalog/")}>Offers & Deals</li>
       </ul>
     </>
   );

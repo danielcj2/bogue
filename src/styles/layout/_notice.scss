@@ -12,7 +12,7 @@ body:has(.section__catalog) {
 }
 
 .notice {
-  @include abstracts.clr(abstracts.$dark-bg);
+  @include abstracts.clr(abstracts.$gray-bg);
 
   font-family: abstracts.$Poppins;
 
